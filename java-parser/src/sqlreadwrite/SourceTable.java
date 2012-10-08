@@ -8,6 +8,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 //import java.util.Date;
 import sqlreadwrite.NewsSource;
+import java.util.HashSet;
+import java.util.Set;
 
 
 public class SourceTable {
@@ -37,20 +39,28 @@ public class SourceTable {
 		return query.execute(str);
 	}
 	
-	public NewsSource[] getSources() throws SQLException{
-		NewsSource[] sources = new NewsSource[results.getFetchSize()];
-		int i = 0;
+	public Set<NewsSource> getSources() throws SQLException{
+		Set<NewsSource> sources = new HashSet<NewsSource>();
 		while(results.next()){
 			//The following is ENITRELY RELIANT on the table structure for datameans.
 			//If datameans is changed structurally, this code WILL break.
-			sources[i] = new NewsSource();
-			sources[i].setId(results.getInt(0));
-			sources[i].setParent_id(results.getInt(1));
-			sources[i].setUrl(results.getString(2));
-			sources[i].setName(results.getString(3));
-			sources[i].setType(results.getInt(4));
-			i++;
+			NewsSource next = new NewsSource();
+			next.setId(results.getInt(0));
+			next.setParent_id(results.getInt(1));
+			next.setUrl(results.getString(2));
+			next.setName(results.getString(3));
+			next.setType(results.getInt(4));
+			sources.add(next);
 		}
 		return sources;
+	}
+	
+	public void close() throws SQLException{
+		if(results != null)
+			results.close();
+		if(query != null)
+			query.close();
+		if(tableConnection != null)
+			tableConnection.close();
 	}
 }
