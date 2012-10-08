@@ -1,0 +1,19 @@
+-classpath 'C:/dev/projects/java.net/rome/target/classes;C:/Users/nlothian/.m2/repository/jdom/jdom/1.0/jdom-1.0.jar'
+ -encoding
+'ISO-8859-1'
+-protected
+-sourcepath
+'C:/dev/projects/java.net/rome/src/java'
+-author
+-bottom
+'Copyright &#169; 2004-2009 <a href="http://java.sun.com/">Sun Microsystems</a>. All Rights Reserved.'
+-charset
+'ISO-8859-1'
+-d
+'C:/dev/projects/java.net/rome/target/apidocs'
+-doctitle
+'ROME, RSS and atOM utilitiEs for Java 1.0 API'
+-use
+-version
+-windowtitle
+'ROME, RSS and atOM utilitiEs for Java 1.0 API'
