@@ -1,0 +1,30 @@
+RSS and web scraping is handled within a Java package that utilizes both an SQL
+connection API and an RSS aggregation API. Upon startup, the Java package reads a
+set table that contains all of the URLs and identifiers for the RSS feeds that need to be
+monitored. For sake of sanity and ensuring that no duplicate entries are created, only
+RSS posts newer than the time of initialization will be analyzed. A basic Java SQL driver,
+called JConnector (supplied by Oracle as part of the standard MySQL package, and licensed
+under MySQL and the GNU General Public License) is used for reading and writing to SQL
+tables as needed.
+
+At startup, an object called SourceTable is created in order to initalize a connection
+to the RSS source table and read from it. Calling a function getSources on this object
+will retrieve a Set<NewsSource>, a set of NewsSources. This set will be added to using
+a function called addSources after a cooldown of a couple of hours.
+
+Upon reading any URL for a RSS feed from the server's database, it will be
+initialized using a Java RSS Reading API called ROME, which supports any version of RSS
+along with Atom. ROME is licensed under the Apache 2.0 license. ROME makes it easy to
+retrieve the data of an RSS feed, along with the URL the RSS links to. Using a function
+generateReader within the class NewsSource, a NewsReader will be generated inside of the
+class. This will retrieve new RSS posts using ROME.
+
+A ThreadPool will be running, and will use a Semaphore for signaling whenever a NewsSource
+has a new post. The NewsSource class will have a function hasNewPosts, returning a boolean
+of whether or not the RSS feed tied with the NewsSource has any new posts to read. If so,
+the master thread will V on the Semaphore, signaling a thread in the ThreadPool to
+read that NewsSource's new post. This will then be turned into an object called NewsData
+using a function called createData, which will then be passed into the function
+DestTable.writeData, where DestTable is an object containing an SQL connection to the
+table(s) where the RSS News data will be written to. This is then read in by the Data
+Fusion Algorithm.
