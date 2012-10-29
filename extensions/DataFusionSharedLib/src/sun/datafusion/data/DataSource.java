@@ -5,6 +5,16 @@ package sun.datafusion.data;
  */
 public class DataSource {
 	
+	/***************************************************************************
+	 * Constructor that sets default values (NULL)
+	 */
+	public DataSource(){
+		id = -1;
+		url = "";
+		name = "";
+		logourl = "";
+	}
+	
 	//--------------------------------------------------------------------------
 	
 	public int getId() {
