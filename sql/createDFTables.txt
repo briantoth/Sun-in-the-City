@@ -25,6 +25,7 @@ CREATE  TABLE IF NOT EXISTS `sun_in_the_city`.`DataMeans` (
   `name` VARCHAR(45) NULL ,
   `url` LONGTEXT NULL ,
   `type` INT NULL ,
+  `lastProcessed` DATETIME NOT NULL ,
   PRIMARY KEY (`id`) ,
   INDEX `fk_DataMeans_DataSource` (`DataSource_id` ASC) ,
   CONSTRAINT `fk_DataMeans_DataSource`
@@ -32,7 +33,6 @@ CREATE  TABLE IF NOT EXISTS `sun_in_the_city`.`DataMeans` (
     REFERENCES `sun_in_the_city`.`DataSource` (`id` )
     ON DELETE CASCADE
     ON UPDATE CASCADE);
-
 
 -- -----------------------------------------------------
 -- Table `sun_in_the_city`.`DataPrimary`
