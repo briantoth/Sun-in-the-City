@@ -49,6 +49,7 @@ CREATE  TABLE IF NOT EXISTS `sun_in_the_city`.`DataStored` (
   `linkedUrl` LONGTEXT NOT NULL ,
   `linkedData` LONGTEXT NOT NULL ,
   `timestamp` DATETIME NOT NULL ,
+  `indexed` TINYINT(1)  NOT NULL DEFAULT false ,
   PRIMARY KEY (`id`) ,
   INDEX `fk_DataPrimary_DataMeans1` (`DataMeans_id` ASC) ,
   CONSTRAINT `fk_DataPrimary_DataMeans1`
