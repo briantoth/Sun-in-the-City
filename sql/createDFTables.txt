@@ -2,8 +2,6 @@ SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL';
 
-CREATE SCHEMA IF NOT EXISTS `sun_in_the_city` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci ;
-USE `sun_in_the_city` ;
 
 -- -----------------------------------------------------
 -- Table `sun_in_the_city`.`DataIdentify`
@@ -12,6 +10,7 @@ CREATE  TABLE IF NOT EXISTS `sun_in_the_city`.`DataIdentify` (
   `id` INT NOT NULL AUTO_INCREMENT ,
   `url` LONGTEXT NULL ,
   `title` LONGTEXT NULL ,
+  `timestamp` DATETIME NOT NULL ,
   PRIMARY KEY (`id`) )
 ENGINE = InnoDB;
 
@@ -40,7 +39,7 @@ CREATE  TABLE IF NOT EXISTS `sun_in_the_city`.`DataMeans` (
   `id` INT NOT NULL AUTO_INCREMENT ,
   `DataSource_id` INT NOT NULL ,
   `DataIdentify_id` INT NOT NULL ,
-  `url` INT NULL ,
+  `type` INT NULL ,
   `lastProcessed` DATETIME NOT NULL ,
   PRIMARY KEY (`id`) ,
   INDEX `fk_DataMeans_DataSource` (`DataSource_id` ASC) ,
@@ -64,8 +63,6 @@ ENGINE = InnoDB;
 CREATE  TABLE IF NOT EXISTS `sun_in_the_city`.`DataIndexable` (
   `id` INT NOT NULL AUTO_INCREMENT ,
   `data` LONGTEXT NULL ,
-  `timestamp` DATETIME NULL ,
-  `indexed` TINYINT(1)  NULL ,
   PRIMARY KEY (`id`) )
 ENGINE = InnoDB;
 
@@ -78,6 +75,7 @@ CREATE  TABLE IF NOT EXISTS `sun_in_the_city`.`DataPrimary` (
   `DataMeans_id` INT NOT NULL ,
   `DataIdentify_id` INT NOT NULL ,
   `DataIndexable_id` INT NOT NULL ,
+  `indexed` TINYINT(1)  NULL DEFAULT false ,
   PRIMARY KEY (`id`) ,
   INDEX `fk_DataPrimary_DataMeans1` (`DataMeans_id` ASC) ,
   INDEX `fk_DataPrimary_DataIdentify1` (`DataIdentify_id` ASC) ,
@@ -108,6 +106,7 @@ CREATE  TABLE IF NOT EXISTS `sun_in_the_city`.`DataSecondary` (
   `DataPrimary_id` INT NOT NULL ,
   `DataIdentify_id` INT NOT NULL ,
   `DataIndexable_id` INT NOT NULL ,
+  `indexed` TINYINT(1)  NULL DEFAULT false ,
   PRIMARY KEY (`id`) ,
   INDEX `fk_DataSecondary_DataPrimary1` (`DataPrimary_id` ASC) ,
   INDEX `fk_DataSecondary_DataIdentify1` (`DataIdentify_id` ASC) ,
@@ -131,15 +130,6 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `sun_in_the_city`.`node`
--- -----------------------------------------------------
-CREATE  TABLE IF NOT EXISTS `sun_in_the_city`.`node` (
-  `nid` INT NOT NULL ,
-  PRIMARY KEY (`nid`) )
-ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
 -- Table `sun_in_the_city`.`DataFusion`
 -- -----------------------------------------------------
 CREATE  TABLE IF NOT EXISTS `sun_in_the_city`.`DataFusion` (
@@ -148,7 +138,7 @@ CREATE  TABLE IF NOT EXISTS `sun_in_the_city`.`DataFusion` (
   `DataSource_id` INT NOT NULL ,
   `DataIdentify_id` INT NOT NULL ,
   `DataIndexable_id` INT NOT NULL ,
-  `approved` TINYINT(1)  NULL ,
+  `approved` TINYINT(1)  NULL DEFAULT false ,
   `rating` INT NULL ,
   `timestamp` DATETIME NULL ,
   PRIMARY KEY (`id`) ,
