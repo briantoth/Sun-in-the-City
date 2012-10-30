@@ -1,7 +1,8 @@
 package sun.datafusion.data;
 
 /*******************************************************************************
- * DataSource represents a source of information on the Internet.
+ * DataSource represents a source of information on the Internet like 
+ * The New York Times
  */
 public class DataSource {
 	
