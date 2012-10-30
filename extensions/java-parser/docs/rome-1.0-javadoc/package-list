@@ -1,0 +1,6 @@
+com.sun.syndication.feed
+com.sun.syndication.feed.atom
+com.sun.syndication.feed.module
+com.sun.syndication.feed.rss
+com.sun.syndication.feed.synd
+com.sun.syndication.io
