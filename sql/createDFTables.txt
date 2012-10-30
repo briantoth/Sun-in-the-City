@@ -6,14 +6,31 @@ CREATE SCHEMA IF NOT EXISTS `sun_in_the_city` DEFAULT CHARACTER SET latin1 COLLA
 USE `sun_in_the_city` ;
 
 -- -----------------------------------------------------
+-- Table `sun_in_the_city`.`DataIdentify`
+-- -----------------------------------------------------
+CREATE  TABLE IF NOT EXISTS `sun_in_the_city`.`DataIdentify` (
+  `id` INT NOT NULL AUTO_INCREMENT ,
+  `url` LONGTEXT NULL ,
+  `title` LONGTEXT NULL ,
+  PRIMARY KEY (`id`) )
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
 -- Table `sun_in_the_city`.`DataSource`
 -- -----------------------------------------------------
 CREATE  TABLE IF NOT EXISTS `sun_in_the_city`.`DataSource` (
   `id` INT NOT NULL AUTO_INCREMENT ,
-  `url` VARCHAR(45) NULL ,
-  `name` VARCHAR(45) NULL ,
-  `logourl` VARCHAR(45) NULL ,
-  PRIMARY KEY (`id`) );
+  `DataIdentify_id` INT NOT NULL ,
+  `logourl` LONGTEXT NULL ,
+  PRIMARY KEY (`id`) ,
+  INDEX `fk_DataSource_DataIdentify1` (`DataIdentify_id` ASC) ,
+  CONSTRAINT `fk_DataSource_DataIdentify1`
+    FOREIGN KEY (`DataIdentify_id` )
+    REFERENCES `sun_in_the_city`.`DataIdentify` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
@@ -22,17 +39,36 @@ CREATE  TABLE IF NOT EXISTS `sun_in_the_city`.`DataSource` (
 CREATE  TABLE IF NOT EXISTS `sun_in_the_city`.`DataMeans` (
   `id` INT NOT NULL AUTO_INCREMENT ,
   `DataSource_id` INT NOT NULL ,
-  `name` VARCHAR(45) NULL ,
-  `url` LONGTEXT NULL ,
-  `type` INT NULL ,
+  `DataIdentify_id` INT NOT NULL ,
+  `url` INT NULL ,
   `lastProcessed` DATETIME NOT NULL ,
   PRIMARY KEY (`id`) ,
   INDEX `fk_DataMeans_DataSource` (`DataSource_id` ASC) ,
+  INDEX `fk_DataMeans_DataIdentify1` (`DataIdentify_id` ASC) ,
   CONSTRAINT `fk_DataMeans_DataSource`
     FOREIGN KEY (`DataSource_id` )
     REFERENCES `sun_in_the_city`.`DataSource` (`id` )
     ON DELETE CASCADE
-    ON UPDATE CASCADE);
+    ON UPDATE CASCADE,
+  CONSTRAINT `fk_DataMeans_DataIdentify1`
+    FOREIGN KEY (`DataIdentify_id` )
+    REFERENCES `sun_in_the_city`.`DataIdentify` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `sun_in_the_city`.`DataIndexable`
+-- -----------------------------------------------------
+CREATE  TABLE IF NOT EXISTS `sun_in_the_city`.`DataIndexable` (
+  `id` INT NOT NULL AUTO_INCREMENT ,
+  `data` LONGTEXT NULL ,
+  `timestamp` DATETIME NULL ,
+  `indexed` TINYINT(1)  NULL ,
+  PRIMARY KEY (`id`) )
+ENGINE = InnoDB;
+
 
 -- -----------------------------------------------------
 -- Table `sun_in_the_city`.`DataPrimary`
@@ -40,17 +76,28 @@ CREATE  TABLE IF NOT EXISTS `sun_in_the_city`.`DataMeans` (
 CREATE  TABLE IF NOT EXISTS `sun_in_the_city`.`DataPrimary` (
   `id` INT NOT NULL AUTO_INCREMENT ,
   `DataMeans_id` INT NOT NULL ,
-  `title` VARCHAR(45) NULL ,
-  `url` VARCHAR(45) NULL ,
-  `data` LONGTEXT NULL ,
-  `timestamp` DATETIME NULL ,
+  `DataIdentify_id` INT NOT NULL ,
+  `DataIndexable_id` INT NOT NULL ,
   PRIMARY KEY (`id`) ,
   INDEX `fk_DataPrimary_DataMeans1` (`DataMeans_id` ASC) ,
+  INDEX `fk_DataPrimary_DataIdentify1` (`DataIdentify_id` ASC) ,
+  INDEX `fk_DataPrimary_DataIndexable1` (`DataIndexable_id` ASC) ,
   CONSTRAINT `fk_DataPrimary_DataMeans1`
     FOREIGN KEY (`DataMeans_id` )
     REFERENCES `sun_in_the_city`.`DataMeans` (`id` )
     ON DELETE CASCADE
-    ON UPDATE CASCADE);
+    ON UPDATE CASCADE,
+  CONSTRAINT `fk_DataPrimary_DataIdentify1`
+    FOREIGN KEY (`DataIdentify_id` )
+    REFERENCES `sun_in_the_city`.`DataIdentify` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_DataPrimary_DataIndexable1`
+    FOREIGN KEY (`DataIndexable_id` )
+    REFERENCES `sun_in_the_city`.`DataIndexable` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
@@ -59,17 +106,38 @@ CREATE  TABLE IF NOT EXISTS `sun_in_the_city`.`DataPrimary` (
 CREATE  TABLE IF NOT EXISTS `sun_in_the_city`.`DataSecondary` (
   `id` INT NOT NULL AUTO_INCREMENT ,
   `DataPrimary_id` INT NOT NULL ,
-  `title` VARCHAR(45) NULL ,
-  `url` LONGTEXT NULL ,
-  `data` LONGTEXT NULL ,
-  `timestamp` DATETIME NULL ,
+  `DataIdentify_id` INT NOT NULL ,
+  `DataIndexable_id` INT NOT NULL ,
   PRIMARY KEY (`id`) ,
   INDEX `fk_DataSecondary_DataPrimary1` (`DataPrimary_id` ASC) ,
+  INDEX `fk_DataSecondary_DataIdentify1` (`DataIdentify_id` ASC) ,
+  INDEX `fk_DataSecondary_DataIndexable1` (`DataIndexable_id` ASC) ,
   CONSTRAINT `fk_DataSecondary_DataPrimary1`
     FOREIGN KEY (`DataPrimary_id` )
     REFERENCES `sun_in_the_city`.`DataPrimary` (`id` )
     ON DELETE CASCADE
-    ON UPDATE CASCADE);
+    ON UPDATE CASCADE,
+  CONSTRAINT `fk_DataSecondary_DataIdentify1`
+    FOREIGN KEY (`DataIdentify_id` )
+    REFERENCES `sun_in_the_city`.`DataIdentify` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_DataSecondary_DataIndexable1`
+    FOREIGN KEY (`DataIndexable_id` )
+    REFERENCES `sun_in_the_city`.`DataIndexable` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `sun_in_the_city`.`node`
+-- -----------------------------------------------------
+CREATE  TABLE IF NOT EXISTS `sun_in_the_city`.`node` (
+  `nid` INT NOT NULL ,
+  PRIMARY KEY (`nid`) )
+ENGINE = InnoDB;
+
 
 -- -----------------------------------------------------
 -- Table `sun_in_the_city`.`DataFusion`
@@ -78,16 +146,16 @@ CREATE  TABLE IF NOT EXISTS `sun_in_the_city`.`DataFusion` (
   `id` INT NOT NULL AUTO_INCREMENT ,
   `nodeID` INT UNSIGNED NOT NULL ,
   `DataSource_id` INT NOT NULL ,
-  `title` VARCHAR(45) NULL ,
-  `url` LONGTEXT NULL ,
-  `summary` LONGTEXT NULL ,
-  `tags` LONGTEXT NULL ,
+  `DataIdentify_id` INT NOT NULL ,
+  `DataIndexable_id` INT NOT NULL ,
   `approved` TINYINT(1)  NULL ,
   `rating` INT NULL ,
   `timestamp` DATETIME NULL ,
   PRIMARY KEY (`id`) ,
   INDEX `fk_DataFusion_DataSource1` (`DataSource_id` ASC) ,
   INDEX `fk_DataFusion_node1` (`nodeID` ASC) ,
+  INDEX `fk_DataFusion_DataIdentify1` (`DataIdentify_id` ASC) ,
+  INDEX `fk_DataFusion_DataIndexable1` (`DataIndexable_id` ASC) ,
   CONSTRAINT `fk_DataFusion_DataSource1`
     FOREIGN KEY (`DataSource_id` )
     REFERENCES `sun_in_the_city`.`DataSource` (`id` )
@@ -97,5 +165,16 @@ CREATE  TABLE IF NOT EXISTS `sun_in_the_city`.`DataFusion` (
     FOREIGN KEY (`nodeID` )
     REFERENCES `sun_in_the_city`.`node` (`nid` )
     ON DELETE NO ACTION
-    ON UPDATE NO ACTION);
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_DataFusion_DataIdentify1`
+    FOREIGN KEY (`DataIdentify_id` )
+    REFERENCES `sun_in_the_city`.`DataIdentify` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_DataFusion_DataIndexable1`
+    FOREIGN KEY (`DataIndexable_id` )
+    REFERENCES `sun_in_the_city`.`DataIndexable` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
 

@@ -38,6 +38,7 @@ public class Main {
 		// Startup N DataFusers and pass them the ArticleRetriever
 
 		// Setup the shutdown hook (graceful kill)
+		
 		Runtime.getRuntime().addShutdownHook(new Thread() {
 			public void run() {
 				System.out.println("Shutting down...");
