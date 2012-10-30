@@ -1,0 +1,101 @@
+SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
+SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
+SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL';
+
+CREATE SCHEMA IF NOT EXISTS `sun_in_the_city` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci ;
+USE `sun_in_the_city` ;
+
+-- -----------------------------------------------------
+-- Table `sun_in_the_city`.`DataSource`
+-- -----------------------------------------------------
+CREATE  TABLE IF NOT EXISTS `sun_in_the_city`.`DataSource` (
+  `id` INT NOT NULL AUTO_INCREMENT ,
+  `url` VARCHAR(45) NULL ,
+  `name` VARCHAR(45) NULL ,
+  `logourl` VARCHAR(45) NULL ,
+  PRIMARY KEY (`id`) );
+
+
+-- -----------------------------------------------------
+-- Table `sun_in_the_city`.`DataMeans`
+-- -----------------------------------------------------
+CREATE  TABLE IF NOT EXISTS `sun_in_the_city`.`DataMeans` (
+  `id` INT NOT NULL AUTO_INCREMENT ,
+  `DataSource_id` INT NOT NULL ,
+  `name` VARCHAR(45) NULL ,
+  `url` LONGTEXT NULL ,
+  `type` INT NULL ,
+  PRIMARY KEY (`id`) ,
+  INDEX `fk_DataMeans_DataSource` (`DataSource_id` ASC) ,
+  CONSTRAINT `fk_DataMeans_DataSource`
+    FOREIGN KEY (`DataSource_id` )
+    REFERENCES `sun_in_the_city`.`DataSource` (`id` )
+    ON DELETE CASCADE
+    ON UPDATE CASCADE);
+
+
+-- -----------------------------------------------------
+-- Table `sun_in_the_city`.`DataPrimary`
+-- -----------------------------------------------------
+CREATE  TABLE IF NOT EXISTS `sun_in_the_city`.`DataPrimary` (
+  `id` INT NOT NULL AUTO_INCREMENT ,
+  `DataMeans_id` INT NOT NULL ,
+  `title` VARCHAR(45) NULL ,
+  `url` VARCHAR(45) NULL ,
+  `data` LONGTEXT NULL ,
+  `timestamp` DATETIME NULL ,
+  PRIMARY KEY (`id`) ,
+  INDEX `fk_DataPrimary_DataMeans1` (`DataMeans_id` ASC) ,
+  CONSTRAINT `fk_DataPrimary_DataMeans1`
+    FOREIGN KEY (`DataMeans_id` )
+    REFERENCES `sun_in_the_city`.`DataMeans` (`id` )
+    ON DELETE CASCADE
+    ON UPDATE CASCADE);
+
+
+-- -----------------------------------------------------
+-- Table `sun_in_the_city`.`DataSecondary`
+-- -----------------------------------------------------
+CREATE  TABLE IF NOT EXISTS `sun_in_the_city`.`DataSecondary` (
+  `id` INT NOT NULL AUTO_INCREMENT ,
+  `DataPrimary_id` INT NOT NULL ,
+  `title` VARCHAR(45) NULL ,
+  `url` LONGTEXT NULL ,
+  `data` LONGTEXT NULL ,
+  `timestamp` DATETIME NULL ,
+  PRIMARY KEY (`id`) ,
+  INDEX `fk_DataSecondary_DataPrimary1` (`DataPrimary_id` ASC) ,
+  CONSTRAINT `fk_DataSecondary_DataPrimary1`
+    FOREIGN KEY (`DataPrimary_id` )
+    REFERENCES `sun_in_the_city`.`DataPrimary` (`id` )
+    ON DELETE CASCADE
+    ON UPDATE CASCADE);
+
+-- -----------------------------------------------------
+-- Table `sun_in_the_city`.`DataFusion`
+-- -----------------------------------------------------
+CREATE  TABLE IF NOT EXISTS `sun_in_the_city`.`DataFusion` (
+  `id` INT NOT NULL AUTO_INCREMENT ,
+  `nodeID` INT UNSIGNED NOT NULL ,
+  `DataSource_id` INT NOT NULL ,
+  `title` VARCHAR(45) NULL ,
+  `url` LONGTEXT NULL ,
+  `summary` LONGTEXT NULL ,
+  `tags` LONGTEXT NULL ,
+  `approved` TINYINT(1)  NULL ,
+  `rating` INT NULL ,
+  `timestamp` DATETIME NULL ,
+  PRIMARY KEY (`id`) ,
+  INDEX `fk_DataFusion_DataSource1` (`DataSource_id` ASC) ,
+  INDEX `fk_DataFusion_node1` (`nodeID` ASC) ,
+  CONSTRAINT `fk_DataFusion_DataSource1`
+    FOREIGN KEY (`DataSource_id` )
+    REFERENCES `sun_in_the_city`.`DataSource` (`id` )
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+  CONSTRAINT `fk_DataFusion_node1`
+    FOREIGN KEY (`nodeID` )
+    REFERENCES `sun_in_the_city`.`node` (`nid` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION);
+
