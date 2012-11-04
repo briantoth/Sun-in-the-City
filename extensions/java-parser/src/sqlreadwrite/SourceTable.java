@@ -9,6 +9,7 @@ import java.sql.Statement;
 //import java.util.Date;
 import sqlreadwrite.NewsSource;
 import java.util.HashSet;
+import java.util.Properties;
 import java.util.Set;
 
 
@@ -19,6 +20,11 @@ public class SourceTable {
 	//private String database = null;
 	//private String table = null;
 	private String tableref = null;
+	
+	public SourceTable(Properties prop, String tableName) throws Exception{
+		this(prop.getProperty("db"), tableName, prop.getProperty("dbuser"), 
+				prop.getProperty("dbpassword"));
+	}
 	
 	public SourceTable(String databaseName, String tableName, String user, String pw) throws Exception{
 		try{
