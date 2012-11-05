@@ -48,10 +48,15 @@ body {
  * Header
  */
 
+#header {
+	margin-top: 10px;
+}
+
 #logo { /* Wrapping link for logo */
   float: left; /* LTR */
   margin: 0;
   padding: 0;
+  padding-left: 10px;
 }
 #logo img {
   vertical-align: bottom;
@@ -99,7 +104,7 @@ body {
 
 #main {
 	margin: 10px 20px 0px;
-	padding: 10px 0px;
+	padding: 10px 10px;
 }
 
 /*
@@ -260,4 +265,23 @@ span.field-label { /* The inline field label used by the Fences module */
 
 p {
 	margin: 10px 0;
+}
+
+/*home page grid*/
+.col-1 {
+	padding-right: 10px;
+}
+
+.col-2 {
+	padding-right: 5px;
+	padding-left: 5px;
+}
+
+.col-3 {
+	padding-left: 10px;
+}
+
+.nodesinblock img {
+	float: right;
+	padding-left: 10px;
 }
