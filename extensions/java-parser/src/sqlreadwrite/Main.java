@@ -1,5 +1,6 @@
 package sqlreadwrite;
 
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -25,11 +26,13 @@ public class Main {
 			next = t.getNextMeans();
 			while(next != null){
 				RSSGrabber grabber = new RSSGrabber(next);
+				t.updateDataMeans(next.getId(), new Date());
 				List<DataStored> newPosts = grabber.getNewPosts();
 				Iterator<DataStored> iter = newPosts.iterator();
 				while(iter.hasNext()){
 					dest.insertDataStored(iter.next());
 				}
+				next = t.getNextMeans();
 			}
 			Thread.sleep(READER_TIMEOUT);
 		}
