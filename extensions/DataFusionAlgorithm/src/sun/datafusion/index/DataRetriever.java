@@ -1,5 +1,8 @@
 package sun.datafusion.index;
 
+import java.util.Properties;
+
+import sqlreadwrite.SourceTable;
 import sun.datafusion.data.DataSource;
 
 /*******************************************************************************
@@ -9,13 +12,12 @@ import sun.datafusion.data.DataSource;
  * the DataIndexer is ready to index a data instance.
  */
 public class DataRetriever extends Thread {
-
+	private SourceTable sourceTable;
 	/***************************************************************************
 	 * Constructor that initializes the parameters, the MySQL connection
 	 * details, and starts the buffer thread
 	 */
-	public DataRetriever() {
-		// TODO
+	public DataRetriever(Properties prop) {
 	}
 
 	/***************************************************************************
@@ -39,7 +41,7 @@ public class DataRetriever extends Thread {
 	 *            The source that has been indexed
 	 */
 	public void setDataSourceIndexed(DataSource source) {
-		// TODO
+		
 	}
 
 	/***************************************************************************

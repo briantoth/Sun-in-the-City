@@ -22,4 +22,17 @@ public class DataFuser extends Thread {
 	public void run() {
 		// TODO
 	}
+	
+	/**
+	 * 
+	 * @return the tags that are relevant to a given node (article)
+	 */
+	private List<String> getTags(){
+		
+	}
+	
+	private List<DataStored> getAllRelevantArticles(long timeOffset){
+		List<String> tags= getTags();
+		
+	}
 }
