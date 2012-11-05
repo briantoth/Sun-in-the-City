@@ -110,6 +110,10 @@ body {
   clear: both; /* Clear the logo */
 }
 
+#secondary-menu a:link, #secondary-menu a:visited {
+	color: #FFF;
+}
+
 /*
  * Main (container for everything else)
  */

@@ -719,7 +719,7 @@ textarea {
 table {
   border-collapse: collapse;
   border-spacing: 0;
-  width: 90%; /* Prevent cramped-looking tables */
+  width: 100%; /* Prevent cramped-looking tables */
   /* Add vertical rhythm margins. */
   margin-top: 1.5em;
   margin-bottom: 1.5em;
