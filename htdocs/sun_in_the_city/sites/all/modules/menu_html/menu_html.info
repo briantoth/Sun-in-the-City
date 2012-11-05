@@ -1,0 +1,13 @@
+name = Menu HTML
+description = Allows menu items to contain html.
+dependencies[] = menu
+core = 7.x
+
+
+
+; Information added by drupal.org packaging script on 2012-06-27
+version = "7.x-1.x-dev"
+core = "7.x"
+project = "menu_html"
+datestamp = "1340756998"
+

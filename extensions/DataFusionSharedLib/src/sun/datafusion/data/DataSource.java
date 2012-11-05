@@ -16,6 +16,13 @@ public class DataSource {
 		logourl = "";
 	}
 	
+	public DataSource(int id, String url, String name, String logourl){
+		this.id = id;
+		this.url = url;
+		this.name = name;
+		this.logourl = logourl;
+	}
+	
 	//--------------------------------------------------------------------------
 	
 	public int getId() {

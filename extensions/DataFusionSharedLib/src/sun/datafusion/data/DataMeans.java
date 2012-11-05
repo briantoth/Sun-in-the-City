@@ -20,6 +20,15 @@ public class DataMeans {
 		lastProcessed = null;
 	}
 	
+	public DataMeans(int id, int DataSource_id, String name, String url, int type, Date lastProcessed){
+		this.id = id;
+		this.DataSource_id = DataSource_id;
+		this.name = name;
+		this.url = url;
+		this.type = type;
+		this.lastProcessed = lastProcessed;
+	}
+	
 	//--------------------------------------------------------------------------
 	
 	public int getId() {
