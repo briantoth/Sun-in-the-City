@@ -14,5 +14,7 @@
 	<classpathentry kind="lib" path="C:/Users/Lolwut/Documents/GitHub/Sun-in-the-City/extensions/java-parser/lib/jaxen-1.1.3.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Lolwut/Documents/GitHub/Sun-in-the-City/extensions/java-parser/lib/xercesImpl.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Lolwut/Documents/GitHub/Sun-in-the-City/extensions/java-parser/lib/xml-apis.jar"/>
+	<classpathentry kind="src" path="/DataFusionSharedLib"/>
+	<classpathentry kind="lib" path="C:/Users/Lolwut/Documents/GitHub/Sun-in-the-City/extensions/java-parser/jdom-1.1.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
