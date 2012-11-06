@@ -20,10 +20,12 @@ public class DataStored {
 		linkedUrl = "";
 		linkedData = "";
 		timestamp = new Date();
+		indexed = false;
 	}
 
 	public DataStored(int id, int DataMeans_id, String title, String url,
-			String data, String linkUrl, String linkedData, Date timestamp) {
+			String data, String linkUrl, String linkedData, Date timestamp,
+			boolean indexed) {
 		this.id = id;
 		this.DataMeans_id = DataMeans_id;
 		this.title = title;
@@ -32,6 +34,7 @@ public class DataStored {
 		this.linkedUrl = linkUrl;
 		this.linkedData = linkedData;
 		this.timestamp = timestamp;
+		this.indexed = indexed;
 	}
 
 	// --------------------------------------------------------------------------
@@ -100,7 +103,13 @@ public class DataStored {
 		this.timestamp = timestamp;
 	}
 
-	// --------------------------------------------------------------------------
+	public boolean isIndexed() {
+		return indexed;
+	}
+
+	public void setIndexed(boolean indexed) {
+		this.indexed = indexed;
+	}
 
 	private int id;
 	private int DataMeans_id;
@@ -110,4 +119,5 @@ public class DataStored {
 	private String linkedUrl;
 	private String linkedData;
 	private Date timestamp;
+	private boolean indexed;
 }

@@ -1,10 +1,30 @@
 package sun.datafusion;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.Properties;
+
+import org.apache.lucene.store.Directory;
+import org.apache.lucene.store.SimpleFSDirectory;
+
+import sun.datafusion.data.Manager;
+import sun.datafusion.fuse.ArticleRetriever;
+import sun.datafusion.index.DataRetriever;
+
 /*******************************************************************************
  * Class that holds the program configurations as well as the main function
  */
 public class Main {
-
+	
+	public static final String configFile= "config.properties";
+	private static final String indexStoreFile= "./LuceneIndex";
+	
+	public volatile static boolean keepRunning = true;
+	private static Manager manager;
+	
 	/***************************************************************************
 	 * Main entry function for the program. First it checks for a properties
 	 * file. If none exists it creates one with the default settings. Once
@@ -25,28 +45,95 @@ public class Main {
 	 *            The command line arguments passed to the program. Ignored
 	 */
 	public static void main(String[] args) {
-		// TODO
-
+		Properties prop= new Properties();
+		
 		// Check for properties file
 		// If none exists, create one and store defaults
-		// If one exists, load properties and do bounds checking
+		//TODO: If one exists, load properties and do bounds checking
+		File f = new File(configFile);
+		
+		if(f.exists()){
+			try {
+				prop.load(new FileInputStream(configFile));			
+				System.out.println("db="+prop.getProperty("hostname"));
+				System.out.println("db="+prop.getProperty("db"));
+				System.out.println("user="+prop.getProperty("dbuser"));
+				System.out.println("pass="+prop.getProperty("dbpassword"));
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 
+		} else {
+			 
+	    	try {
+	    		//set the properties value
+	    		prop.setProperty("hostname", "localhost");
+	    		prop.setProperty("db", "sun_in_the_city");
+	    		prop.setProperty("dbuser", "root");
+	    		prop.setProperty("dbpassword", "");
+	 
+	    		//save properties to project root folder
+	    		prop.store(new FileOutputStream("config.properties"), null);
+	 
+	    	} catch (IOException ex) {
+	    		ex.printStackTrace();
+	        }
+		}
+		
+		final Directory indexLocation;
+		Directory tempIndexLocation=null;
+		File indexFile= new File(indexStoreFile);
+		
+		if(!indexFile.exists()){
+			try {
+				indexFile.createNewFile();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		try {
+			 tempIndexLocation= SimpleFSDirectory.open(indexFile);
+		} catch (IOException e1) {
+		} finally {
+			indexLocation= tempIndexLocation;
+		}
+		
+		manager= new Manager(prop);
+				
 		// Startup a DataRetriever
-		// Startup N DataIndexers and pass them the DataRetriever
+		final Thread dataRetriever= new Thread(new DataRetriever(prop, indexLocation, manager));
+		dataRetriever.start();
 
 		// Startup an ArticleRetriever
-		// Startup N DataFusers and pass them the ArticleRetriever
+		final Thread articleRetriever= new Thread(new ArticleRetriever(indexLocation, manager));
+		articleRetriever.start();
 
 		// Setup the shutdown hook (graceful kill)
 		
 		Runtime.getRuntime().addShutdownHook(new Thread() {
 			public void run() {
 				System.out.println("Shutting down...");
-				// TODO
+				
+				keepRunning= false;
+				
+				dataRetriever.interrupt();
+				articleRetriever.interrupt();
+				
+				// Join on all threads (sleep until quit)
+				try {
+					dataRetriever.join();
+					articleRetriever.join();
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
 			}
 		});
 
-		// Join on all threads (sleep until quit)
 	}
 
 }

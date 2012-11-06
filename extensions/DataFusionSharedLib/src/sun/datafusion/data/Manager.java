@@ -8,6 +8,7 @@ import java.sql.SQLException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Properties;
 import java.util.List;
 import java.util.Map;
 
@@ -31,6 +32,11 @@ public class Manager {
 
 		// Start connection
 		startConnection();
+	}
+
+	public Manager(Properties prop) {
+		this(prop.getProperty("hostname"), prop.getProperty("db"), prop
+				.getProperty("dbuser"), prop.getProperty("dbpassword"));
 	}
 
 	/***************************************************************************
@@ -137,7 +143,8 @@ public class Manager {
 						queryResult.getInt(2), queryResult.getString(3),
 						queryResult.getString(4), queryResult.getString(5),
 						queryResult.getString(6), queryResult.getString(7),
-						new Date(queryResult.getDate(8).getTime()));
+						new Date(queryResult.getDate(8).getTime()),
+						queryResult.getBoolean(9));
 				result.add(cur);
 			}
 
