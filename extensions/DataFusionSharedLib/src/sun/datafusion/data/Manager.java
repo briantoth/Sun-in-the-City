@@ -248,6 +248,16 @@ public class Manager {
 		// Success
 		return true;
 	}
+	
+	public DataMeans getDataMeans(int DataMeans_id) {
+		
+		return connection.prepareStatement("SELECT " + "*" + "FROM " + "DataMeans " + "WHERE id =" + DataMeans_id);
+	}
+	
+	public DataStored getDataStored(int DataStored_id){
+		
+		return connection.prepareStatement("SELECT " + "*" + "FROM " + "DataStored " + "WHERE id =" + DataStored_id);
+	}
 
 	// -------------------------------------------------------------------------
 

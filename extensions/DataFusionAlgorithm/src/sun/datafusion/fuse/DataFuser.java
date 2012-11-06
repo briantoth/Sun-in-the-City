@@ -90,8 +90,17 @@ public class DataFuser extends Thread {
 	    
 	    for(int i=0;i<hits.length;++i) {
 	    	int docId = hits[i].doc;
-	    	Document d = searcher.doc(docId);
-	    	DataStored ds = manager.getDataStored(d.get("id"));
+	    	Document d = null;
+			try {
+				d = searcher.doc(docId);
+			} catch (CorruptIndexException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+	    	DataStored ds = manager.getDataStored(Integer.parseInt(d.get("id")));
 	    	
 	    	DataFusion df = new DataFusion();
 	    	df.setDataSource_id(manager.getDataMeans(ds.getDataMeans_id()).getDataSource_id());
