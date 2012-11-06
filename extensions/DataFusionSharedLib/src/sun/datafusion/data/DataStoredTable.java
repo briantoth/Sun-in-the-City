@@ -37,4 +37,13 @@ public class DataStoredTable {
 		prep.setTime(7, new Time(newData.getTimestamp().getTime()));
 		return prep.execute();
 	}
+	
+	public void close() throws SQLException{
+		if(results != null)
+			results.close();
+		if(query != null)
+			query.close();
+		if(tableConnection != null)
+			tableConnection.close();
+	}
 }
