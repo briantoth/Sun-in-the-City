@@ -34,9 +34,16 @@ public class Manager {
 	 * 
 	 * @param lastProcessed
 	 *            The date that is used to select DataMeans with
-	 * @return An iterator over the DataMeans that need processing
+	 * @return A list of the results, or null if there was an error
 	 */
 	public LinkedList<DataMeans> getDataMeansToProcess(Date lastProcessed) {
+		// Make connection if not already
+		startConnection();
+
+		// Create query
+		// TODO
+
+		// Form list of results
 		// TODO
 		return null;
 	}
@@ -50,16 +57,29 @@ public class Manager {
 	 * @return If the creation was successful
 	 */
 	public boolean createDataStored(DataStored ds) {
+		// Make connection if not already
+		startConnection();
+
+		// Create query
 		// TODO
+
+		// Return results
 		return false;
 	}
 
 	/***************************************************************************
 	 * Gets any DataStored objects in the database that are not indexed yet
 	 * 
-	 * @return An iterator to the unindexed sources
+	 * @return A list of the results, or null if there was an error
 	 */
 	public LinkedList<DataStored> getDataStoredToIndex() {
+		// Make connection if not already
+		startConnection();
+
+		// Create query
+		// TODO
+
+		// Form list of results
 		// TODO
 		return null;
 	}
@@ -69,9 +89,16 @@ public class Manager {
 	 * 
 	 * @param writtenAfter
 	 *            The selection date criteria to select nodes
-	 * @return An iterator over Nodes (articles) that need to be processed
+	 * @return A list of the results, or null if there was an error
 	 */
 	public LinkedList<Node> getNodesToProcess(Date writtenAfter) {
+		// Make connection if not already
+		startConnection();
+
+		// Create query
+		// TODO
+
+		// Form list of results
 		// TODO
 		return null;
 	}
@@ -112,6 +139,10 @@ public class Manager {
 	 * Closes the database connections
 	 */
 	public void startConnection() {
+		// Check to make sure database connection not already initialized
+		if (connection != null)
+			return;
+
 		// Load JDBC driver
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
