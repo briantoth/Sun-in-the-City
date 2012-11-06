@@ -48,8 +48,8 @@ public class ArticleRetriever implements Runnable{
 			}
 			
 			for(Node n : unfusedArticles){
-				Runnable dataIndexer= new DataIndexer(dataStoredTable);
-				threadPool.execute(dataIndexer);
+				Runnable dataFuser= new DataFuser(n);
+				threadPool.execute(dataFuser);
 			}
 		}
 		

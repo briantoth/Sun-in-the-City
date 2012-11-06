@@ -11,6 +11,9 @@ import java.util.Properties;
 
 import java.sql.*;
 
+import org.apache.lucene.store.Directory;
+import org.apache.lucene.store.SimpleFSDirectory;
+
 import sun.datafusion.fuse.ArticleRetriever;
 import sun.datafusion.index.DataIndexer;
 import sun.datafusion.index.DataRetriever;
@@ -22,7 +25,8 @@ public class Main {
 	
 	public static final String configFile= "config.properties";
 	public static volatile boolean keepRunning = true;
-
+	private static final String indexStoreFile= "./LuceneIndex";
+	
 	/***************************************************************************
 	 * Main entry function for the program. First it checks for a properties
 	 * file. If none exists it creates one with the default settings. Once
@@ -49,6 +53,7 @@ public class Main {
 		// If none exists, create one and store defaults
 		//TODO: If one exists, load properties and do bounds checking
 		File f = new File(configFile);
+		
 		if(f.exists()){
 			try {
 				prop.load(new FileInputStream(configFile));			
@@ -78,57 +83,31 @@ public class Main {
 	    		ex.printStackTrace();
 	        }
 		}
-		Connection con = null;
-		try {
-			con= DriverManager.getConnection(
-					prop.getProperty("connUrl")+"sun_in_the_city",
-					prop.getProperty("dbuser"),
-					prop.getProperty("dbpassword"));
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 		
-		Statement stmt = null;
-		try {
-			stmt= con.createStatement();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		try {
-			Class.forName("com.mysql.jdbc.Driver");
-		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		try {
-			stmt.executeQuery("select * from DataMeans");
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		ResultSet rs= null;
-		try {
-			rs = stmt.getResultSet();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+		final Directory indexLocation;
+		File indexFile= new File(indexStoreFile);
 		
-		try {
-			while(rs.next()){
-				System.out.println(rs.getString("name"));
+		if(!indexFile.exists()){
+			try {
+				indexFile.createNewFile();
+			} catch (IOException e) {
+				e.printStackTrace();
 			}
-		} catch (SQLException e) {
-			e.printStackTrace();
 		}
-
+		
+		try {
+			 indexLocation= SimpleFSDirectory.open(indexFile);
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+				
 		// Startup a DataRetriever
-		final Thread dataRetriever= new Thread(new DataRetriever(prop));
+		final Thread dataRetriever= new Thread(new DataRetriever(prop, indexLocation));
 		dataRetriever.start();
 
 		// Startup an ArticleRetriever
-		final Thread articleRetriever= new Thread(new ArticleRetriever());
+		final Thread articleRetriever= new Thread(new ArticleRetriever(indexLocation));
 		articleRetriever.start();
 
 		// Setup the shutdown hook (graceful kill)
