@@ -6,6 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.LinkedList;
+import java.util.Properties;
 
 /*******************************************************************************
  * Manages the interaction with data
@@ -27,6 +28,10 @@ public class Manager {
 
 		// Start connection
 		startConnection();
+	}
+
+	public Manager(Properties prop) {
+		this(prop.getProperty("hostname"), prop.getProperty("db"), prop.getProperty("dbuser"), prop.getProperty("dbpassword"));
 	}
 
 	/***************************************************************************

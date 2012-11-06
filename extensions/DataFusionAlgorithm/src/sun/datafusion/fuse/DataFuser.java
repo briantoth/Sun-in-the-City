@@ -1,5 +1,9 @@
 package sun.datafusion.fuse;
 
+import org.apache.lucene.store.Directory;
+
+import sun.datafusion.data.Node;
+
 /*******************************************************************************
  * Performs the DataFusion operation. This class continuously gets an Article to
  * perform DataFusion on and uses Apache Lucene to search for relevant
@@ -11,8 +15,9 @@ public class DataFuser extends Thread {
 	/***************************************************************************
 	 * Constructor that initializes the Fusion operation and starts the
 	 * processing thread.
+	 * @param indexLocation 
 	 */
-	public DataFuser() {
+	public DataFuser(Node n, Directory indexLocation) {
 		// TODO
 	}
 
@@ -21,18 +26,5 @@ public class DataFuser extends Thread {
 	 */
 	public void run() {
 		// TODO
-	}
-	
-	/**
-	 * 
-	 * @return the tags that are relevant to a given node (article)
-	 */
-	private List<String> getTags(){
-		
-	}
-	
-	private List<DataStored> getAllRelevantArticles(long timeOffset){
-		List<String> tags= getTags();
-		
 	}
 }

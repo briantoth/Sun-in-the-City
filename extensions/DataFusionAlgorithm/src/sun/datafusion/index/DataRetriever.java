@@ -1,8 +1,5 @@
 package sun.datafusion.index;
 
-import java.io.File;
-import java.io.IOException;
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.ExecutorService;
@@ -12,7 +9,7 @@ import org.apache.lucene.store.Directory;
 
 import sun.datafusion.Main;
 import sun.datafusion.data.DataStored;
-import sun.datafusion.data.DataStoredTable;
+import sun.datafusion.data.Manager;
 
 /*******************************************************************************
  * The DataRetriever executes MySQL queries to obtain DataStored
@@ -24,26 +21,19 @@ public class DataRetriever implements Runnable{
 	private final static long timeToSleep = 60*1000*1;
 	private final static int numThreads= 5;
 	
-	private final DataStoredTable dataStoredTable;
 	private final ExecutorService threadPool= Executors.newFixedThreadPool(numThreads);
 	private final Directory indexLocation;
+	private final Manager manager;
 	
 	/***************************************************************************
 	 * Constructor that initializes the parameters, the MySQL connection
 	 * details, and starts the buffer thread
 	 * @param indexLocation 
+	 * @param manager 
 	 */
-	public DataRetriever(Properties prop, Directory indexLocation) {
+	public DataRetriever(Properties prop, Directory indexLocation, Manager manager) {
 		
-		DataStoredTable dst= null;
-		try {
-			dst= new DataStoredTable(prop);
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			dataStoredTable= dst;
-		}
-		
+		this.manager= manager;
 		this.indexLocation= indexLocation;
 	}
 
@@ -57,18 +47,13 @@ public class DataRetriever implements Runnable{
 			try {
 				Thread.sleep(timeToSleep);
 			} catch (InterruptedException e) {
+				break;
 			}
 			
-			List<DataStored> unindexedData;
-			
-			try {
-				 unindexedData= dataStoredTable.getUnindexedData();
-			} catch (SQLException e) {
-				continue;
-			}
+			List<DataStored> unindexedData= manager.getDataStoredToIndex();
 			
 			for(DataStored ds : unindexedData){
-				Runnable dataIndexer= new DataIndexer(ds, dataStoredTable, indexLocation);
+				Runnable dataIndexer= new DataIndexer(ds, indexLocation);
 				threadPool.execute(dataIndexer);
 			}
 		}

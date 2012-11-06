@@ -5,17 +5,13 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.sql.DriverManager;
-import java.sql.SQLException;
 import java.util.Properties;
-
-import java.sql.*;
 
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.SimpleFSDirectory;
 
+import sun.datafusion.data.Manager;
 import sun.datafusion.fuse.ArticleRetriever;
-import sun.datafusion.index.DataIndexer;
 import sun.datafusion.index.DataRetriever;
 
 /*******************************************************************************
@@ -24,8 +20,10 @@ import sun.datafusion.index.DataRetriever;
 public class Main {
 	
 	public static final String configFile= "config.properties";
-	public static volatile boolean keepRunning = true;
 	private static final String indexStoreFile= "./LuceneIndex";
+	
+	public volatile static boolean keepRunning = true;
+	private static Manager manager;
 	
 	/***************************************************************************
 	 * Main entry function for the program. First it checks for a properties
@@ -57,6 +55,7 @@ public class Main {
 		if(f.exists()){
 			try {
 				prop.load(new FileInputStream(configFile));			
+				System.out.println("db="+prop.getProperty("hostname"));
 				System.out.println("db="+prop.getProperty("db"));
 				System.out.println("user="+prop.getProperty("dbuser"));
 				System.out.println("pass="+prop.getProperty("dbpassword"));
@@ -72,6 +71,7 @@ public class Main {
 			 
 	    	try {
 	    		//set the properties value
+	    		prop.setProperty("hostname", "localhost");
 	    		prop.setProperty("db", "sun_in_the_city");
 	    		prop.setProperty("dbuser", "root");
 	    		prop.setProperty("dbpassword", "");
@@ -85,6 +85,7 @@ public class Main {
 		}
 		
 		final Directory indexLocation;
+		Directory tempIndexLocation=null;
 		File indexFile= new File(indexStoreFile);
 		
 		if(!indexFile.exists()){
@@ -96,18 +97,20 @@ public class Main {
 		}
 		
 		try {
-			 indexLocation= SimpleFSDirectory.open(indexFile);
+			 tempIndexLocation= SimpleFSDirectory.open(indexFile);
 		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+		} finally {
+			indexLocation= tempIndexLocation;
 		}
+		
+		manager= new Manager(prop);
 				
 		// Startup a DataRetriever
-		final Thread dataRetriever= new Thread(new DataRetriever(prop, indexLocation));
+		final Thread dataRetriever= new Thread(new DataRetriever(prop, indexLocation, manager));
 		dataRetriever.start();
 
 		// Startup an ArticleRetriever
-		final Thread articleRetriever= new Thread(new ArticleRetriever(indexLocation));
+		final Thread articleRetriever= new Thread(new ArticleRetriever(indexLocation, manager));
 		articleRetriever.start();
 
 		// Setup the shutdown hook (graceful kill)

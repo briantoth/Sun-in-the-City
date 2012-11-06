@@ -3,7 +3,7 @@ package sun.datafusion.data;
 /*******************************************************************************
  * Represents an article (node)
  */
-public class Node {
+public class Node  {
 
 	/***************************************************************************
 	 * Constructor that sets default values (NULL)
