@@ -2,6 +2,7 @@ package sun.datafusion.data;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.LinkedList;
@@ -37,8 +38,9 @@ public class Manager {
 	 * @return A list of the results, or null if there was an error
 	 */
 	public LinkedList<DataMeans> getDataMeansToProcess(Date lastProcessed) {
-		// Make connection if not already
-		startConnection();
+		// Make connection if not already, ensure success
+		if (!startConnection())
+			return null;
 
 		// Create query
 		// TODO
@@ -46,6 +48,26 @@ public class Manager {
 		// Form list of results
 		// TODO
 		return null;
+	}
+
+	/***************************************************************************
+	 * Sets the DataMeans object to processed. That is, the lastProcessed time
+	 * will be set to the current time.
+	 * 
+	 * @param dm
+	 *            The DataMeans object to update
+	 * @return If the update was successful
+	 */
+	public boolean setDataMeansProcessed(DataMeans dm) {
+		// Make connection if not already, ensure success
+		if (!startConnection())
+			return false;
+
+		// Create query
+		// TODO
+
+		// Return results
+		return false;
 	}
 
 	/***************************************************************************
@@ -57,8 +79,9 @@ public class Manager {
 	 * @return If the creation was successful
 	 */
 	public boolean createDataStored(DataStored ds) {
-		// Make connection if not already
-		startConnection();
+		// Make connection if not already, ensure success
+		if (!startConnection())
+			return false;
 
 		// Create query
 		// TODO
@@ -73,8 +96,9 @@ public class Manager {
 	 * @return A list of the results, or null if there was an error
 	 */
 	public LinkedList<DataStored> getDataStoredToIndex() {
-		// Make connection if not already
-		startConnection();
+		// Make connection if not already, ensure success
+		if (!startConnection())
+			return null;
 
 		// Create query
 		// TODO
@@ -92,8 +116,9 @@ public class Manager {
 	 * @return A list of the results, or null if there was an error
 	 */
 	public LinkedList<Node> getNodesToProcess(Date writtenAfter) {
-		// Make connection if not already
-		startConnection();
+		// Make connection if not already, ensure success
+		if (!startConnection())
+			return null;
 
 		// Create query
 		// TODO
@@ -113,6 +138,14 @@ public class Manager {
 	 *         (entry already exists)
 	 */
 	public boolean createDataFusion(DataFusion df) {
+		// Make connection if not already, ensure success
+		if (!startConnection())
+			return false;
+
+		// Create query
+		// TODO
+
+		// Form list of results
 		// TODO
 		return false;
 	}
@@ -138,15 +171,19 @@ public class Manager {
 	/***************************************************************************
 	 * Closes the database connections
 	 */
-	public void startConnection() {
+	public boolean startConnection() {
 		// Check to make sure database connection not already initialized
-		if (connection != null)
-			return;
+		try {
+			if (connection != null && !connection.isClosed())
+				return true;
+		} catch (SQLException e1) {
+			System.err.println("SQL Error occured when checking connected");
+		}
 
 		// Load JDBC driver
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
-			return;
+			return false;
 		} catch (ClassNotFoundException e) {
 			System.err.println("Failed to load jdbc driver class");
 		}
@@ -159,15 +196,26 @@ public class Manager {
 		} catch (SQLException e) {
 			System.err.println("Failed to setup database connection");
 			close();
+			return false;
 		}
+
+		// Success
+		return true;
 	}
 
 	// -------------------------------------------------------------------------
 
 	// MySQL database details
-	private Connection connection; // / Connection to database
-	private String url; // / URL to the database
-	private String database; // / Name of the database
-	private String username; // / Username to connect with
-	private String password; // / Password to connect with
+	private Connection connection; // Connection to database
+	private String url; // URL to the database
+	private String database; // Name of the database
+	private String username; // Username to connect with
+	private String password; // Password to connect with
+
+	// MySQL prepared statements
+	private PreparedStatement psGetDataMeansToProcess;
+	private PreparedStatement psCreateDataStored;
+	private PreparedStatement psGetDataStoredToIndex;
+	private PreparedStatement psGetNodesToProcess;
+	private PreparedStatement psCreateDataFusion;
 }
