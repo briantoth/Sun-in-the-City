@@ -1,7 +1,22 @@
 package sun.datafusion.fuse;
 
-import org.apache.lucene.store.Directory;
+import java.io.IOException;
 
+import org.apache.lucene.analysis.standard.StandardAnalyzer;
+import org.apache.lucene.document.Document;
+import org.apache.lucene.index.CorruptIndexException;
+import org.apache.lucene.index.IndexReader;
+import org.apache.lucene.queryParser.ParseException;
+import org.apache.lucene.search.IndexSearcher;
+import org.apache.lucene.search.Query;
+import org.apache.lucene.search.ScoreDoc;
+import org.apache.lucene.search.TopScoreDocCollector;
+import org.apache.lucene.store.Directory;
+import org.apache.lucene.util.Version;
+
+import sun.datafusion.data.DataFusion;
+import sun.datafusion.data.DataStored;
+import sun.datafusion.data.Manager;
 import sun.datafusion.data.Node;
 
 /*******************************************************************************
@@ -11,20 +26,84 @@ import sun.datafusion.data.Node;
  * the result in the MySQL database for approval by the editors.
  */
 public class DataFuser extends Thread {
+	private final Node node;
+	private final Directory indexLocation;
+	private final Manager manager;
 
 	/***************************************************************************
 	 * Constructor that initializes the Fusion operation and starts the
 	 * processing thread.
 	 * @param indexLocation 
+	 * @throws ParseException 
+	 * @throws IOException 
+	 * @throws CorruptIndexException 
 	 */
-	public DataFuser(Node n, Directory indexLocation) {
-		// TODO
+	public DataFuser(Node n, Directory indexLocation, Manager manager){
+		this.node=n;
+		this.indexLocation=indexLocation;
+		this.manager=manager;
 	}
 
 	/***************************************************************************
 	 * Processing thread that performs the Fusion operation
 	 */
 	public void run() {
-		// TODO
+		
+		// 0. Specify the analyzer for tokenizing text.
+	    //    The same analyzer should be used for indexing and searching
+	    StandardAnalyzer analyzer = new StandardAnalyzer(Version.LUCENE_36);
+		
+		// 1. query
+
+	    // the "title" arg specifies the default field to use
+	    // when no field is explicitly specified in the query.
+	    Query q = null;
+		try {
+			q = new org.apache.lucene.queryParser.QueryParser(Version.LUCENE_36, "title", analyzer).parse(node.getTags());
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	    // 2. search
+		// Only return Top 10 best results
+	    int hitsPerPage = 10;
+	    IndexReader reader = null;
+		try {
+			reader = IndexReader.open(indexLocation);
+		} catch (CorruptIndexException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} // index - where the information is stored
+	    IndexSearcher searcher = new IndexSearcher(reader);
+	    TopScoreDocCollector collector = TopScoreDocCollector.create(hitsPerPage, true);
+	    try {
+			searcher.search(q, collector);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} // the search step 
+	    ScoreDoc[] hits = collector.topDocs().scoreDocs;
+	    
+	    for(int i=0;i<hits.length;++i) {
+	    	int docId = hits[i].doc;
+	    	Document d = searcher.doc(docId);
+	    	DataStored ds = manager.getDataStored(d.get("id"));
+	    	
+	    	DataFusion df = new DataFusion();
+	    	df.setDataSource_id(manager.getDataMeans(ds.getDataMeans_id()).getDataSource_id());
+	    	df.setDataStored_id(ds.getId());
+	    	df.setNodeID(node.getNodeID());
+	    	df.setRating(10-i);
+	    	df.setSummary(ds.getData());
+	    	df.setTimestamp(ds.getTimestamp());
+	    	df.setTitle(ds.getTitle());
+	    	df.setUrl(ds.getUrl());	    	
+	    	
+	    	manager.createDataFusion(df);
+	    }	    
 	}
 }
