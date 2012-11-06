@@ -1,5 +1,8 @@
 package sun.datafusion.data;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.Date;
 import java.util.LinkedList;
 
@@ -11,8 +14,18 @@ public class Manager {
 	/***************************************************************************
 	 * Constructor that sets up the MySQL information
 	 */
-	public Manager() {
-		// TODO
+	public Manager(String url, String database, String username, String password) {
+		// Store connection details
+		this.url = url;
+		this.database = database;
+		this.username = username;
+		this.password = password;
+
+		// Initial connection setup
+		connection = null;
+
+		// Start connection
+		startConnection();
 	}
 
 	/***************************************************************************
@@ -77,4 +90,53 @@ public class Manager {
 		return false;
 	}
 
+	/***************************************************************************
+	 * Closes the database connections
+	 */
+	public void close() {
+		// Attempt connection close
+		try {
+			if (connection != null)
+				connection.close();
+		} catch (SQLException e) {
+			System.err.println("Failed to close database connection");
+		}
+
+		// Nullify connection
+		connection = null;
+	}
+
+	// -------------------------------------------------------------------------
+
+	/***************************************************************************
+	 * Closes the database connections
+	 */
+	public void startConnection() {
+		// Load JDBC driver
+		try {
+			Class.forName("com.mysql.jdbc.Driver");
+			return;
+		} catch (ClassNotFoundException e) {
+			System.err.println("Failed to load jdbc driver class");
+		}
+
+		// Setup connection
+		try {
+			connection = DriverManager.getConnection("jdbc:mysql://" + url
+					+ "/" + database + "?user=" + username + "&password="
+					+ password);
+		} catch (SQLException e) {
+			System.err.println("Failed to setup database connection");
+			close();
+		}
+	}
+
+	// -------------------------------------------------------------------------
+
+	// MySQL database details
+	private Connection connection; // / Connection to database
+	private String url; // / URL to the database
+	private String database; // / Name of the database
+	private String username; // / Username to connect with
+	private String password; // / Password to connect with
 }
