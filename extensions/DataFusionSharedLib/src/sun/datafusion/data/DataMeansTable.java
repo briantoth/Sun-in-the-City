@@ -51,10 +51,13 @@ public class DataMeansTable {
 		if(res.next()){
 			res.updateTime(6, new Time(date.getTime()));
 			res.updateRow();
+			res.close();
 			return true;
 		}
-		else
+		else{
+			res.close();
 			return false;
+		}
 	}
 	
 	public void close() throws SQLException{
