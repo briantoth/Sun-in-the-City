@@ -11,5 +11,7 @@
 	<classpathentry kind="lib" path="mysql-connector-java-5.1.22-bin.jar"/>
 	<classpathentry kind="lib" path="rome-1.0-javadoc.jar"/>
 	<classpathentry kind="lib" path="rome-1.0.jar"/>
+	<classpathentry kind="src" path="/DataFusionSharedLib"/>
+	<classpathentry kind="lib" path="jdom-1.1.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

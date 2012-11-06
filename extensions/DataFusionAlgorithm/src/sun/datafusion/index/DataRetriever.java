@@ -1,47 +1,40 @@
 package sun.datafusion.index;
 
+import java.sql.SQLException;
+import java.util.List;
 import java.util.Properties;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import sqlreadwrite.SourceTable;
+import sun.datafusion.Main;
 import sun.datafusion.data.DataSource;
+import sun.datafusion.data.DataStored;
+import sun.datafusion.data.DataStoredTable;
 
 /*******************************************************************************
- * The DataRetriever executes MySQL queries to obtain DataPrimary and
- * DataSecondary instances that have not yet been indexed by Apache Lucene. This
+ * The DataRetriever executes MySQL queries to obtain DataStored
+ * instances that have not yet been indexed by Apache Lucene. This
  * class uses a Thread to buffer the instances so that they are ready the second
  * the DataIndexer is ready to index a data instance.
  */
-public class DataRetriever extends Thread {
-	private SourceTable sourceTable;
+public class DataRetriever implements Runnable{
+	private final static long timeToSleep = 60*1000*1;
+	private final static int numThreads= 5;
+	
+	private DataStoredTable dataStoredTable= null;
+	private ExecutorService threadPool= Executors.newFixedThreadPool(numThreads);
+	
 	/***************************************************************************
 	 * Constructor that initializes the parameters, the MySQL connection
 	 * details, and starts the buffer thread
 	 */
 	public DataRetriever(Properties prop) {
-	}
-
-	/***************************************************************************
-	 * Gets a buffered DataSource object that was loaded from the MySQL tables.
-	 * This function blocks until a source can be obtained. After indexing the
-	 * returned source, the setDataSourceIndexed function should be called
-	 * 
-	 * @return A DataSource that needs to be indexed
-	 */
-	public DataSource getUnindexedDataSource() {
-		// TODO
-		return null;
-	}
-
-	/***************************************************************************
-	 * Saves to the MySQL database that the given DataSource has been Indexed.
-	 * This function should be called immediatedly after the source has been
-	 * indexed.
-	 * 
-	 * @param source
-	 *            The source that has been indexed
-	 */
-	public void setDataSourceIndexed(DataSource source) {
-		
+		try {
+			dataStoredTable= new DataStoredTable(prop);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	/***************************************************************************
@@ -49,6 +42,27 @@ public class DataRetriever extends Thread {
 	 * instances
 	 */
 	public void run() {
-		// TODO
+		while(Main.keepRunning){
+			//wait for a bit
+			try {
+				Thread.sleep(timeToSleep);
+			} catch (InterruptedException e) {
+			}
+			
+			List<DataStored> unindexedData;
+			
+			try {
+				 unindexedData= dataStoredTable.getUnindexedData();
+			} catch (SQLException e) {
+				continue;
+			}
+			
+			for(DataStored ds : unindexedData){
+				Runnable dataIndexer= new DataIndexer(dataStoredTable);
+				threadPool.execute(dataIndexer);
+			}
+		}
+		
+		threadPool.shutdown();
 	}
 }

@@ -11,7 +11,9 @@ import java.util.Properties;
 
 import java.sql.*;
 
+import sun.datafusion.fuse.ArticleRetriever;
 import sun.datafusion.index.DataIndexer;
+import sun.datafusion.index.DataRetriever;
 
 /*******************************************************************************
  * Class that holds the program configurations as well as the main function
@@ -19,6 +21,7 @@ import sun.datafusion.index.DataIndexer;
 public class Main {
 	
 	public static final String configFile= "config.properties";
+	public static volatile boolean keepRunning = true;
 
 	/***************************************************************************
 	 * Main entry function for the program. First it checks for a properties
@@ -109,7 +112,6 @@ public class Main {
 		try {
 			rs = stmt.getResultSet();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
@@ -118,28 +120,38 @@ public class Main {
 				System.out.println(rs.getString("name"));
 			}
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
 		// Startup a DataRetriever
-		// Startup N DataIndexers and pass them the DataRetriever
-		DataIndexer indexerTest= new DataIndexer(null);
-		indexerTest.run();
+		final Thread dataRetriever= new Thread(new DataRetriever(prop));
+		dataRetriever.start();
 
 		// Startup an ArticleRetriever
-		// Startup N DataFusers and pass them the ArticleRetriever
+		final Thread articleRetriever= new Thread(new ArticleRetriever());
+		articleRetriever.start();
 
 		// Setup the shutdown hook (graceful kill)
 		
 		Runtime.getRuntime().addShutdownHook(new Thread() {
 			public void run() {
 				System.out.println("Shutting down...");
-				// TODO
+				
+				keepRunning= false;
+				
+				dataRetriever.interrupt();
+				articleRetriever.interrupt();
+				
+				// Join on all threads (sleep until quit)
+				try {
+					dataRetriever.join();
+					articleRetriever.join();
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
 			}
 		});
 
-		// Join on all threads (sleep until quit)
 	}
 
 }
