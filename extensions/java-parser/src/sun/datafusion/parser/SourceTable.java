@@ -1,4 +1,4 @@
-package sqlreadwrite;
+package sun.datafusion.parser;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -7,7 +7,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 //import java.util.Date;
-import sqlreadwrite.NewsSource;
+import sun.datafusion.parser.NewsSource;
+
 import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;

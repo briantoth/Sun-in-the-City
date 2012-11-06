@@ -1,4 +1,4 @@
-package sqlreadwrite;
+package sun.datafusion.parser;
 
 public class NewsSource {
 	//This class is just a shell right now; later it will have functions for reading
