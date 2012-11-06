@@ -34,7 +34,7 @@ public class Main {
 				RSSGrabber grabber = new RSSGrabber(next);
 				//t.updateDataMeans(next.getId(), new Date());
 				List<DataStored> newPosts = grabber.getNewPosts();
-				p.setDataMeans(next);
+				p.setDataMeansProcessed(next);
 				Iterator<DataStored> iter = newPosts.iterator();
 				while(iter.hasNext()){
 					p.createDataStored(iter.next());
