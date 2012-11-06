@@ -1,6 +1,7 @@
 package sun.datafusion.data;
 
 import java.util.Date;
+import java.util.LinkedList;
 
 /*******************************************************************************
  * Manages the interaction with data
@@ -22,7 +23,7 @@ public class Manager {
 	 *            The date that is used to select DataMeans with
 	 * @return An iterator over the DataMeans that need processing
 	 */
-	public Iterator<DataMeans> getDataMeansToProcess(Date lastProcessed) {
+	public LinkedList<DataMeans> getDataMeansToProcess(Date lastProcessed) {
 		// TODO
 		return null;
 	}
@@ -45,7 +46,7 @@ public class Manager {
 	 * 
 	 * @return An iterator to the unindexed sources
 	 */
-	public Iterator<DataStored> getDataStoredToIndex() {
+	public LinkedList<DataStored> getDataStoredToIndex() {
 		// TODO
 		return null;
 	}
@@ -57,7 +58,7 @@ public class Manager {
 	 *            The selection date criteria to select nodes
 	 * @return An iterator over Nodes (articles) that need to be processed
 	 */
-	public Iterator<Node> getNodesToProcess(Date writtenAfter) {
+	public LinkedList<Node> getNodesToProcess(Date writtenAfter) {
 		// TODO
 		return null;
 	}
