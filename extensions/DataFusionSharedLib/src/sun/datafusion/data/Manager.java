@@ -5,10 +5,13 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Properties;
 import java.util.List;
+import java.util.Map;
 
 /*******************************************************************************
  * Manages the interaction with data
@@ -33,7 +36,8 @@ public class Manager {
 	}
 
 	public Manager(Properties prop) {
-		this(prop.getProperty("hostname"), prop.getProperty("db"), prop.getProperty("dbuser"), prop.getProperty("dbpassword"));
+		this(prop.getProperty("hostname"), prop.getProperty("db"), prop
+				.getProperty("dbuser"), prop.getProperty("dbpassword"));
 	}
 
 	/***************************************************************************
@@ -61,7 +65,10 @@ public class Manager {
 			// Turn result set into the list of results
 			List<DataMeans> result = new LinkedList<DataMeans>();
 			while (queryResult.next()) {
-				DataMeans cur = new DataMeans();
+				DataMeans cur = new DataMeans(queryResult.getInt(1),
+						queryResult.getInt(2), queryResult.getString(3),
+						queryResult.getString(4), queryResult.getInt(5),
+						new Date(queryResult.getDate(6).getTime()));
 				result.add(cur);
 			}
 
@@ -126,12 +133,30 @@ public class Manager {
 		if (!startConnection())
 			return null;
 
-		// Create query
-		// TODO
+		try {
+			// Execute query
+			ResultSet queryResult = psGetDataStoredToIndex.executeQuery();
 
-		// Form list of results
-		// TODO
-		return null;
+			// Turn result set into the list of results
+			List<DataStored> result = new LinkedList<DataStored>();
+			while (queryResult.next()) {
+				DataStored cur = new DataStored(queryResult.getInt(1),
+						queryResult.getInt(2), queryResult.getString(3),
+						queryResult.getString(4), queryResult.getString(5),
+						queryResult.getString(6), queryResult.getString(7),
+						new Date(queryResult.getDate(8).getTime()),
+						queryResult.getBoolean(9));
+				result.add(cur);
+			}
+
+			// Return the result list
+			return result;
+		} catch (SQLException e) {
+
+			// Error occurred
+			System.err.println("SQL Error occured while getting data stored");
+			return null;
+		}
 	}
 
 	/***************************************************************************
@@ -146,12 +171,55 @@ public class Manager {
 		if (!startConnection())
 			return null;
 
-		// Create query
-		// TODO
+		try {
+			// Create query
+			java.sql.Date sqlWrittenAfter = new java.sql.Date(
+					writtenAfter.getTime());
+			psGetNodesToProcess.setDate(1, sqlWrittenAfter);
 
-		// Form list of results
-		// TODO
-		return null;
+			// Execute query to get all ids
+			ResultSet queryResult = psGetNodesToProcess.executeQuery();
+
+			// Turn result set into map of nodes and list of ids
+			Map<Integer, Node> nodes = new HashMap<Integer, Node>();
+			while (queryResult.next()) {
+
+				// Get the integer of the current node
+				Integer nodeID = queryResult.getInt(1);
+
+				// Check if we are already tracking nodeID
+				Node curNode;
+				if (nodes.containsKey(nodeID)) {
+
+					// Get the current existing node
+					curNode = nodes.get(nodeID);
+				} else {
+
+					// Create node and add to map
+					curNode = new Node(nodeID);
+					nodes.put(nodeID, curNode);
+				}
+
+				// Add the current tag
+				curNode.getTags().add(queryResult.getString(2));
+			}
+
+			// Convert the map to the list
+			List<Node> result = new LinkedList<Node>();
+			Collection<Node> values = nodes.values();
+			for (Node curNode : values) {
+				result.add(curNode);
+			}
+
+			// Return the result list
+			return result;
+		} catch (SQLException e) {
+
+			// Error occurred
+			System.err
+					.println("SQL Error occured while getting nodes to process");
+			return null;
+		}
 	}
 
 	/***************************************************************************
@@ -235,9 +303,26 @@ public class Manager {
 							+ "WHERE dm.lastProcessed <= ?");
 
 			// Create a data stored object
+			// TODO
 			psCreateDataStored = connection.prepareStatement("");
-			psGetDataStoredToIndex = connection.prepareStatement("");
-			psGetNodesToProcess = connection.prepareStatement("");
+
+			// Get all DataStored where not indexed
+			psGetDataStoredToIndex = connection
+					.prepareStatement("SELECT "
+							+ "ds.id, ds.DataMeans_id, ds.title, ds.url, ds.data, ds.linkedUrl, ds.linkedData, ds.timestamp, ds.indexed "
+							+ "FROM " + database + ".DataStored ds "
+							+ "WHERE ds.indexed=false");
+
+			// Get nodes that should be processed
+			psGetNodesToProcess = connection.prepareStatement("SELECT DISTINCT"
+					+ "node.nid, data.name " + "FROM " + database
+					+ ".node node, " + database + ".taxonomy_index index, "
+					+ database + ".taxonomy_term_data data "
+					+ "WHERE node.created >= ? "
+					+ "AND node.nid = index.nid AND index.tid = data.tid");
+
+			// Create a data fusion object in the table
+			// TODO
 			psCreateDataFusion = connection.prepareStatement("");
 		} catch (SQLException e) {
 			System.err.println("Failed to create prepared statements");
