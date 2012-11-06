@@ -121,6 +121,20 @@ public class Manager {
 		// Return results
 		return false;
 	}
+	
+	public boolean setDataStoredIndexed(DataStored dataStored) {
+		if (!startConnection())
+			return false;
+		
+		try {
+			psSetDataStoredIndexed.setInt(1, dataStored.getId());
+			return psSetDataStoredIndexed.executeUpdate() == 1 ? true : false;
+		} catch (SQLException e) {
+			// Error occurred
+			System.err.println("SQL Error occured while getting nodes to process");
+			return false;
+		}
+	}
 
 	/***************************************************************************
 	 * Gets any DataStored objects in the database that are not indexed yet
@@ -239,8 +253,21 @@ public class Manager {
 		if (!startConnection())
 			return false;
 
-		// Create query
-		// TODO
+		try {
+			psCreateDataFusion.setInt(1, df.getNodeID());
+			psCreateDataFusion.setInt(2, df.getDataSource_id());
+			psCreateDataFusion.setInt(3, df.getDataStored_id());
+			psCreateDataFusion.setString(4, df.getTitle());
+			psCreateDataFusion.setString(5, df.getUrl());
+			psCreateDataFusion.setString(6, df.getSummary());
+			psCreateDataFusion.setInt(7, df.getRating());
+			psCreateDataFusion.setDate(8, new java.sql.Date(df.getTimestamp().getTime()));
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
 
 		// Form list of results
 		// TODO
@@ -324,8 +351,13 @@ public class Manager {
 			// TODO
 
 			//
-			// TODO
-			psCreateDataFusion = connection.prepareStatement("");
+			psCreateDataFusion = connection.prepareStatement("INSERT into " + database + ".DataFused df "  +
+			"(df.nodeID, df.DataSource_id, df.DataStored_id, df.title, df.url, df.summary, df.rating, df.timestamp) " +
+					"values (? ? ? ? ? ? ? ?)");
+			
+			// Set a Datastored as indexed
+			psSetDataStoredIndexed = connection.prepareStatement("UPDATE "+ database + ".DataStored ds " +
+			"SET indexed = 1 " + "WHERE id=?");
 		} catch (SQLException e) {
 			System.err.println("Failed to create prepared statements");
 			close();
@@ -351,4 +383,6 @@ public class Manager {
 	private PreparedStatement psGetDataStoredToIndex;
 	private PreparedStatement psGetNodesToProcess;
 	private PreparedStatement psCreateDataFusion;
+	private PreparedStatement psSetDataStoredIndexed;
+	private PreparedStatement psGetDataMeans;
 }
