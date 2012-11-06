@@ -5,6 +5,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.LinkedList;
+import java.util.List;
 
 /*******************************************************************************
  * Manages the interaction with data
@@ -36,6 +37,7 @@ public class Manager {
 	 *            The date that is used to select DataMeans with
 	 * @return A list of the results, or null if there was an error
 	 */
+<<<<<<< HEAD
 	public LinkedList<DataMeans> getDataMeansToProcess(Date lastProcessed) {
 		// Make connection if not already
 		startConnection();
@@ -44,6 +46,9 @@ public class Manager {
 		// TODO
 
 		// Form list of results
+=======
+	public List<DataMeans> getDataMeansToProcess(Date lastProcessed) {
+>>>>>>> HNNGFFFF
 		// TODO
 		return null;
 	}
@@ -72,6 +77,7 @@ public class Manager {
 	 * 
 	 * @return A list of the results, or null if there was an error
 	 */
+<<<<<<< HEAD
 	public LinkedList<DataStored> getDataStoredToIndex() {
 		// Make connection if not already
 		startConnection();
@@ -80,6 +86,9 @@ public class Manager {
 		// TODO
 
 		// Form list of results
+=======
+	public List<DataStored> getDataStoredToIndex() {
+>>>>>>> HNNGFFFF
 		// TODO
 		return null;
 	}
@@ -91,6 +100,7 @@ public class Manager {
 	 *            The selection date criteria to select nodes
 	 * @return A list of the results, or null if there was an error
 	 */
+<<<<<<< HEAD
 	public LinkedList<Node> getNodesToProcess(Date writtenAfter) {
 		// Make connection if not already
 		startConnection();
@@ -99,6 +109,9 @@ public class Manager {
 		// TODO
 
 		// Form list of results
+=======
+	public List<Node> getNodesToProcess(Date writtenAfter) {
+>>>>>>> HNNGFFFF
 		// TODO
 		return null;
 	}

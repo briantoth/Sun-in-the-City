@@ -7,7 +7,7 @@ import java.util.Date;
  * an article written by the client. This could be generated manual by the
  * client (writer / editor) or by the automatic algorithm
  */
-public class DataFusion {
+public class DataFusion{
 	
 	/***************************************************************************
 	 * Constructor that sets default values (NULL)

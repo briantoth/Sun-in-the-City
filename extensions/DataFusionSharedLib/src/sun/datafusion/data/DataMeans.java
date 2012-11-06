@@ -6,7 +6,7 @@ import java.util.Date;
  * DataMeans represents the entity that generates information like
  * The New York Times RSS Feed
  */
-public class DataMeans {
+public class DataMeans{
 
 	/***************************************************************************
 	 * Constructor that sets default values (NULL)

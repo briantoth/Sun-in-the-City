@@ -6,7 +6,7 @@ import java.util.Date;
  * DataStored represents the information generated from a DataMeans like a
  * specific RSS Feed item
  */
-public class DataStored {
+public class DataStored{
 
 	/***************************************************************************
 	 * Constructor that sets default values (NULL)
