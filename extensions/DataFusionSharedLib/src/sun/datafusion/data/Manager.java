@@ -3,9 +3,11 @@ package sun.datafusion.data;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.LinkedList;
+import java.util.List;
 
 /*******************************************************************************
  * Manages the interaction with data
@@ -37,17 +39,36 @@ public class Manager {
 	 *            The date that is used to select DataMeans with
 	 * @return A list of the results, or null if there was an error
 	 */
-	public LinkedList<DataMeans> getDataMeansToProcess(Date lastProcessed) {
+	public List<DataMeans> getDataMeansToProcess(Date lastProcessed) {
 		// Make connection if not already, ensure success
 		if (!startConnection())
 			return null;
 
-		// Create query
-		// TODO
+		try {
+			// Create query
+			java.sql.Date sqlLastProcessed = new java.sql.Date(
+					lastProcessed.getTime());
+			psGetDataMeansToProcess.setDate(1, sqlLastProcessed);
 
-		// Form list of results
-		// TODO
-		return null;
+			// Execute query
+			ResultSet queryResult = psGetDataMeansToProcess.executeQuery();
+
+			// Turn result set into the list of results
+			List<DataMeans> result = new LinkedList<DataMeans>();
+			while (queryResult.next()) {
+				DataMeans cur = new DataMeans();
+				result.add(cur);
+			}
+
+			// Return the result list
+			return result;
+		} catch (SQLException e) {
+
+			// Error occurred
+			System.err.println("SQL Error occured while getting data means");
+			return null;
+		}
+
 	}
 
 	/***************************************************************************
@@ -95,7 +116,7 @@ public class Manager {
 	 * 
 	 * @return A list of the results, or null if there was an error
 	 */
-	public LinkedList<DataStored> getDataStoredToIndex() {
+	public List<DataStored> getDataStoredToIndex() {
 		// Make connection if not already, ensure success
 		if (!startConnection())
 			return null;
@@ -115,7 +136,7 @@ public class Manager {
 	 *            The selection date criteria to select nodes
 	 * @return A list of the results, or null if there was an error
 	 */
-	public LinkedList<Node> getNodesToProcess(Date writtenAfter) {
+	public List<Node> getNodesToProcess(Date writtenAfter) {
 		// Make connection if not already, ensure success
 		if (!startConnection())
 			return null;
@@ -195,6 +216,26 @@ public class Manager {
 					+ password);
 		} catch (SQLException e) {
 			System.err.println("Failed to setup database connection");
+			close();
+			return false;
+		}
+
+		// Setup prepared statements
+		try {
+			// Get all DataMeans where the lastProcessed is <= ?
+			psGetDataMeansToProcess = connection
+					.prepareStatement("SELECT "
+							+ "dm.id, dm.DataSource_id, dm.name, dm.url, dm.type, dm.lastProcessed "
+							+ "FROM " + database + ".DataMeans dm "
+							+ "WHERE dm.lastProcessed <= ?");
+
+			// Create a data stored object
+			psCreateDataStored = connection.prepareStatement("");
+			psGetDataStoredToIndex = connection.prepareStatement("");
+			psGetNodesToProcess = connection.prepareStatement("");
+			psCreateDataFusion = connection.prepareStatement("");
+		} catch (SQLException e) {
+			System.err.println("Failed to create prepared statements");
 			close();
 			return false;
 		}

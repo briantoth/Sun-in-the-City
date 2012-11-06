@@ -26,11 +26,11 @@ public class NodeTable {
 		query = tableConnection.createStatement();
 	}
 	
-	public List<Node> getNewNodes(Date date) throws SQLException{
-		ArrayList<Node> retlist = new ArrayList<Node>();
-		results = query.executeQuery("SELECT * FROM " + tableref + " WHERE changed >= " + date.getTime());
-		while(results.next()){
-			
-		}
-	}
+//	public List<Node> getNewNodes(Date date) throws SQLException{
+//		ArrayList<Node> retlist = new ArrayList<Node>();
+//		results = query.executeQuery("SELECT * FROM " + tableref + " WHERE changed >= " + date.getTime());
+//		while(results.next()){
+//			
+//		}
+//	}
 }
