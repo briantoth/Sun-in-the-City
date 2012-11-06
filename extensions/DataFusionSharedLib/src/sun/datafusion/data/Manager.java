@@ -5,6 +5,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -181,38 +182,34 @@ public class Manager {
 
 			// Turn result set into map of nodes and list of ids
 			Map<Integer, Node> nodes = new HashMap<Integer, Node>();
-			String list = "(";
-			boolean first = true;
 			while (queryResult.next()) {
-				// If not first of list add the comma
-				if (!first)
-					list = list + ", ";
 
 				// Get the integer of the current node
 				Integer nodeID = queryResult.getInt(1);
-				// Create node and add to map
-				Node cur = new Node();
-				cur.setNodeID(nodeID);
-				nodes.put(nodeID, cur);
 
-				// Add to list of ids
-				list += nodeID.toString();
-				// No longer first id
-				first = false;
+				// Check if we are already tracking nodeID
+				Node curNode;
+				if (nodes.containsKey(nodeID)) {
+
+					// Get the current existing node
+					curNode = nodes.get(nodeID);
+				} else {
+
+					// Create node and add to map
+					curNode = new Node(nodeID);
+					nodes.put(nodeID, curNode);
+				}
+
+				// Add the current tag
+				curNode.getTags().add(queryResult.getString(2));
 			}
-			// End of list
-			list = ")";
-
-			// Execute query to get all taxonomy names- nodeID pairs where the
-			// nodeID is in the list
-			// TODO
-
-			// Add all pairs to the map
-			// TODO
 
 			// Convert the map to the list
 			List<Node> result = new LinkedList<Node>();
-			// TODO
+			Collection<Node> values = nodes.values();
+			for (Node curNode : values) {
+				result.add(curNode);
+			}
 
 			// Return the result list
 			return result;
@@ -317,13 +314,14 @@ public class Manager {
 							+ "WHERE ds.indexed=false");
 
 			// Get nodes that should be processed
-			// TODO
-			psGetNodesToProcess = connection.prepareStatement("");
+			psGetNodesToProcess = connection.prepareStatement("SELECT DISTINCT"
+					+ "node.nid, data.name " + "FROM " + database
+					+ ".node node, " + database + ".taxonomy_index index, "
+					+ database + ".taxonomy_term_data data "
+					+ "WHERE node.created >= ? "
+					+ "AND node.nid = index.nid AND index.tid = data.tid");
 
-			// Get the tags for all the nodes
-			// TODO
-
-			//
+			// Create a data fusion object in the table
 			// TODO
 			psCreateDataFusion = connection.prepareStatement("");
 		} catch (SQLException e) {
