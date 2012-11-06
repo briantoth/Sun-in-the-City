@@ -7,7 +7,6 @@ import java.util.List;
 import sun.datafusion.data.DataMeansTable;
 import sun.datafusion.data.DataMeans;
 import sun.datafusion.data.DataStored;
-import sun.datafusion.data.DataStoredTable;
 import sun.datafusion.data.Manager;
 
 public class Main {
