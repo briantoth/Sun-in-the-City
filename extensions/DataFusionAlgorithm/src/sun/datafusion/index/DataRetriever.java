@@ -1,5 +1,7 @@
 package sun.datafusion.index;
 
+import sun.datafusion.data.DataSource;
+
 /*******************************************************************************
  * The DataRetriever executes MySQL queries to obtain DataPrimary and
  * DataSecondary instances that have not yet been indexed by Apache Lucene. This

@@ -106,6 +106,18 @@ audio:not([controls]) {
 }
 */
 
+@font-face {
+    font-family: 'adobe_garamondbold';
+    src: url('../fonts/garamond/adobe_garamond_bold-webfont.eot');
+    src: url('../fonts/garamond/adobe_garamond_bold-webfont.eot?#iefix') format('embedded-opentype'),
+         url('../fonts/garamond/adobe_garamond_bold-webfont.woff') format('woff'),
+         url('../fonts/garamond/adobe_garamond_bold-webfont.ttf') format('truetype'),
+         url('../fonts/garamond/adobe_garamond_bold-webfont.svg#adobe_garamondbold') format('svg');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
 /*
  * 1. Corrects text resizing oddly in IE6/7 when body font-size is set using em units
  *    http://clagnut.com/blog/348/#c790
@@ -125,7 +137,7 @@ html {
   font-size: 87.5%; /* 16px x .875 = 14px */
 
   /* Use a 16px base font size */
-  font-size: 100%; /* 1 */
+  font-size: 96%; /* 1 */
 
   -webkit-text-size-adjust: 100%; /* 2 */
   -ms-text-size-adjust: 100%; /* 2 */
@@ -199,7 +211,7 @@ textarea {
 
    */
 
-  font-family: Verdana, Tahoma, "DejaVu Sans", sans-serif;
+  font-family: "Myriad Pro", Verdana, Tahoma, "DejaVu Sans", sans-serif;
 }
 
 /*
@@ -274,6 +286,7 @@ h1 {
   /* Sets 1 unit of vertical rhythm on the top and bottom margins. */
   margin-top: 0.75em; /* 1.5rem / 2em = .75em */
   margin-bottom: 0.75em;
+  font-family: "Times New Roman", Times, serif;
 }
 
 h2 {
@@ -281,6 +294,15 @@ h2 {
   line-height: 2em; /* 3rem / 1.5em = 2em */
   margin-top: 1em; /* 1.5rem / 1.5em = 1em */
   margin-bottom: 1em;
+  font-family: "Times New Roman", Times, serif;
+}
+
+#page-title {
+	padding-top: 23px;
+}
+
+#site-name {
+	font-family: "adobe_garamondbold", serif;
 }
 
 h3 {
@@ -716,4 +738,8 @@ th {
 
 tbody {
   border-top: none;
+}
+
+td {
+	vertical-align: top;
 }

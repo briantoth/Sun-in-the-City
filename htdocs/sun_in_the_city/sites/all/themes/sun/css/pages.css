@@ -15,16 +15,18 @@
 body {
   margin: 0;
   padding: 0;
-  background-image: url(../images/gradient.png);
+  /*background-image: url(../images/gradient.png);
   height: 100%;
-  background-attachment: fixed;
+  background-attachment: fixed;*/
 }
 
-#page {
+#main {
 	background-color: #FFF;
 	margin: 20px auto;
-	border: 2px solid #000;
+	/*border: 2px solid #000;*/
+	box-shadow: 0px 0px 10px 5px #AAA;
 }
+
 
 /*
  * The skip-link link will be completely hidden until a user tabs to the link.
@@ -48,10 +50,25 @@ body {
  * Header
  */
 
+#header {
+	padding-top: 10px;
+	background-image: url(../images/gradient.png);
+	color: #FFF;
+	height: 150px;
+	margin-bottom: -40px;
+	border-bottom: 3px solid #000;
+}
+
+#innerheader {
+	width: 960px;
+	margin: auto;
+}
+
 #logo { /* Wrapping link for logo */
   float: left; /* LTR */
   margin: 0;
   padding: 0;
+  padding-left: 10px;
 }
 #logo img {
   vertical-align: bottom;
@@ -70,7 +87,7 @@ body {
 }
 #site-name a:link,
 #site-name a:visited {
-  color: #000;
+  color: #FFF;
   text-decoration: none;
   position: relative;
   top: 25px;
@@ -93,13 +110,17 @@ body {
   clear: both; /* Clear the logo */
 }
 
+#secondary-menu a:link, #secondary-menu a:visited {
+	color: #FFF;
+}
+
 /*
  * Main (container for everything else)
  */
 
 #main {
 	margin: 10px 20px 0px;
-	padding: 10px 0px;
+	padding: 10px 10px;
 }
 
 /*
@@ -260,4 +281,23 @@ span.field-label { /* The inline field label used by the Fences module */
 
 p {
 	margin: 10px 0;
+}
+
+/*home page grid*/
+.col-1 {
+	padding-right: 10px;
+}
+
+.col-2 {
+	padding-right: 5px;
+	padding-left: 5px;
+}
+
+.col-3 {
+	padding-left: 10px;
+}
+
+.nodesinblock img {
+	float: right;
+	padding-left: 10px;
 }

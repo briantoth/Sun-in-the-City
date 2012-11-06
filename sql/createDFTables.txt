@@ -1,0 +1,96 @@
+SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
+SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
+SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL';
+
+CREATE SCHEMA IF NOT EXISTS `sun_in_the_city` DEFAULT CHARACTER SET utf8 ;
+USE `sun_in_the_city` ;
+
+-- -----------------------------------------------------
+-- Table `sun_in_the_city`.`DataSource`
+-- -----------------------------------------------------
+CREATE  TABLE IF NOT EXISTS `sun_in_the_city`.`DataSource` (
+  `id` INT NOT NULL AUTO_INCREMENT ,
+  `url` LONGTEXT NOT NULL ,
+  `name` LONGTEXT NOT NULL ,
+  `logourl` LONGTEXT NOT NULL ,
+  PRIMARY KEY (`id`) )
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `sun_in_the_city`.`DataMeans`
+-- -----------------------------------------------------
+CREATE  TABLE IF NOT EXISTS `sun_in_the_city`.`DataMeans` (
+  `id` INT NOT NULL AUTO_INCREMENT ,
+  `DataSource_id` INT NOT NULL ,
+  `name` LONGTEXT NOT NULL ,
+  `url` LONGTEXT NOT NULL ,
+  `type` INT NOT NULL ,
+  `lastProcessed` DATETIME NOT NULL ,
+  PRIMARY KEY (`id`) ,
+  INDEX `fk_DataMeans_DataSource` (`DataSource_id` ASC) ,
+  CONSTRAINT `fk_DataMeans_DataSource`
+    FOREIGN KEY (`DataSource_id` )
+    REFERENCES `sun_in_the_city`.`DataSource` (`id` )
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `sun_in_the_city`.`DataStored`
+-- -----------------------------------------------------
+CREATE  TABLE IF NOT EXISTS `sun_in_the_city`.`DataStored` (
+  `id` INT NOT NULL AUTO_INCREMENT ,
+  `DataMeans_id` INT NOT NULL ,
+  `title` LONGTEXT NOT NULL ,
+  `url` LONGTEXT NOT NULL ,
+  `data` LONGTEXT NOT NULL ,
+  `linkedUrl` LONGTEXT NOT NULL ,
+  `linkedData` LONGTEXT NOT NULL ,
+  `timestamp` DATETIME NOT NULL ,
+  `indexed` TINYINT(1)  NOT NULL DEFAULT false ,
+  PRIMARY KEY (`id`) ,
+  INDEX `fk_DataPrimary_DataMeans1` (`DataMeans_id` ASC) ,
+  CONSTRAINT `fk_DataPrimary_DataMeans1`
+    FOREIGN KEY (`DataMeans_id` )
+    REFERENCES `sun_in_the_city`.`DataMeans` (`id` )
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `sun_in_the_city`.`DataFusion`
+-- -----------------------------------------------------
+CREATE  TABLE IF NOT EXISTS `sun_in_the_city`.`DataFusion` (
+  `id` INT NOT NULL AUTO_INCREMENT ,
+  `nodeID` INT UNSIGNED NOT NULL ,
+  `DataSource_id` INT NOT NULL ,
+  `DataStored_id` INT NULL ,
+  `title` LONGTEXT NOT NULL ,
+  `url` LONGTEXT NOT NULL ,
+  `summary` LONGTEXT NOT NULL ,
+  `approved` TINYINT(1)  NOT NULL DEFAULT false ,
+  `rating` INT NOT NULL DEFAULT 0 ,
+  `timestamp` DATETIME NOT NULL ,
+  PRIMARY KEY (`id`) ,
+  INDEX `fk_DataFusion_DataSource1` (`DataSource_id` ASC) ,
+  INDEX `fk_DataFusion_node1` (`nodeID` ASC) ,
+  INDEX `fk_DataFusion_DataPrimary1` (`DataStored_id` ASC) ,
+  CONSTRAINT `fk_DataFusion_DataSource1`
+    FOREIGN KEY (`DataSource_id` )
+    REFERENCES `sun_in_the_city`.`DataSource` (`id` )
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+  CONSTRAINT `fk_DataFusion_node1`
+    FOREIGN KEY (`nodeID` )
+    REFERENCES `sun_in_the_city`.`node` (`nid` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_DataFusion_DataPrimary1`
+    FOREIGN KEY (`DataStored_id` )
+    REFERENCES `sun_in_the_city`.`DataStored` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
