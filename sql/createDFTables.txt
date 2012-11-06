@@ -59,7 +59,6 @@ CREATE  TABLE IF NOT EXISTS `sun_in_the_city`.`DataStored` (
     ON UPDATE CASCADE)
 ENGINE = InnoDB;
 
-
 -- -----------------------------------------------------
 -- Table `sun_in_the_city`.`DataFusion`
 -- -----------------------------------------------------
@@ -72,6 +71,7 @@ CREATE  TABLE IF NOT EXISTS `sun_in_the_city`.`DataFusion` (
   `url` LONGTEXT NOT NULL ,
   `summary` LONGTEXT NOT NULL ,
   `approved` TINYINT(1)  NOT NULL DEFAULT false ,
+  `deleted` TINYINT(1)  NOT NULL DEFAULT false ,
   `rating` INT NOT NULL DEFAULT 0 ,
   `timestamp` DATETIME NOT NULL ,
   PRIMARY KEY (`id`) ,
@@ -94,3 +94,5 @@ CREATE  TABLE IF NOT EXISTS `sun_in_the_city`.`DataFusion` (
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
+
+
