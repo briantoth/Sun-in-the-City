@@ -49,7 +49,7 @@ public class ArticleRetriever implements Runnable{
 			List<Node> unfusedArticles= manager.getNodesToProcess(new Date(new Date().getTime() - timeToSleep*2));
 			
 			for(Node n : unfusedArticles){
-				Runnable dataFuser= new DataFuser(n, indexLocation);
+				Runnable dataFuser= new DataFuser(n, indexLocation, manager);
 				threadPool.execute(dataFuser);
 			}
 		}

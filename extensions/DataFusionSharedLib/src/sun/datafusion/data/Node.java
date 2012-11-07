@@ -1,8 +1,5 @@
 package sun.datafusion.data;
 
-import java.util.LinkedList;
-import java.util.List;
-
 /*******************************************************************************
  * Represents an article (node)
  */
@@ -14,7 +11,7 @@ public class Node  {
 	 */
 	public Node(int nodeID){
 		this.nodeID = nodeID;
-		tags = new LinkedList<String>();
+		tags = "";
 	}
 	
 	//--------------------------------------------------------------------------
@@ -22,12 +19,16 @@ public class Node  {
 	public int getNodeID() {
 		return nodeID;
 	}
-	public List<String> getTags() {
+	public String getTags() {
 		return tags;
+	}
+	
+	public void addTag(String tag) {
+		tags += " " + tag;
 	}
 	
 	//--------------------------------------------------------------------------
 
 	private int nodeID;
-	private List<String> tags;
+	private String tags;
 }
