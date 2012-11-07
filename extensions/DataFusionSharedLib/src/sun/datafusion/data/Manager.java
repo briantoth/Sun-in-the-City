@@ -21,9 +21,9 @@ public class Manager {
 	/***************************************************************************
 	 * Constructor that sets up the MySQL information
 	 */
-	public Manager(String url, String database, String username, String password) {
+	public Manager(String hostname, String database, String username, String password) {
 		// Store connection details
-		this.url = url;
+		this.hostname = hostname;
 		this.database = database;
 		this.username = username;
 		this.password = password;
@@ -77,7 +77,7 @@ public class Manager {
 		} catch (SQLException e) {
 
 			// Error occurred
-			System.err.println("SQL Error occured while getting data means");
+			System.out.println("SQL Error occured while getting data means");
 			return null;
 		}
 
@@ -187,7 +187,7 @@ public class Manager {
 			return psSetDataStoredIndexed.executeUpdate() == 1 ? true : false;
 		} catch (SQLException e) {
 			// Error occurred
-			System.err.println("SQL Error occured while getting nodes to process");
+			System.out.println("SQL Error occured while getting nodes to process");
 			return false;
 		}
 	}
@@ -228,7 +228,7 @@ public class Manager {
 		} catch (SQLException e) {
 
 			// Error occurred
-			System.err.println("SQL Error occured while getting data stored");
+			System.out.println("SQL Error occured while getting data stored");
 			return null;
 		}
 	}
@@ -310,7 +310,10 @@ public class Manager {
 	public boolean createDataFusion(DataFusion df) {
 		// Make connection if not already, ensure success
 		if (!startConnection())
+		{
+			System.out.println("failed connection");
 			return false;
+		}
 
 		try {
 			psCreateDataFusion.setInt(1, df.getNodeID());
@@ -336,7 +339,7 @@ public class Manager {
 			if (connection != null)
 				connection.close();
 		} catch (SQLException e) {
-			System.err.println("Failed to close database connection");
+			System.out.println("Failed to close database connection");
 		}
 
 		// Nullify connection
@@ -354,24 +357,25 @@ public class Manager {
 			if (connection != null && !connection.isClosed())
 				return true;
 		} catch (SQLException e1) {
-			System.err.println("SQL Error occured when checking connected");
+			System.out.println("SQL Error occured when checking connected");
 		}
 
 		// Load JDBC driver
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
-			return false;
 		} catch (ClassNotFoundException e) {
-			System.err.println("Failed to load jdbc driver class");
+			System.out.println("Failed to load jdbc driver class");
+			return false;
 		}
 
 		// Setup connection
 		try {
-			connection = DriverManager.getConnection("jdbc:mysql://" + url
-					+ "/" + database + "?user=" + username + "&password="
+			connection = DriverManager.getConnection("jdbc:mysql://" + hostname
+					+ ":3306/" + database + "?user=" + username + "&password="
 					+ password);
 		} catch (SQLException e) {
-			System.err.println("Failed to setup database connection");
+			System.out.println(e);
+			System.out.println("Failed to setup database connection");
 			close();
 			return false;
 		}
@@ -405,14 +409,14 @@ public class Manager {
 			"SET indexed = 1 " + "WHERE id=?");
 
 			// Create a data fusion object in the table
-			psCreateDataFusion = connection.prepareStatement("INSERT into " + database + ".DataFused df "  +
-					"(df.nodeID, df.DataSource_id, df.DataStored_id, df.title, df.url, df.summary, df.rating, df.timestamp) " +
-							"values (? ? ? ? ? ? ? ?)");	
+			psCreateDataFusion = connection.prepareStatement("INSERT into DataFusion "  +
+					"(nodeID, DataSource_id, DataStored_id, title, url, summary, rating, timestamp) " +
+							"values (?, ?, ?, ?, ?, ?, ?, ?)");	
 			
 			// Create a data stored object
 			psCreateDataStored= connection.prepareStatement("INSERT into " + database + ".DataStored ds"  +
 					"(ds.DataMeans_id, ds.title, ds.url, ds.data, ds.linkedUrl, ds.linkedData, ds.timestamp) " +
-							"values (? ? ? ? ? ? ?)");	
+							"values (?, ?, ?, ?, ?, ?, ?)");	
 			
 			// Get a data stored object
 			psGetDataStored= connection.prepareStatement("SELECT * " + "FROM " + database + ".DataStored " + "WHERE id=?");
@@ -421,7 +425,7 @@ public class Manager {
 			psGetDataMeans= connection.prepareStatement("SELECT * " + "FROM " + database + ".DataMeans " + "WHERE id =?"); 
 			
 		} catch (SQLException e) {
-			System.err.println("Failed to create prepared statements");
+			System.out.println("Failed to create prepared statements");
 			close();
 			return false;
 		}
@@ -434,7 +438,7 @@ public class Manager {
 
 	// MySQL database details
 	private Connection connection; // Connection to database
-	private String url; // URL to the database
+	private String hostname; // URL to the database
 	private String database; // Name of the database
 	private String username; // Username to connect with
 	private String password; // Password to connect with
