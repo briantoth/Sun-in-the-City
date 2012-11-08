@@ -110,6 +110,21 @@ public class DataStored {
 	public void setIndexed(boolean indexed) {
 		this.indexed = indexed;
 	}
+	
+	@Override
+	public boolean equals(Object other){
+		if(!(other instanceof DataStored))
+			return false;
+		
+		DataStored ds= (DataStored) other;
+		
+		if(ds.id == this.id && ds.DataMeans_id == this.DataMeans_id && ds.title == this.title
+				&& ds.url == this.url && ds.data == this.data && ds.linkedData == this.linkedData
+				&& ds.linkedUrl == this.linkedUrl && ds.timestamp == this.timestamp 
+				&& ds.indexed == this.indexed)
+			return true;
+		else return false;
+	}
 
 	private int id;
 	private int DataMeans_id;

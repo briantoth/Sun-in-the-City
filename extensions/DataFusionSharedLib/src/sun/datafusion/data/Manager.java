@@ -126,6 +126,7 @@ public class Manager {
 			psCreateDataStored.setDate(7, new java.sql.Date(ds.getTimestamp().getTime()));
 			return psCreateDataStored.executeUpdate() == 1 ? true : false;
 		} catch (SQLException e) {
+			System.out.println(e);
 			return false;
 		}
 	}
@@ -414,8 +415,8 @@ public class Manager {
 							"values (?, ?, ?, ?, ?, ?, ?, ?)");	
 			
 			// Create a data stored object
-			psCreateDataStored= connection.prepareStatement("INSERT into " + database + ".DataStored ds"  +
-					"(ds.DataMeans_id, ds.title, ds.url, ds.data, ds.linkedUrl, ds.linkedData, ds.timestamp) " +
+			psCreateDataStored= connection.prepareStatement("INSERT into DataStored "  +
+					"(DataMeans_id, title, url, data, linkedUrl, linkedData, timestamp) " +
 							"values (?, ?, ?, ?, ?, ?, ?)");	
 			
 			// Get a data stored object
