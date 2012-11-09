@@ -55,9 +55,9 @@ public class Manager {
 
 		try {
 			// Create query
-			java.sql.Date sqlLastProcessed = new java.sql.Date(
+			java.sql.Timestamp sqlLastProcessed = new java.sql.Timestamp(
 					lastProcessed.getTime());
-			psGetDataMeansToProcess.setDate(1, sqlLastProcessed);
+			psGetDataMeansToProcess.setTimestamp(1, sqlLastProcessed);
 
 			// Execute query
 			ResultSet queryResult = psGetDataMeansToProcess.executeQuery();
@@ -68,7 +68,7 @@ public class Manager {
 				DataMeans cur = new DataMeans(queryResult.getInt(1),
 						queryResult.getInt(2), queryResult.getString(3),
 						queryResult.getString(4), queryResult.getInt(5),
-						new Date(queryResult.getDate(6).getTime()));
+						new java.util.Date(queryResult.getTimestamp(6).getTime()));
 				result.add(cur);
 			}
 
@@ -95,12 +95,20 @@ public class Manager {
 		// Make connection if not already, ensure success
 		if (!startConnection())
 			return false;
-
-		// Create query
-		// TODO
-
-		// Return results
-		return false;
+		
+		try{
+			//Create query
+			psSetDataMeansProcessed.setTimestamp(1, new java.sql.Timestamp(new java.util.Date().getTime()));
+			psSetDataMeansProcessed.setInt(2, dm.getId());
+			
+			//Execute query
+			psSetDataMeansProcessed.executeUpdate();
+			return true;
+			
+		} catch (SQLException e){
+			System.out.println("SQL Error when updating data means processed date");
+			return false;
+		}
 	}
 
 	/***************************************************************************
@@ -123,7 +131,7 @@ public class Manager {
 			psCreateDataStored.setString(4, ds.getData());
 			psCreateDataStored.setString(5, ds.getLinkedUrl());
 			psCreateDataStored.setString(6, ds.getLinkedData());
-			psCreateDataStored.setDate(7, new java.sql.Date(ds.getTimestamp().getTime()));
+			psCreateDataStored.setTimestamp(7, new java.sql.Timestamp(ds.getTimestamp().getTime()));
 			return psCreateDataStored.executeUpdate() == 1 ? true : false;
 		} catch (SQLException e) {
 			System.out.println(e);
@@ -389,6 +397,11 @@ public class Manager {
 							+ "dm.id, dm.DataSource_id, dm.name, dm.url, dm.type, dm.lastProcessed "
 							+ "FROM " + database + ".DataMeans dm "
 							+ "WHERE dm.lastProcessed <= ?");
+			
+			psSetDataMeansProcessed = connection
+					.prepareStatement("UPDATE " + database + ".DataMeans dm "
+							+ "SET lastProcessed = ? "
+							+ "WHERE id = ?");
 
 			// Get all DataStored where not indexed
 			psGetDataStoredToIndex = connection
@@ -446,6 +459,7 @@ public class Manager {
 
 	// MySQL prepared statements
 	private PreparedStatement psGetDataMeansToProcess;
+	private PreparedStatement psSetDataMeansProcessed;
 	private PreparedStatement psCreateDataStored;
 	private PreparedStatement psGetDataStoredToIndex;
 	private PreparedStatement psGetNodesToProcess;

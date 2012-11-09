@@ -29,6 +29,14 @@ public class RSSGrabber {
 	private Date lastChecked;
 	private int dataMeansId;
 	
+	
+	/***************************************************************************
+	 * Creates a new RSSGrabber object from a DataMeans object. Saves all
+	 * necessary information as well as creating the needed HTTP connection
+	 * to the RSS link given.
+	 * 
+	 * @param The DataMeans object to retrieve new RSS posts from
+	 */
 	public RSSGrabber(DataMeans data) throws Exception{
 		URL url = new URL(data.getUrl());
 		conn = (HttpURLConnection)url.openConnection();
@@ -37,10 +45,12 @@ public class RSSGrabber {
 		posts = feed.getEntries();
 		postIter = posts.iterator();
 		lastChecked = data.getLastProcessed();
+		//System.out.println("Last checked date on this feed is: " + lastChecked.toString());
 		dataMeansId = data.getId();
 		feedUrl = data.getUrl();
 	}
 	
+	//This function simply grabs the entire HTML source for a given URL.
 	private String grabHTML(URL url) throws IOException{
 		URLConnection spoof = url.openConnection();
 		spoof.setRequestProperty( "User-Agent", "Mozilla/4.0 (compatible; MSIE 5.5; Windows NT 5.0; H010818)" );
@@ -50,14 +60,22 @@ public class RSSGrabber {
 	  	while ((strLine = in.readLine()) != null){
 		  returnstr += (strLine + "\n");
 	  	}
+	  	in.close();
 	  	return returnstr;
 	}
 	
+	/***************************************************************************
+	 * Gets the latest posts for this RSSGrabber object. Uses the date given
+	 * at creation time to determine what posts are 'new'.
+	 * 
+	 * @return The latest posts for this RSSGrabber object
+	 */
 	public List<DataStored> getNewPosts(){
 		ArrayList<DataStored> newPosts = new ArrayList<DataStored>();
 		while(postIter.hasNext()){
 			SyndEntry next = (SyndEntry)postIter.next();
-			if(next.getPublishedDate().compareTo(lastChecked) > 0){
+			//System.out.println("Post date is: " + next.getPublishedDate().toString());
+			if(next.getPublishedDate().getTime() > lastChecked.getTime()){
 				DataStored newData = new DataStored();
 				newData.setUrl(feedUrl);
 				newData.setDataMeans_id(dataMeansId);
