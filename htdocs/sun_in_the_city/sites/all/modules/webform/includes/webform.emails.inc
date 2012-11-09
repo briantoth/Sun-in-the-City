@@ -91,6 +91,7 @@ $source_chooser = $form['chooser']['#options'][$chooserKey]; // Get the string v
 
 if ($means_url == NULL || $means_name == NULL || $means_type == NULL || $chooserKey == NULL || $source_chooser == NULL || 
  $means_url == ' ' || $means_name == ' ' || $means_type == ' '){
+	 // make sure type is int : || !ctype_digit($means_type)
    drupal_set_message(t('Unable to add to the database. Please review entries into input fields.'), $type = 'error');
 }
 
@@ -109,7 +110,7 @@ $query = db_insert('DataMeans')
   	'DataSource_id' => $dbID,
     'url' =>  $means_url,
 	'name' => $means_name,
-	'type' => $means_type, // Ask About Type!
+	'type' => 1, // Ask About Type!
 	'lastProcessed' => $lastP, // ASK About lastProcessed. 
   ))
   ->execute();  
