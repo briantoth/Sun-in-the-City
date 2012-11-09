@@ -13,13 +13,13 @@ import org.apache.lucene.store.SimpleFSDirectory;
 import sun.datafusion.data.Manager;
 import sun.datafusion.fuse.ArticleRetriever;
 import sun.datafusion.index.DataRetriever;
+import sun.datafusion.utils.PropertyUtils;
 
 /*******************************************************************************
  * Class that holds the program configurations as well as the main function
  */
 public class Main {
 	
-	public static final String configFile= "config.properties";
 	private static final String indexStoreFile= "./LuceneIndex";
 	
 	public volatile static boolean keepRunning = true;
@@ -43,46 +43,9 @@ public class Main {
 	 * 
 	 * @param args
 	 *            The command line arguments passed to the program. Ignored
-	 */
+	 */ 
 	public static void main(String[] args) {
-		Properties prop= new Properties();
-		
-		// Check for properties file
-		// If none exists, create one and store defaults
-		//TODO: If one exists, load properties and do bounds checking
-		File f = new File(configFile);
-		
-		if(f.exists()){
-			try {
-				prop.load(new FileInputStream(configFile));			
-				System.out.println("db="+prop.getProperty("hostname"));
-				System.out.println("db="+prop.getProperty("db"));
-				System.out.println("user="+prop.getProperty("dbuser"));
-				System.out.println("pass="+prop.getProperty("dbpassword"));
-			} catch (FileNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-
-		} else {
-			 
-	    	try {
-	    		//set the properties value
-	    		prop.setProperty("hostname", "localhost");
-	    		prop.setProperty("db", "sun_in_the_city");
-	    		prop.setProperty("dbuser", "root");
-	    		prop.setProperty("dbpassword", "");
-	 
-	    		//save properties to project root folder
-	    		prop.store(new FileOutputStream("config.properties"), null);
-	 
-	    	} catch (IOException ex) {
-	    		ex.printStackTrace();
-	        }
-		}
+		Properties prop = PropertyUtils.loadProperties();
 		
 		final Directory indexLocation;
 		Directory tempIndexLocation=null;
@@ -135,5 +98,6 @@ public class Main {
 		});
 
 	}
+	
 
 }

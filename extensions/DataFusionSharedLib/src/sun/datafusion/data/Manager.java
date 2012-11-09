@@ -21,9 +21,9 @@ public class Manager {
 	/***************************************************************************
 	 * Constructor that sets up the MySQL information
 	 */
-	public Manager(String url, String database, String username, String password) {
+	public Manager(String hostname, String database, String username, String password) {
 		// Store connection details
-		this.url = url;
+		this.hostname = hostname;
 		this.database = database;
 		this.username = username;
 		this.password = password;
@@ -77,7 +77,7 @@ public class Manager {
 		} catch (SQLException e) {
 
 			// Error occurred
-			System.err.println("SQL Error occured while getting data means");
+			System.out.println("SQL Error occured while getting data means");
 			return null;
 		}
 
@@ -116,11 +116,92 @@ public class Manager {
 		if (!startConnection())
 			return false;
 
-		// Create query
-		// TODO
+		try {
+			psCreateDataStored.setInt(1, ds.getDataMeans_id());
+			psCreateDataStored.setString(2, ds.getTitle());
+			psCreateDataStored.setString(3, ds.getUrl());
+			psCreateDataStored.setString(4, ds.getData());
+			psCreateDataStored.setString(5, ds.getLinkedUrl());
+			psCreateDataStored.setString(6, ds.getLinkedData());
+			psCreateDataStored.setDate(7, new java.sql.Date(ds.getTimestamp().getTime()));
+			return psCreateDataStored.executeUpdate() == 1 ? true : false;
+		} catch (SQLException e) {
+			System.out.println(e);
+			return false;
+		}
+	}
+	
+	public DataMeans getDataMeans(int DataMeans_id) {
+		// Make connection if not already, ensure success
+		if (!startConnection())
+			return null;
+		
+		DataMeans dm = null;
 
-		// Return results
-		return false;
+		try {
+			// Create query
+			psGetDataMeans.setInt(1, DataMeans_id);
+			
+			//perform query
+			ResultSet rs= psGetDataMeans.executeQuery();
+			
+			rs.next();
+			dm= new DataMeans(rs.getInt(1),
+					rs.getInt(2), rs.getString(3),
+					rs.getString(4), rs.getInt(5),
+					new Date(rs.getDate(6).getTime()));
+		} catch (SQLException e) {
+		}
+
+		// Return result
+		return dm;
+	}
+	
+	public DataStored getDataStored(int DataStored_id){
+		// Make connection if not already, ensure success
+		if (!startConnection())
+			return null;
+		
+		DataStored ds = null;
+
+		try {
+			// Create query
+			psGetDataStored.setInt(1, DataStored_id);
+			
+			//perform query
+			ResultSet rs= psGetDataStored.executeQuery();
+			rs.next();
+			ds= createDataStoredFromResult(rs);
+		} catch (SQLException e) {
+		}
+
+		// Return result
+		return ds;
+	}
+	
+	public boolean setDataStoredIndexed(DataStored dataStored) {
+		if (!startConnection())
+			return false;
+		
+		try {
+			psSetDataStoredIndexed.setInt(1, dataStored.getId());
+			return psSetDataStoredIndexed.executeUpdate() == 1 ? true : false;
+		} catch (SQLException e) {
+			// Error occurred
+			System.out.println("SQL Error occured while getting nodes to process");
+			return false;
+		}
+	}
+	
+	private DataStored createDataStoredFromResult(ResultSet queryResult) throws SQLException{
+		DataStored cur = new DataStored(queryResult.getInt(1),
+				queryResult.getInt(2), queryResult.getString(3),
+				queryResult.getString(4), queryResult.getString(5),
+				queryResult.getString(6), queryResult.getString(7),
+				new Date(queryResult.getDate(8).getTime()),
+				queryResult.getBoolean(9));
+		
+		return cur;
 	}
 
 	/***************************************************************************
@@ -140,13 +221,7 @@ public class Manager {
 			// Turn result set into the list of results
 			List<DataStored> result = new LinkedList<DataStored>();
 			while (queryResult.next()) {
-				DataStored cur = new DataStored(queryResult.getInt(1),
-						queryResult.getInt(2), queryResult.getString(3),
-						queryResult.getString(4), queryResult.getString(5),
-						queryResult.getString(6), queryResult.getString(7),
-						new Date(queryResult.getDate(8).getTime()),
-						queryResult.getBoolean(9));
-				result.add(cur);
+				result.add(createDataStoredFromResult(queryResult));
 			}
 
 			// Return the result list
@@ -154,7 +229,7 @@ public class Manager {
 		} catch (SQLException e) {
 
 			// Error occurred
-			System.err.println("SQL Error occured while getting data stored");
+			System.out.println("SQL Error occured while getting data stored");
 			return null;
 		}
 	}
@@ -184,6 +259,7 @@ public class Manager {
 			Map<Integer, Node> nodes = new HashMap<Integer, Node>();
 			while (queryResult.next()) {
 
+				String tags= "";
 				// Get the integer of the current node
 				Integer nodeID = queryResult.getInt(1);
 
@@ -201,8 +277,9 @@ public class Manager {
 				}
 
 				// Add the current tag
-				curNode.getTags().add(queryResult.getString(2));
+				curNode.addTag(queryResult.getString(2));
 			}
+			
 
 			// Convert the map to the list
 			List<Node> result = new LinkedList<Node>();
@@ -234,14 +311,24 @@ public class Manager {
 	public boolean createDataFusion(DataFusion df) {
 		// Make connection if not already, ensure success
 		if (!startConnection())
+		{
+			System.out.println("failed connection");
 			return false;
+		}
 
-		// Create query
-		// TODO
-
-		// Form list of results
-		// TODO
-		return false;
+		try {
+			psCreateDataFusion.setInt(1, df.getNodeID());
+			psCreateDataFusion.setInt(2, df.getDataSource_id());
+			psCreateDataFusion.setInt(3, df.getDataStored_id());
+			psCreateDataFusion.setString(4, df.getTitle());
+			psCreateDataFusion.setString(5, df.getUrl());
+			psCreateDataFusion.setString(6, df.getSummary());
+			psCreateDataFusion.setInt(7, df.getRating());
+			psCreateDataFusion.setDate(8, new java.sql.Date(df.getTimestamp().getTime()));
+			return psCreateDataFusion.executeUpdate() == 1 ? true : false;
+		} catch (SQLException e) {
+			return false;
+		}
 	}
 
 	/***************************************************************************
@@ -253,7 +340,7 @@ public class Manager {
 			if (connection != null)
 				connection.close();
 		} catch (SQLException e) {
-			System.err.println("Failed to close database connection");
+			System.out.println("Failed to close database connection");
 		}
 
 		// Nullify connection
@@ -271,24 +358,25 @@ public class Manager {
 			if (connection != null && !connection.isClosed())
 				return true;
 		} catch (SQLException e1) {
-			System.err.println("SQL Error occured when checking connected");
+			System.out.println("SQL Error occured when checking connected");
 		}
 
 		// Load JDBC driver
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
-			return false;
 		} catch (ClassNotFoundException e) {
-			System.err.println("Failed to load jdbc driver class");
+			System.out.println("Failed to load jdbc driver class");
+			return false;
 		}
 
 		// Setup connection
 		try {
-			connection = DriverManager.getConnection("jdbc:mysql://" + url
-					+ "/" + database + "?user=" + username + "&password="
+			connection = DriverManager.getConnection("jdbc:mysql://" + hostname
+					+ ":3306/" + database + "?user=" + username + "&password="
 					+ password);
 		} catch (SQLException e) {
-			System.err.println("Failed to setup database connection");
+			System.out.println(e);
+			System.out.println("Failed to setup database connection");
 			close();
 			return false;
 		}
@@ -301,10 +389,6 @@ public class Manager {
 							+ "dm.id, dm.DataSource_id, dm.name, dm.url, dm.type, dm.lastProcessed "
 							+ "FROM " + database + ".DataMeans dm "
 							+ "WHERE dm.lastProcessed <= ?");
-
-			// Create a data stored object
-			// TODO
-			psCreateDataStored = connection.prepareStatement("");
 
 			// Get all DataStored where not indexed
 			psGetDataStoredToIndex = connection
@@ -320,12 +404,29 @@ public class Manager {
 					+ database + ".taxonomy_term_data data "
 					+ "WHERE node.created >= ? "
 					+ "AND node.nid = index.nid AND index.tid = data.tid");
+			
+			// Indicate that a datastored object has been indexed
+			psSetDataStoredIndexed = connection.prepareStatement("UPDATE "+ database + ".DataStored ds " +
+			"SET indexed = 1 " + "WHERE id=?");
 
 			// Create a data fusion object in the table
-			// TODO
-			psCreateDataFusion = connection.prepareStatement("");
+			psCreateDataFusion = connection.prepareStatement("INSERT into DataFusion "  +
+					"(nodeID, DataSource_id, DataStored_id, title, url, summary, rating, timestamp) " +
+							"values (?, ?, ?, ?, ?, ?, ?, ?)");	
+			
+			// Create a data stored object
+			psCreateDataStored= connection.prepareStatement("INSERT into DataStored "  +
+					"(DataMeans_id, title, url, data, linkedUrl, linkedData, timestamp) " +
+							"values (?, ?, ?, ?, ?, ?, ?)");	
+			
+			// Get a data stored object
+			psGetDataStored= connection.prepareStatement("SELECT * " + "FROM " + database + ".DataStored " + "WHERE id=?");
+			
+			// Get a data means object
+			psGetDataMeans= connection.prepareStatement("SELECT * " + "FROM " + database + ".DataMeans " + "WHERE id =?"); 
+			
 		} catch (SQLException e) {
-			System.err.println("Failed to create prepared statements");
+			System.out.println("Failed to create prepared statements");
 			close();
 			return false;
 		}
@@ -334,23 +435,11 @@ public class Manager {
 		return true;
 	}
 
-	public DataMeans getDataMeans(int DataMeans_id) {
-
-		return connection.prepareStatement("SELECT " + "*" + "FROM "
-				+ "DataMeans " + "WHERE id =" + DataMeans_id);
-	}
-
-	public DataStored getDataStored(int DataStored_id) {
-
-		return connection.prepareStatement("SELECT " + "*" + "FROM "
-				+ "DataStored " + "WHERE id =" + DataStored_id);
-	}
-
 	// -------------------------------------------------------------------------
 
 	// MySQL database details
 	private Connection connection; // Connection to database
-	private String url; // URL to the database
+	private String hostname; // URL to the database
 	private String database; // Name of the database
 	private String username; // Username to connect with
 	private String password; // Password to connect with
@@ -361,4 +450,7 @@ public class Manager {
 	private PreparedStatement psGetDataStoredToIndex;
 	private PreparedStatement psGetNodesToProcess;
 	private PreparedStatement psCreateDataFusion;
+	private PreparedStatement psGetDataMeans;
+	private PreparedStatement psGetDataStored;
+	private PreparedStatement psSetDataStoredIndexed;
 }

@@ -53,7 +53,7 @@ public class DataRetriever implements Runnable{
 			List<DataStored> unindexedData= manager.getDataStoredToIndex();
 			
 			for(DataStored ds : unindexedData){
-				Runnable dataIndexer= new DataIndexer(ds, indexLocation);
+				Runnable dataIndexer= new DataIndexer(ds, indexLocation, manager);
 				threadPool.execute(dataIndexer);
 			}
 		}

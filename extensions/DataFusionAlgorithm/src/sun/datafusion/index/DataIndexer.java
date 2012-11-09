@@ -10,6 +10,7 @@ import org.apache.lucene.store.Directory;
 import org.apache.lucene.util.Version;
 
 import sun.datafusion.data.DataStored;
+import sun.datafusion.data.Manager;
 
 /*******************************************************************************
  * This class takes DataSources from the DataRetriever and uses Apache Lucene to
@@ -22,6 +23,7 @@ public class DataIndexer extends Thread {
 	private final DataStored dataStored;
 	private final Directory indexLocation;
 	private IndexWriter indexWriter;
+	private final Manager manager;
 
 	/***************************************************************************
 	 * Creates a DataIndexer with the given retriever and starts the processing
@@ -31,9 +33,10 @@ public class DataIndexer extends Thread {
 	 *            The retriever to get DataSources from to process
 	 */
 
-	public DataIndexer(DataStored ds, Directory indexLocation) {
+	public DataIndexer(DataStored ds, Directory indexLocation, Manager manager) {
 		this.dataStored= ds;
 		this.indexLocation = indexLocation;
+		this.manager= manager;
 	}
 
 	/***************************************************************************
@@ -48,6 +51,8 @@ public class DataIndexer extends Thread {
 			indexWriter= new IndexWriter(indexLocation, config);
 			addDataStore(dataStored);
 			indexWriter.close();
+			
+			manager.setDataStoredIndexed(dataStored);
 			
 		} catch (Exception e) {
 		}
