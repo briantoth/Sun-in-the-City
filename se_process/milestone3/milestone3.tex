@@ -53,13 +53,8 @@ and James McGuinness (jrm369)}
 
 \begin{document}
 \maketitle
-\tableofcontents
 \clearpage
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Milestone Summary}
-
-TODO
+\tableofcontents
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Project Description}
@@ -133,31 +128,355 @@ To choose which Data Fusion articles get posted on the website, the team will bu
 \end{center}
 \end{figure}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Progress for Milestone 3}
 
-TODO
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Milestone Progress}
+
+For Milestone 3 the team finished development of the core system. The website in its current state is sufficient enough to be deployed and client facing. Our team has also completed an initial version of the optional systems like the RSS / Website scraper and data fusion backend. The remaining portion of the project includes: finishing touches on optional components, rigorous code and user testing, integration of news sources and ad sources, and deployment to a production server.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Cornell Daily Tech Brand}
+
+In order for the website to be successful once deployed it must convey an exceptional brand. In Milestone 2, our team determined what identity the website should have. For this milestone, we determined what the Cornell Daily Tech brand is, how it should be represented, and how this impacts the website. After many discussions with the Cornell Daily Sun, the team settled on a design aesthetic that is very similar to the one on the Sun’s main website in order to capitalize on a previously adopted, rigorously designed, and well executed brand.
+
+
+\subsubsection{Requirements}
+
+The team wanted the website to resemble the existing Cornell Daily Sun, so our branding requirements largely stemmed from incorporating existing design moves. However, some requirements were unique to the tech campus website, such as the creation of the logo, the visual negotiation of temporary vs. permanent navigation, and development of a layout. This layout needs to showcase tech content and be visually cooperative with the initial proposed posting style of the news website.
+
+\subsubsection{Design \& Rationale}
+
+Our logo design was one that visually combined symbolic representations of Cornell with symbolic representations of “the city” (NYC). To that effect, we iterated a logo that would use the Cornell Clock Tower and a city skyline. The initial design and color scheme was greyscale on a white background with a calibrated balance of positive and negative space so it could go onto a darker background.  We then iterated on the design and changed the logo to adapt the existing aesthetic of the Cornell Daily Sun.
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=1.5in]{images/logo_old}
+\includegraphics[width=1.5in]{images/LogoOnRed_new}
+\caption{Logo Old \& New}
+\end{center}
+\end{figure}
+
+The navigation system was inspired both by NYTBits and the existing cornell website. The idea of having temporary tags or navigation came from NYTBits, so we thought it would be reasonable to have some design moves from their website. However,  we also wanted to keep with the traditional print aesthetic of the Cornell Daily Sun. We accomplished this design with a print line to separate the temporary tags from the permanent ones.
+
+The grid layout was inspired by The Verge, but was also proposed by the client as a reasonable way to present a slowly changing set of articles. The grid layout, in contrast to traditional print layouts, is a good way to recognize the modern aspect of the website without completely disregarding traditional design cues.
+
+\subsubsection{Implementation}
+
+Our implementation method for branding was largely in conjunction with the website interface. We met with the client once to discuss branding verbally and then corresponded over email with mock images of various screens (made in Adobe Fireworks and Adobe Photoshop.) There was iteration based on those conversations and on in-group aesthetic judgements. After some initial coding efforts were made, the design was iterated in HTML as opposed to image representations, with the exception of the logo.
+
+\subsubsection{Results}
+
+We now have an aesthetically reasonable brand for the news website that both follows from the existing Cornell Daily Sun aesthetic, but also recognizes the unique needs of the new website through design innovation in the logo, navigation, and content layout.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Website Interface}
+
+For Milestone 2 the team completed an initial base website that was iterated on for Milestone 3. The current website interface is production ready and has passed design requirements and inspection by the client.
+
+The website interface involved modifying Drupal to build a news website custom for the Sun’s content for the Tech Campus.
+
+\subsubsection{Progress}
+
+Modifications since the previous milestone include:
+
+\begin{itemize}
+\item Grid layout for articles on the home page
+\item Image resizing/formatting
+\item Header/background color and spacing
+\item Formatting of links in top right corner - trending tags are italicized and separated from permanent tags
+\item URLs with tags contain the name of the tag instead of a number (for SEO)
+\item Featured article at the top of the home page
+\item Improved fonts
+\item Formatting of date/time
+\item Shadow around content
+\item Other minor visual tweaks/enhancements
+\end{itemize}
+
+Implementation involved a combination of modifying CSS, installing third-party modules, and modifying Drupal settings. CSS was modified in the sun sub-theme, which overrides CSS from Zen, a simple theme that makes it easy to create sub-themes.
+
+Installed modules include:
+
+\begin{itemize}
+\item Nodes in block - used for featured article on home page
+\item Menu HTML - used for inserting <em> tags so trending tags can be italicized in menu
+\item Pathauto - used for improving URLs for SEO
+\item Special menu items - used for the divider between trending tags and permanent tags
+\item Views, Views UI - used for the grid of articles on the home page
+\item Chaos tools - required for other modules
+\item Token - required for other modules
+\end{itemize}
+
+\subsubsection{Results}
+
+The front-end of the website, which will be seen by all users, is fairly complete.
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=6in]{images/screenshot1}
+\caption{The home page. It contains a featured article followed by a grid of 12 articles per page (4 rows of 3)}
+\end{center}
+\end{figure}
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=6in]{images/screenshot2}
+\caption{All articles that contain a common tag. This view contains just column of articles, with more of a blog style compared with the news style of the home page. The right column contains a list of recent articles, and also contains space for ads.}
+\end{center}
+\end{figure}
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=6in]{images/screenshot3}
+\caption{A single article with the same two-column layout.}
+\end{center}
+\end{figure}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Database Redesign \& Shared Library}
+
+For this project it was determined that the MySQL database was the natural integration layer for the various components that are developed. For milestone 2 the team developed a database design, and for this milestone we iterated on that design to make it simpler, higher performing, and more complete. The team also created a shared library project to move all common and redundant code to one place.
+
+\subsubsection{Design}
+
+The database was redesigned to the new schema shown below. In the diagram you can see the DataSource table which represents a source of information like The New York Times. Any source can have multiple DataMeans, which represent the generator of source content like The New York Times RSS Feed. These DataMeans objects then generate content which is represented in DataStored. The Data Fusion algorithm then takes various DataStored objects and creates DataFusion objects representing the logical link between external content and content written by The Cornell Daily Sun. The content by The Cornell Daily Sun is represented by a node, which is the article representation in Drupal.
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=6in]{images/database_schema}
+\caption{Database Schema}
+\end{center}
+\end{figure}
+
+\subsubsection{Implementation Details}
+
+The design was implemented in MySQL WorkBench which allows the design to be changed rapidly and SQL code to be written rapidly. The shared library was written in Java to abstract at a logical level the representation of data. That is, each entry in the MySQL table is modeled as a Java object. The other algorithms interact with the MySQL database through a Manager class that represents the logical operations that would be desired, like get all DataStored objects that need to be indexed. In this way, the logical operations are completely decoupled so that improvements to queries, data storage, and other components can be implemented without affecting the operation of other components.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{RSS \& Website Scraping}
+
+For Milestone 2 the team developed a design for the RSS \& Website Scraping portion of the Data Fusion process. For this milestone the team coded the scrapers and tested them on various RSS and Website sources. The system can now read external news sources and store them for the data fusion process.
+
+\subsubsection{Requirements}
+
+The RSS Scraping system must retrieve RSS sources in XML format and store them for later use in the data fusion process. The links to HTML sources must then be scraped as these are likely the main article that the RSS feed represents. This will allow the data fusion system to pull RSS sources and website sources together to determine which are appropriate representations of any given article written by the Cornell Daily Sun.
+
+Our team used Java and  put them into another MySQL table. Uses the ROME RSS Parsing Library (which also requires the JDOM XML Parsing Library), as well as a Java to MySQL connector (JConnector) provided free by Oracle.
+
+\subsubsection{Design \& Rationale}
+
+The team decided to use Java as the primary programming language to simplify development, ensure ease of project handover, and ensure the system does not take down the server on which it runs. The team decided to use MySQL as it is the standard web database system to store persistent data, which integrates with Java via JConnector. ROME was used as a library to retrieve RSS and HTML information sources to simplify code development.
+
+\subsubsection{Implementation Details}
+
+The implementation from the previous milestone is the same; names and some functionalities have been changed. The core premise is still retrieving a set of objects (called DataMeans) that contain the necessary information for parsing an RSS feed. This is then passed into ROME and a set of RSS posts are retrieved for that feed. Using a timestamp on the DataMeans object, only the most recent posts are compiled into objects, called DataStored objects, that contain not only the information on the RSS post, but a complete copy of the HTML source the RSS post links to. This data is then written to representative MySQL table.
+
+Changes from previous milestone:
+
+\begin{itemize}
+\item No longer is multithreaded. Instead, loops over every RSS feed and then sleeps a set amount of time before iterating over every feed again.
+\item Some objects have been renamed for clarity and consistency.
+\item Uses a class called Manager for all MySQL query handling and object reading/writing.
+\item Uses a DATETIME field in the DataMeans MySQL table for determining whether or not RSS posts should be aggregated.
+\item Combined some RSS parsing objects into a single RSS feed parser object (RSSParser).
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Data Fusion Algorithm}
+
+The Data Fusion algorithm has been designed to rely on existing proven systems. The algorithm will take data from various sources and insert them into an Apache Lucene index. Then for each Cornell Daily Sun article it will use the meta-tags (taxonomy) of the article to search the Apache Lucene Index for relevant articles. Finally, it will take the likely matches and insert them into the Data Fusion table.
+
+\subsubsection{Requirements}
+
+The requirements of the data fusion algorithm are to keep track of the data collected by the scraper, search this data with tags provided by article authors, and return relevant relevant results. The system should rank the fusion results and should not repeatedly insert a fused source into a database if it already exists or has been denied by an editor.
+
+\subsubsection{Design \& Rationale}
+
+Apache Lucene is a high-performance, full-featured text search engine written entirely in Java. It is suitable for full-text search, especially cross-platform. Lucene supports parsing query strings with multiple keywords into a Lucene query object and searching with that object. Our requirement of the most matched articles can be fulfilled by utilizing its ranked searching feature -- best results returned first. The direct return from searching the index is the article IDs, which we use to generate DataFusion objects. Therefore, given an article’s tags (taxonomy) the Apache Lucene index that was populated with RSS and Website information can be searched to determine what external sources have similar articles.
+
+\subsubsection{Implementation Details}
+
+The Search method returns an ordered collection of articles ranked by computed scores. The score is calculated for each of the article to match a given query. The scoring model is TfIdf, which can be understood as follows:
+\begin{enumerate}
+\item Tf: the more frequent a keyword occurs in an article , the greater its score
+\item Idf: the greater the occurrence of a keyword in different articles, the lower its score, which means common keywords are less important
+\item Multiple keywords: an article that contains more keywords will have a higher score
+\item Length normalization: a keyword match in a short article is more important than in a long article
+\end{enumerate}
+
+The top 10 matched articles are returned. Each returned article is first found in DataStored by its ID. Then a DataFusion object for it is created. Finally, the result is returned to the MySQL database by calling Manager.createDataFusion.
+
+\subsubsection{Results}
+
+The search module passed the testing with simple inputs within the Java environment. Multiple keywords matching requirement is satisfied. We are doing integrated testing within the data fusion extension with the MySQL database. The testing with the front-end website is expected.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Drupal Data Fusion Modules}
+
+The Drupal Data Fusion Modules control the interaction between the Data Fusion system and the website front end by modifying the MySQL database. For milestone 2 the team researched how to customize and extend the core Drupal system. For this milestone the team developed these custom modules which are now ready for the production system.
+
+\subsubsection{Requirements}
+
+The team is required to develop a module that allows writers/editors to add in outside sources relevant to their created articles to be shown alongside with them on the website. Also, this system must allow them to choose which additional information sources populated by the Data Fusion algorithm should be displayed as well.
+
+\subsubsection{Design \& Rationale}
+
+The custom module is designed specifically for ease in accessibility for the writers to navigate through. Once having downloaded the module, each article created on the website has two tabs attached to it titled “Add Source” and “Edit Sources” respectively. These two tabs access to the Data Source, Data Means and Data Fusion tables within the mySQL database.
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=6in]{images/twoTabs}
+\caption{The Two Tabs on an Article}
+\end{center}
+\end{figure}
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=6in]{images/addDataSource}
+\caption{Adding a Data Source}
+\end{center}
+\end{figure}
+
+Under the Add Source tab is an option for the user to enter in an outside Source of data by means of the given fields as shown. Multple text fields allow for writer to clearly see what data needs to be entered where.
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=6in]{images/addDataMeans}
+\caption{Adding a Data Means}
+\end{center}
+\end{figure}
+
+After the user inputs these fields and presses add, they can progress to the next page which allows them to optionally add means to their sources with fields for Name, URL and type of source. Since it is infeasible to add a means to a data source without a data source, there is an appropriate selection UI bar which allows the writer to select exactly which data source they would like to add the means to.
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=6in]{images/dataFusionTab}
+\caption{Data Fusion Tab}
+\end{center}
+\end{figure}
+
+Lastly, underneath the Add Source branch is a tab for Data Fusion which consists of a table containing every source found by the data fusion scraping algorithm. Within this view controller  are options to approve and reject each data fusion article from being displayed on the website itself as well as options to add in custom Data Fusion elements.
+
+Underneath the Edit Sources tab is the display of all the data sources and data means on the site connected to the selected article. This interface allows the user to clearly select which if any data sources and data means to delete.
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=6in]{images/dataSourceTableTab}
+\caption{Data Source Table Tab}
+\end{center}
+\end{figure}
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=6in]{images/dataMeansTableTab}
+\caption{Data Means Table Tab}
+\end{center}
+\end{figure}
+
+Finally, within the configuration options for the Data Fusion module are the options presented to the editor to ultimately select and approve Data Fusion results for articles and to reject them. Contained in these configurations is the option to remove the Data Fusion Module’s UI on all pages as well as for the editor to add in custom Data Fusion Articles to be displayed alongside the articles.
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=6in]{images/config}
+\caption{Configuration}
+\end{center}
+\end{figure}
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=6in]{images/configUI}
+\caption{Configuration UI}
+\end{center}
+\end{figure}
+
+\subsubsection{Implementation Details}
+
+In order to implement this module, it is imperative to have a real-time interaction with the website’s remote mySQL database tables. Through developing php code, HTML, and CSS files it was possible to create the elements displayed within the Module’s UI. Each string of data input by the user is assessed and verified before being entered into the database under their respective tables with appropriate error handling protocols. This module relies on the Data Fusion Algorithm in order to fully function properly.
+
+\subsubsection{Results}
+
+Essentially, this module allows writers to have a simplified and broad access to various sources on the internet pertaining to their article’s content and the ability to include those articles which they deem fitting alongside their article’s display on the website.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Planning}
 
-TODO
+\subsection{Issues Arisen}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Issues Arisen}
+No issues have arisen for this milestone. The next milestone relies on our client’s ability to set up accounts for deployment prior to us needing a server to deploy to. We are in communication with the client to make sure this need is met ahead of our planned development.
 
-TODO
+\subsection{Schedule}
+
+\begin{itemize}
+\item Deadlines
+ 	\setlength{\itemindent}{2em}
+	\item 11/09 - Milestone 4
+		 \setlength{\itemindent}{4em}
+		\item Brand
+		\item Production quality user interface (HTML / CSS)
+		\item Data Fusion
+		\item RSS Feed obtaining data and storing in database
+		\item Algorithm attempting matchmaking
+		\item Drupal Modules
+		\item Display modules
+		\item Data editing modules
+ 	\setlength{\itemindent}{2em}
+	\item 12/07- Milestone 5
+		 \setlength{\itemindent}{4em}
+		\item AWS Deployment
+		\item Integration of Varnish Cache server
+		\item Demonstration, Documentation, and Handover
+\setlength{\itemindent}{0em}
+\item Plan
+	\setlength{\itemindent}{2em}
+	\item 10/28 - 11/4
+		\setlength{\itemindent}{4em}
+		\item Finish front end display to user
+		\item Finish \& test RSS
+		\item Finish \& test Data Fusion Algorithm
+		\item Finish \& test Drupal Modules
+	\setlength{\itemindent}{2em}
+	\item 11/5 - 11/09
+		\setlength{\itemindent}{4em}
+		\item Milestone 4 presentation
+		\item Milestone 4 document
+	\setlength{\itemindent}{2em}
+	\item 11/09 - Milestone 4
+	\item 11/12 - 11/18
+		\setlength{\itemindent}{4em}
+		\item Final touches to all parts of project
+		\item Write example articles
+		\item Setup necessary accounts \& google ads
+		\item User and system testing
+	\setlength{\itemindent}{2em}
+	\item 11/19 - 11/25
+		\setlength{\itemindent}{4em}
+		\item AWS Deployment
+		\item Integration of Varnish Server
+	\setlength{\itemindent}{2em}
+	\item 11/26 - 12/01
+		\setlength{\itemindent}{4em}
+		\item Validation of requirements and system
+		\item Documentation \& Handover
+	\setlength{\itemindent}{2em}
+	\item 12/02 - Demonstration (Final)
+\end{itemize}
+
+Our team has met our internal planned deadlines for this Milestone. The remaining work includes finishing touches, setting up necessary accounts, user and system testing, deployment, validation, and documentation / handover.
+
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Preliminary Documentation}
 
-TODO
+The following links explain how to setup and build all the separate components of the system. The customized code has been written in JavaDoc format so that a JavaDoc can be generated during the documentation phase of our plan.
 
 \begin{itemize}
 \item https://help.ubuntu.com/community/ApacheMySQLPHP
 \item http://drupal.org/documentation
 \item http://lucene.apache.org/core/4\_0\_0/index.html
 \item https://www.varnish-cache.org/docs
+\item http://lucene.apache.org/core/
+\item http://www.ibm.com/developerworks/opensource/library/os-apache-lucenesearch/
+\item http://www.lucenetutorial.com/advanced-topics/scoring.html
 \end{itemize}
 
 \end{document}
