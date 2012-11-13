@@ -31,6 +31,7 @@ public class Main {
 	 */
 	public static void main(String[] args) throws Exception {
 		Properties properties = sun.datafusion.utils.PropertyUtils.loadProperties();
+		sun.datafusion.utils.PropertyUtils.loadLoggingProperties();
 		//Default timeout is 1000 seconds, or about 17 minutes.
 		READER_TIMEOUT = Long.parseLong(properties.getProperty("reader_timeout", "1000000"));
 		DBNAME = properties.getProperty("db","sun_in_the_city");
