@@ -20,10 +20,20 @@ import com.sun.syndication.feed.synd.SyndFeed;
 import com.sun.syndication.io.SyndFeedInput;  
 import com.sun.syndication.io.XmlReader;  
 
+/***************************************************************************
+ * The RSSGrabber object takes a DataMeans object and then is able to
+ * parse all new RSS posts from the RSS feed contained in that DataMeans
+ * object.
+ * @author James McGuinness
+ *
+ */
 public class RSSGrabber {
 	private String feedUrl;
 	private HttpURLConnection conn;
 	private SyndFeed feed;
+	//Unfortunately, ROME does not specify a return type object on the
+	//lists it returns, so we must use a generic list and then cast it
+	//to the appropriate type specified in its JDocs.
 	private List posts;
 	private Iterator postIter;
 	private Date lastChecked;
@@ -36,6 +46,7 @@ public class RSSGrabber {
 	 * to the RSS link given.
 	 * 
 	 * @param The DataMeans object to retrieve new RSS posts from
+	 * @throws Exception
 	 */
 	public RSSGrabber(DataMeans data) throws Exception{
 		URL url = new URL(data.getUrl());
@@ -45,14 +56,21 @@ public class RSSGrabber {
 		posts = feed.getEntries();
 		postIter = posts.iterator();
 		lastChecked = data.getLastProcessed();
-		//System.out.println("Last checked date on this feed is: " + lastChecked.toString());
 		dataMeansId = data.getId();
 		feedUrl = data.getUrl();
 	}
 	
-	//This function simply grabs the entire HTML source for a given URL.
+	/***************************************************************************
+	 * Grabs the entire HTML source text for a given url.
+	 * @param The HTTP URL to grab the source text for
+	 * @return The source text, stored in a string
+	 * @throws IOException
+	 */
 	private String grabHTML(URL url) throws IOException{
 		URLConnection spoof = url.openConnection();
+		//This line will make the remote url think that we're a Firefox browser; this ensures
+		//that the connection will not be blocked or otherwise discarded by the remote
+		//machine.
 		spoof.setRequestProperty( "User-Agent", "Mozilla/4.0 (compatible; MSIE 5.5; Windows NT 5.0; H010818)" );
 		BufferedReader in = new BufferedReader(new InputStreamReader(spoof.getInputStream()));
 	  	String strLine = "";
@@ -74,7 +92,6 @@ public class RSSGrabber {
 		ArrayList<DataStored> newPosts = new ArrayList<DataStored>();
 		while(postIter.hasNext()){
 			SyndEntry next = (SyndEntry)postIter.next();
-			//System.out.println("Post date is: " + next.getPublishedDate().toString());
 			if(next.getPublishedDate().getTime() > lastChecked.getTime()){
 				DataStored newData = new DataStored();
 				newData.setUrl(feedUrl);

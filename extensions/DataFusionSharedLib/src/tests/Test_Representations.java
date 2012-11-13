@@ -3,6 +3,7 @@ package tests;
 import org.junit.Test;
 import org.junit.Assert.*;
 
+// Tests all the MySQL table representations
 public class Test_Representations {
 	
 	@Test

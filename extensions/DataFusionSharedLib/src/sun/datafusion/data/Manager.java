@@ -9,7 +9,6 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.Properties;
 import java.util.List;
 import java.util.Map;
 
@@ -21,7 +20,8 @@ public class Manager {
 	/***************************************************************************
 	 * Constructor that sets up the MySQL information
 	 */
-	public Manager(String hostname, String database, String username, String password) {
+	public Manager(String hostname, String database, String username,
+			String password) {
 		// Store connection details
 		this.hostname = hostname;
 		this.database = database;
@@ -33,11 +33,6 @@ public class Manager {
 
 		// Start connection
 		startConnection();
-	}
-
-	public Manager(Properties prop) {
-		this(prop.getProperty("hostname"), prop.getProperty("db"), prop
-				.getProperty("dbuser"), prop.getProperty("dbpassword"));
 	}
 
 	/***************************************************************************
@@ -68,7 +63,8 @@ public class Manager {
 				DataMeans cur = new DataMeans(queryResult.getInt(1),
 						queryResult.getInt(2), queryResult.getString(3),
 						queryResult.getString(4), queryResult.getInt(5),
-						new java.util.Date(queryResult.getTimestamp(6).getTime()));
+						new java.util.Date(queryResult.getTimestamp(6)
+								.getTime()));
 				result.add(cur);
 			}
 
@@ -77,7 +73,7 @@ public class Manager {
 		} catch (SQLException e) {
 
 			// Error occurred
-			System.out.println("SQL Error occured while getting data means");
+			System.err.println("SQL Error occured while getting data means");
 			return null;
 		}
 
@@ -95,18 +91,20 @@ public class Manager {
 		// Make connection if not already, ensure success
 		if (!startConnection())
 			return false;
-		
-		try{
-			//Create query
-			psSetDataMeansProcessed.setTimestamp(1, new java.sql.Timestamp(new java.util.Date().getTime()));
+
+		try {
+			// Create query
+			psSetDataMeansProcessed.setTimestamp(1, new java.sql.Timestamp(
+					new java.util.Date().getTime()));
 			psSetDataMeansProcessed.setInt(2, dm.getId());
-			
-			//Execute query
+
+			// Execute query
 			psSetDataMeansProcessed.executeUpdate();
 			return true;
-			
-		} catch (SQLException e){
-			System.out.println("SQL Error when updating data means processed date");
+
+		} catch (SQLException e) {
+			System.err
+					.println("SQL Error when updating data means processed date");
 			return false;
 		}
 	}
@@ -131,85 +129,113 @@ public class Manager {
 			psCreateDataStored.setString(4, ds.getData());
 			psCreateDataStored.setString(5, ds.getLinkedUrl());
 			psCreateDataStored.setString(6, ds.getLinkedData());
-			psCreateDataStored.setTimestamp(7, new java.sql.Timestamp(ds.getTimestamp().getTime()));
-			return psCreateDataStored.executeUpdate() == 1 ? true : false;
+			psCreateDataStored.setTimestamp(7, new java.sql.Timestamp(ds
+					.getTimestamp().getTime()));
+			return psCreateDataStored.executeUpdate() == 1;
 		} catch (SQLException e) {
-			System.out.println(e);
+			System.err.println(e);
 			return false;
 		}
 	}
-	
+
+	/***************************************************************************
+	 * Gets the DataMeans object represented by the given id
+	 * 
+	 * @param DataMeans_id
+	 *            the ID of a data means object
+	 * @return The DataMeans object or NULL if it was not found
+	 */
 	public DataMeans getDataMeans(int DataMeans_id) {
 		// Make connection if not already, ensure success
 		if (!startConnection())
 			return null;
-		
-		DataMeans dm = null;
 
 		try {
 			// Create query
 			psGetDataMeans.setInt(1, DataMeans_id);
-			
-			//perform query
-			ResultSet rs= psGetDataMeans.executeQuery();
-			
-			rs.next();
-			dm= new DataMeans(rs.getInt(1),
-					rs.getInt(2), rs.getString(3),
-					rs.getString(4), rs.getInt(5),
-					new Date(rs.getDate(6).getTime()));
-		} catch (SQLException e) {
-		}
 
-		// Return result
-		return dm;
+			// Perform query
+			ResultSet rs = psGetDataMeans.executeQuery();
+
+			// Get the result
+			if (rs.next())
+				// Found the object, return it
+				return new DataMeans(rs.getInt(1), rs.getInt(2),
+						rs.getString(3), rs.getString(4), rs.getInt(5),
+						new Date(rs.getDate(6).getTime()));
+			else
+				// No object, return NULL
+				return null;
+
+		} catch (SQLException e) {
+			// Error ocurred, return NULL
+			System.err.println(e);
+			return null;
+		}
 	}
-	
-	public DataStored getDataStored(int DataStored_id){
+
+	/***************************************************************************
+	 * Gets the DataStored object represented by the given id
+	 * 
+	 * @param DataStored_id
+	 *            the ID of a data stored object
+	 * @return The DataStored object or NULL if it was not found
+	 */
+	public DataStored getDataStored(int DataStored_id) {
 		// Make connection if not already, ensure success
 		if (!startConnection())
 			return null;
-		
-		DataStored ds = null;
 
 		try {
 			// Create query
 			psGetDataStored.setInt(1, DataStored_id);
-			
-			//perform query
-			ResultSet rs= psGetDataStored.executeQuery();
-			rs.next();
-			ds= createDataStoredFromResult(rs);
-		} catch (SQLException e) {
-		}
 
-		// Return result
-		return ds;
+			// Perform query
+			ResultSet queryResult = psGetDataStored.executeQuery();
+
+			// Get object
+			if (queryResult.next())
+				// Object found, return it
+				return new DataStored(queryResult.getInt(1),
+						queryResult.getInt(2), queryResult.getString(3),
+						queryResult.getString(4), queryResult.getString(5),
+						queryResult.getString(6), queryResult.getString(7),
+						new Date(queryResult.getDate(8).getTime()),
+						queryResult.getBoolean(9));
+			else
+				// No object found, return NULL
+				return null;
+
+		} catch (SQLException e) {
+			// Error ocurred, return NULL
+			System.err.println(e);
+			return null;
+		}
 	}
-	
+
+	/***************************************************************************
+	 * Sets the given DataStored object as indexed
+	 * 
+	 * @param dataStored
+	 *            The object to set updated
+	 * @return If successfully updated the object
+	 */
 	public boolean setDataStoredIndexed(DataStored dataStored) {
 		if (!startConnection())
 			return false;
-		
+
 		try {
+			// Set the ID to update
 			psSetDataStoredIndexed.setInt(1, dataStored.getId());
-			return psSetDataStoredIndexed.executeUpdate() == 1 ? true : false;
+
+			// Execute the query and return the result
+			return psSetDataStoredIndexed.executeUpdate() == 1;
 		} catch (SQLException e) {
 			// Error occurred
-			System.out.println("SQL Error occured while getting nodes to process");
+			System.err
+					.println("SQL Error occured while getting nodes to process");
 			return false;
 		}
-	}
-	
-	private DataStored createDataStoredFromResult(ResultSet queryResult) throws SQLException{
-		DataStored cur = new DataStored(queryResult.getInt(1),
-				queryResult.getInt(2), queryResult.getString(3),
-				queryResult.getString(4), queryResult.getString(5),
-				queryResult.getString(6), queryResult.getString(7),
-				new Date(queryResult.getDate(8).getTime()),
-				queryResult.getBoolean(9));
-		
-		return cur;
 	}
 
 	/***************************************************************************
@@ -229,7 +255,12 @@ public class Manager {
 			// Turn result set into the list of results
 			List<DataStored> result = new LinkedList<DataStored>();
 			while (queryResult.next()) {
-				result.add(createDataStoredFromResult(queryResult));
+				result.add(new DataStored(queryResult.getInt(1), queryResult
+						.getInt(2), queryResult.getString(3), queryResult
+						.getString(4), queryResult.getString(5), queryResult
+						.getString(6), queryResult.getString(7), new Date(
+						queryResult.getDate(8).getTime()), queryResult
+						.getBoolean(9)));
 			}
 
 			// Return the result list
@@ -237,7 +268,7 @@ public class Manager {
 		} catch (SQLException e) {
 
 			// Error occurred
-			System.out.println("SQL Error occured while getting data stored");
+			System.err.println("SQL Error occured while getting data stored");
 			return null;
 		}
 	}
@@ -267,7 +298,6 @@ public class Manager {
 			Map<Integer, Node> nodes = new HashMap<Integer, Node>();
 			while (queryResult.next()) {
 
-				String tags= "";
 				// Get the integer of the current node
 				Integer nodeID = queryResult.getInt(1);
 
@@ -287,7 +317,6 @@ public class Manager {
 				// Add the current tag
 				curNode.addTag(queryResult.getString(2));
 			}
-			
 
 			// Convert the map to the list
 			List<Node> result = new LinkedList<Node>();
@@ -318,8 +347,7 @@ public class Manager {
 	 */
 	public boolean createDataFusion(DataFusion df) {
 		// Make connection if not already, ensure success
-		if (!startConnection())
-		{
+		if (!startConnection()) {
 			System.out.println("failed connection");
 			return false;
 		}
@@ -332,8 +360,9 @@ public class Manager {
 			psCreateDataFusion.setString(5, df.getUrl());
 			psCreateDataFusion.setString(6, df.getSummary());
 			psCreateDataFusion.setInt(7, df.getRating());
-			psCreateDataFusion.setDate(8, new java.sql.Date(df.getTimestamp().getTime()));
-			return psCreateDataFusion.executeUpdate() == 1 ? true : false;
+			psCreateDataFusion.setDate(8, new java.sql.Date(df.getTimestamp()
+					.getTime()));
+			return psCreateDataFusion.executeUpdate() == 1;
 		} catch (SQLException e) {
 			return false;
 		}
@@ -397,11 +426,11 @@ public class Manager {
 							+ "dm.id, dm.DataSource_id, dm.name, dm.url, dm.type, dm.lastProcessed "
 							+ "FROM " + database + ".DataMeans dm "
 							+ "WHERE dm.lastProcessed <= ?");
-			
-			psSetDataMeansProcessed = connection
-					.prepareStatement("UPDATE " + database + ".DataMeans dm "
-							+ "SET lastProcessed = ? "
-							+ "WHERE id = ?");
+
+			// Set the lastProcessed time for the given id
+			psSetDataMeansProcessed = connection.prepareStatement("UPDATE "
+					+ database + ".DataMeans dm " + "SET lastProcessed = ? "
+					+ "WHERE id = ?");
 
 			// Get all DataStored where not indexed
 			psGetDataStoredToIndex = connection
@@ -417,27 +446,32 @@ public class Manager {
 					+ database + ".taxonomy_term_data data "
 					+ "WHERE node.created >= ? "
 					+ "AND node.nid = index.nid AND index.tid = data.tid");
-			
+
 			// Indicate that a datastored object has been indexed
-			psSetDataStoredIndexed = connection.prepareStatement("UPDATE "+ database + ".DataStored ds " +
-			"SET indexed = 1 " + "WHERE id=?");
+			psSetDataStoredIndexed = connection.prepareStatement("UPDATE "
+					+ database + ".DataStored ds " + "SET indexed=1 "
+					+ "WHERE id=?");
 
 			// Create a data fusion object in the table
-			psCreateDataFusion = connection.prepareStatement("INSERT into DataFusion "  +
-					"(nodeID, DataSource_id, DataStored_id, title, url, summary, rating, timestamp) " +
-							"values (?, ?, ?, ?, ?, ?, ?, ?)");	
-			
+			psCreateDataFusion = connection
+					.prepareStatement("INSERT into DataFusion "
+							+ "(nodeID, DataSource_id, DataStored_id, title, url, summary, rating, timestamp) "
+							+ "values (?, ?, ?, ?, ?, ?, ?, ?)");
+
 			// Create a data stored object
-			psCreateDataStored= connection.prepareStatement("INSERT into DataStored "  +
-					"(DataMeans_id, title, url, data, linkedUrl, linkedData, timestamp) " +
-							"values (?, ?, ?, ?, ?, ?, ?)");	
-			
+			psCreateDataStored = connection
+					.prepareStatement("INSERT into DataStored "
+							+ "(DataMeans_id, title, url, data, linkedUrl, linkedData, timestamp) "
+							+ "values (?, ?, ?, ?, ?, ?, ?)");
+
 			// Get a data stored object
-			psGetDataStored= connection.prepareStatement("SELECT * " + "FROM " + database + ".DataStored " + "WHERE id=?");
-			
+			psGetDataStored = connection.prepareStatement("SELECT * " + "FROM "
+					+ database + ".DataStored " + "WHERE id=?");
+
 			// Get a data means object
-			psGetDataMeans= connection.prepareStatement("SELECT * " + "FROM " + database + ".DataMeans " + "WHERE id =?"); 
-			
+			psGetDataMeans = connection.prepareStatement("SELECT * " + "FROM "
+					+ database + ".DataMeans " + "WHERE id =?");
+
 		} catch (SQLException e) {
 			System.out.println("Failed to create prepared statements");
 			close();
