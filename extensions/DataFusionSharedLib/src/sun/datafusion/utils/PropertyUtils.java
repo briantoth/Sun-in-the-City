@@ -7,8 +7,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Properties;
 
+import org.apache.log4j.PropertyConfigurator;
+
 public class PropertyUtils {
 	private static final String configFile= "config.properties";
+	private static final String loggingConfigFile = "logging.properties";
 	private static Properties prop= null;
 	
 	public static Properties loadProperties(){
@@ -57,5 +60,9 @@ public class PropertyUtils {
 		}
 		
 		return prop;
+	}
+	
+	public static void loadLoggingProperties(){
+		PropertyConfigurator.configure(loggingConfigFile);
 	}
 }

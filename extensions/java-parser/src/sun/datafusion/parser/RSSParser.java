@@ -4,6 +4,8 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 import sun.datafusion.data.DataMeans;
 import sun.datafusion.data.DataStored;
 import sun.datafusion.data.Manager;
@@ -18,6 +20,7 @@ import sun.datafusion.data.Manager;
  */
 public class RSSParser {
 	
+	Logger logger = Logger.getLogger(RSSParser.class);
 	String DBNAME;
 	String USERNAME;
 	String PASSWORD;
@@ -46,7 +49,8 @@ public class RSSParser {
 	 * If a DataMeans cannot be parsed, it will be skipped.
 	 */
 	public void parse(){
-		DataMeans next;
+		DataMeans next = null;
+		logger.info("Started RSS parsing.");
 		//Get the list of sources to parse from the MySQL table.
 		List<DataMeans> means = p.getDataMeansToProcess(new Date());
 		Iterator<DataMeans> mean_iter = means.iterator();
@@ -64,9 +68,11 @@ public class RSSParser {
 					p.createDataStored(iter.next());
 				}
 			} catch(Exception e){
-				//If there was an error, write an error, but keep parsing.
+				logger.error("The DataMeans object with title " + next.getName() 
+						+ " and id " + next.getId() + " failed to parse: ", e);
 				continue;
 			}
 		}
+		logger.info("RSS parsing completed.");
 	}
 }
