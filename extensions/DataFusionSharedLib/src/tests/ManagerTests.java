@@ -71,6 +71,7 @@ public class ManagerTests {
 		man.close();
 	}
 	
+	@Test
 	public void testSetDataMeansProcessed(){
 		
 		Manager man = setupManager();

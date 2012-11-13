@@ -94,9 +94,17 @@ public class Main {
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
+				
+				manager.close();
 			}
 		});
-
+		
+		while(true){
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+			}
+		}
 	}
 	
 
