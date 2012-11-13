@@ -48,7 +48,7 @@ public class PropertyUtils {
 				prop.setProperty("dbpassword", "");
 
 				//save properties to project root folder
-				prop.store(new FileOutputStream("config.properties"), null);
+				prop.store(new FileOutputStream(configFile), null);
 
 			} catch (IOException ex) {
 				ex.printStackTrace();
