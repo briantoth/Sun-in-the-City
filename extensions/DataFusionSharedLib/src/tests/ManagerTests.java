@@ -10,6 +10,7 @@ import sun.datafusion.*;
 import org.junit.Test;
 
 import sun.datafusion.data.DataFusion;
+import sun.datafusion.data.DataMeans;
 import sun.datafusion.data.DataStored;
 import sun.datafusion.data.Manager;
 import sun.datafusion.utils.PropertyUtils;
@@ -66,6 +67,25 @@ public class ManagerTests {
 		
 		if(!man.createDataStored(ds))
 			fail("failed to update datastored table");
+		
+		man.close();
+	}
+	
+	public void testSetDataMeansProcessed(){
+		
+		Manager man = setupManager();
+		
+		DataMeans dm = new DataMeans();
+		
+		dm.setDataSource_id(3);
+		dm.setId(4);
+		dm.setLastProcessed(new Date());
+		dm.setName("test data means - get");
+		dm.setType(0);
+		dm.setUrl("test url");
+		
+		if(!man.setDataMeansProcessed(dm))
+			fail("failed to set data means");
 		
 		man.close();
 	}
