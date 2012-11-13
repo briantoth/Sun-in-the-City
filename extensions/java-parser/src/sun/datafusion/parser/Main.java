@@ -21,22 +21,22 @@ public class Main {
 	/***************************************************************************
 	 * The main method to run the parser. Reads a properties file 
 	 * (named .properties) and looks up the following information:
-	 * READER_TIMEOUT: The amount of time (in millis) to sleep after parsing.
-	 * DBNAME: The database name for the MySQL server to query.
-	 * USERNAME: The username to log into the MySQL server with.
-	 * PASSWORD: The password to log into the MySQL server with.
-	 * SERVER_IP: The IP of the server, generally localhost.
+	 * reader_timeout: The amount of time (in millis) to sleep after parsing.
+	 * db: The database name for the MySQL server to query.
+	 * user: The username to log into the MySQL server with.
+	 * pass: The password to log into the MySQL server with.
+	 * hostname: The IP of the server, generally localhost.
 	 * @param The base command line arguments, unused.
 	 * @throws Exception
 	 */
 	public static void main(String[] args) throws Exception {
 		Properties properties = sun.datafusion.utils.PropertyUtils.loadProperties();
 		//Default timeout is 1000 seconds, or about 17 minutes.
-		READER_TIMEOUT = Long.parseLong(properties.getProperty("READER_TIMEOUT", "1000000"));
-		DBNAME = properties.getProperty("DBNAME","sun_in_the_city");
-		USERNAME = properties.getProperty("USERNAME","root");
-		PASSWORD = properties.getProperty("PASSWORD","root");
-		SERVER_IP = properties.getProperty("SERVER_IP","localhost");
+		READER_TIMEOUT = Long.parseLong(properties.getProperty("reader_timeout", "1000000"));
+		DBNAME = properties.getProperty("db","sun_in_the_city");
+		USERNAME = properties.getProperty("user","root");
+		PASSWORD = properties.getProperty("pass","root");
+		SERVER_IP = properties.getProperty("hostname","localhost");
 		RSSParser parser = new RSSParser(DBNAME, USERNAME, PASSWORD, SERVER_IP);
 		while(true){
 			parser.parse();

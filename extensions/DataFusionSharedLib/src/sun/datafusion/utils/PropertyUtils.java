@@ -46,6 +46,7 @@ public class PropertyUtils {
 				prop.setProperty("db", "sun_in_the_city");
 				prop.setProperty("dbuser", "root");
 				prop.setProperty("dbpassword", "");
+				prop.setProperty("reader_timeout", "1000000");
 
 				//save properties to project root folder
 				prop.store(new FileOutputStream(configFile), null);
