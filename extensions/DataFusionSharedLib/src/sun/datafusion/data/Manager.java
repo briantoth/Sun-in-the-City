@@ -137,7 +137,87 @@ public class Manager {
 			return false;
 		}
 	}
+	
+	/***************************************************************************
+	 * Creates a DataMeans object in the database and returns if it was
+	 * successful
+	 * 
+	 * @param dm
+	 *            The DataMeans object to create
+	 * @return If the creation was successful
+	 */
+	public boolean createDataMeans(DataMeans dm) {
+		// Make connection if not already, ensure success
+		if (!startConnection())
+			return false;
 
+		try {
+			psCreateDataMeans.setInt(1, dm.getId());
+			psCreateDataMeans.setInt(2, dm.getDataSource_id());
+			psCreateDataMeans.setString(3, dm.getName());
+			psCreateDataMeans.setString(4, dm.getUrl());
+			psCreateDataMeans.setInt(5, dm.getType());
+			psCreateDataMeans.setTimestamp(6, new java.sql.Timestamp(dm.
+					getLastProcessed().getTime()));
+			return psCreateDataMeans.executeUpdate() == 1;
+		} catch (SQLException e) {
+			System.err.println(e);
+			return false;
+		}
+	}
+
+	/***************************************************************************
+	 * Creates a DataSource object in the database and returns if it was
+	 * successful
+	 * 
+	 * @param ds
+	 *            The DataSource object to create
+	 * @return If the creation was successful
+	 */
+	public boolean createDataSource(DataSource ds) {
+		// Make connection if not already, ensure success
+		if (!startConnection())
+			return false;
+
+		try {
+			psCreateDataSource.setInt(1, ds.getId());
+			psCreateDataSource.setString(2, ds.getUrl());
+			psCreateDataSource.setString(3, ds.getName());
+			psCreateDataSource.setString(4, ds.getLogourl());
+			return psCreateDataSource.executeUpdate() == 1;
+		} catch (SQLException e) {
+			System.err.println(e);
+			return false;
+		}
+	}
+	
+	/***************************************************************************
+	 * Creates a Node object in the database and returns if it was
+	 * successful
+	 * 
+	 * @param n
+	 *            The Node object to create
+	 * @return If the creation was successful
+	 */
+	public boolean createNode(Node n) {
+		// Make connection if not already, ensure success
+		if (!startConnection())
+			return false;
+
+		try {
+			psCreateNode.setInt(1, n.getNodeID());
+			psCreateTaxonomy_term_data.setInt(1, n.getNodeID());
+			psCreateTaxonomy_term_data.setString(2, n.getTags());
+			psCreateTaxonomy_index.setInt(1, n.getNodeID());
+			psCreateTaxonomy_term_hierarchy.setInt(1, n.getNodeID());
+			psCreateTaxonomy_term_hierarchy.setInt(2, 0);
+			return psCreateDataSource.executeUpdate() == 1;
+		} catch (SQLException e) {
+			System.err.println(e);
+			return false;
+		}
+	}
+	
 	/***************************************************************************
 	 * Gets the DataMeans object represented by the given id
 	 * 
@@ -457,6 +537,12 @@ public class Manager {
 					.prepareStatement("INSERT into DataFusion "
 							+ "(nodeID, DataSource_id, DataStored_id, title, url, summary, rating, timestamp) "
 							+ "values (?, ?, ?, ?, ?, ?, ?, ?)");
+			
+			// Create a data means object in the table
+			psCreateDataMeans = connection
+					.prepareStatement("INSERT into DataMeans "
+							+ "(nodeID, DataSource_id, name, url, type, lastProcessed) "
+							+ "values (?, ?, ?, ?, ?, ?)");
 
 			// Create a data stored object
 			psCreateDataStored = connection
@@ -471,6 +557,36 @@ public class Manager {
 			// Get a data means object
 			psGetDataMeans = connection.prepareStatement("SELECT * " + "FROM "
 					+ database + ".DataMeans " + "WHERE id =?");
+			
+			// Create a data source object in the table
+			psCreateDataSource = connection
+					.prepareStatement("INSERT into DataSource "
+							+ "(id, url, name, logourl) "
+							+ "values (?, ?, ?, ?)");
+			
+			// Create a node object in the table
+			psCreateNode = connection
+					.prepareStatement("INSERT into node "
+							+ "(nid) "
+							+ "values (?)");
+			
+			// Create a taxonomy_term_data object in the table
+			psCreateTaxonomy_term_data = connection
+					.prepareStatement("INSERT into taxonomy_term_data "
+							+ "(tid, name) "
+							+ "values (?, ?)");
+			
+			// Create a taxonomy_index object in the table
+			psCreateTaxonomy_index = connection
+					.prepareStatement("INSERT into taxonomy_index "
+							+ "(tid) "
+							+ "values (?)");
+						
+			// Create a taxonomy_term_hierarchy object in the table
+			psCreateTaxonomy_term_hierarchy = connection
+					.prepareStatement("INSERT into taxonomy_term_hierarchy "
+							+ "(tid, parent) "
+							+ "values (?, ?)");
 
 		} catch (SQLException e) {
 			System.out.println("Failed to create prepared statements");
@@ -498,7 +614,13 @@ public class Manager {
 	private PreparedStatement psGetDataStoredToIndex;
 	private PreparedStatement psGetNodesToProcess;
 	private PreparedStatement psCreateDataFusion;
+	private PreparedStatement psCreateDataMeans;
 	private PreparedStatement psGetDataMeans;
 	private PreparedStatement psGetDataStored;
 	private PreparedStatement psSetDataStoredIndexed;
+	private PreparedStatement psCreateDataSource;
+	private PreparedStatement psCreateNode;
+	private PreparedStatement psCreateTaxonomy_term_data; 
+	private PreparedStatement psCreateTaxonomy_index;
+	private PreparedStatement psCreateTaxonomy_term_hierarchy ;
 }
