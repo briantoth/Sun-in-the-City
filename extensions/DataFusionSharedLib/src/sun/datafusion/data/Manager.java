@@ -616,7 +616,7 @@ public class Manager {
 					+ database + ".DataMeans " + "WHERE id =?");
 			
 			// Get a data fusion object
-			psGetDataMeans = connection.prepareStatement("SELECT * " + "FROM "
+			psGetDataFusion = connection.prepareStatement("SELECT * " + "FROM "
 					+ database + ".DataFusion" + "WHERE Id =?");
 			
 			// Create a data source object in the table

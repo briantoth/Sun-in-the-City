@@ -100,7 +100,7 @@ public class DataFuser implements Runnable {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			System.out.println(d.get("id"));
+			
 	    	DataStored ds = manager.getDataStored(Integer.parseInt(d.get("id")));
 	    	
 	    	DataFusion df = new DataFusion();

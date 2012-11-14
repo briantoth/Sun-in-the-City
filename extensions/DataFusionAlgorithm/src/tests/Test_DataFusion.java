@@ -133,6 +133,8 @@ public class Test_DataFusion {
 		ds.setData("Apple Google Amazon Facebook Yahoo LinkedIn");
 		ds.setTitle("test title 6");
 		man.createDataStored(ds);
+
+		DataIndexer.clearIndex(indexFile);
 		
 		List<DataStored> unindexedData= man.getDataStoredToIndex();
 		
