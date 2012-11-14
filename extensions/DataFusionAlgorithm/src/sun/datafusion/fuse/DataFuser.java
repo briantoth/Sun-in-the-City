@@ -59,7 +59,7 @@ public class DataFuser implements Runnable {
 	    // when no field is explicitly specified in the query.
 	    Query q = null;
 		try {
-			q = new org.apache.lucene.queryParser.QueryParser(Version.LUCENE_36, "title", analyzer).parse(node.getTags());
+			q = new org.apache.lucene.queryParser.QueryParser(Version.LUCENE_36, "content", analyzer).parse(node.getTags());
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -100,6 +100,7 @@ public class DataFuser implements Runnable {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			System.out.println(d.get("id"));
 	    	DataStored ds = manager.getDataStored(Integer.parseInt(d.get("id")));
 	    	
 	    	DataFusion df = new DataFusion();

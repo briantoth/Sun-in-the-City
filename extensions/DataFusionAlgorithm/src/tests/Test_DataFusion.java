@@ -2,13 +2,17 @@ package tests;
 
 import static org.junit.Assert.*;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Date;
+import java.util.List;
 import java.util.Properties;
 import java.util.UUID;
 
 import sun.datafusion.*;
 
 import org.apache.lucene.store.Directory;
+import org.apache.lucene.store.SimpleFSDirectory;
 import org.junit.Test;
 
 import sun.datafusion.data.DataFusion;
@@ -17,10 +21,14 @@ import sun.datafusion.data.DataSource;
 import sun.datafusion.data.DataStored;
 import sun.datafusion.data.Manager;
 import sun.datafusion.data.Node;
+import sun.datafusion.fuse.DataFuser;
+import sun.datafusion.index.DataIndexer;
 import sun.datafusion.index.DataRetriever;
 import sun.datafusion.utils.PropertyUtils;
 
 public class Test_DataFusion {
+	
+	private static final String testIndex= "./testLuceneIndex";
 	
 	private Manager setupManager(){
 		Properties prop = PropertyUtils.loadProperties();
@@ -53,10 +61,13 @@ public class Test_DataFusion {
 	}*/
 	
 	@Test
-	public void testDataFusion(){
+	public void testDataFusion()throws IOException{
 		
-		Properties prop = PropertyUtils.loadProperties();
-		Directory indexLocation = null; 
+		//make sure to destroy old index
+		File indexFile= new File(testIndex);
+		indexFile.mkdir();
+		Directory indexLocation= SimpleFSDirectory.open(indexFile);
+		
 		Manager man = setupManager();
 		man.cleanTables();
 		
@@ -81,16 +92,57 @@ public class Test_DataFusion {
 			fail("Fails to create a DataMeans object! ");
 		
 		Node n = new Node(1);
-		n.addTag("iPhone5");
-		n.addTag("surface");
-		n.addTag("Nexus");
-		n.addTag("Galaxy III");
+		n.addTag("apple");
+		n.addTag("google");
 		if(!man.createNode(n))
 			fail("Fails to create a DataMeans object! ");
 		
 		DataStored ds = new DataStored();
-		ds.
+		ds.setDataMeans_id(1);
+		ds.setData("Google Apple");
+		ds.setTitle("test title 1");
+		if(!man.createDataStored(ds))
+			fail("Fails to create a DataStored object! ");
 		
+		ds = new DataStored();
+		ds.setDataMeans_id(1);
+		ds.setData("Apple Google Amazon");
+		ds.setTitle("test title 2");
+		man.createDataStored(ds);
+		
+		ds = new DataStored();
+		ds.setDataMeans_id(1);
+		ds.setData("Apple Facebook");
+		ds.setTitle("test title 3");
+		man.createDataStored(ds);
+		
+		ds = new DataStored();
+		ds.setDataMeans_id(1);
+		ds.setData("IBM HP");
+		ds.setTitle("test title 4");
+		man.createDataStored(ds);
+		
+		ds = new DataStored();
+		ds.setDataMeans_id(1);
+		ds.setData("Apple Google Apple");
+		ds.setTitle("test title 5");
+		man.createDataStored(ds);
+		
+		ds = new DataStored();
+		ds.setDataMeans_id(1);
+		ds.setData("Apple Google Amazon Facebook Yahoo LinkedIn");
+		ds.setTitle("test title 6");
+		man.createDataStored(ds);
+		
+		List<DataStored> unindexedData= man.getDataStoredToIndex();
+		
+		for(DataStored dss : unindexedData){
+			DataIndexer di = new DataIndexer(dss, indexLocation, man);
+			di.run();
+		}
+		
+		DataFuser df = new DataFuser(n, indexLocation, man);
+		df.run();
 		
 	}
 }
