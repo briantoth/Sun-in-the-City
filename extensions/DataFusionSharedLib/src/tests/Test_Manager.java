@@ -1,14 +1,31 @@
 package tests;
 
+import static org.junit.Assert.*;
+
+import java.util.Date;
+import java.util.UUID;
+
 import org.junit.Test;
 import org.junit.Assert.*;
+
+import sun.datafusion.data.DataFusion;
+import sun.datafusion.data.Manager;
+import sun.datafusion.utils.PropertyUtils;
 
 // Tests sun.datafusion.data.Manager
 public class Test_Manager {
 	
+	private Manager setupManager(){
+		return new Manager(PropertyUtils.loadProperties());
+	}
+	
 	@Test
 	public void testStandardConstructor(){
+		Manager man= setupManager();
 		
+		man.cleanTables();
+		
+		man.close();
 	}
 	
 	@Test

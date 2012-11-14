@@ -9,6 +9,21 @@ import java.util.Date;
  */
 public class DataFusion{
 	
+	
+	public DataFusion(int id, int nodeID, int dataSource_ID, int dataStored_ID, String title, String url,
+			String summary, boolean approved, int rating, Date timeStamp){
+		this.id= id;
+		this.nodeID= nodeID;
+		this.DataSource_id= dataSource_ID;
+		this.DataStored_id= dataStored_ID;
+		this.title= title;
+		this.url= url;
+		this.summary= summary;
+		this.approved= approved;
+		this.rating= rating;
+		this.timestamp= timeStamp;
+	}
+	
 	/***************************************************************************
 	 * Constructor that sets default values (NULL)
 	 */

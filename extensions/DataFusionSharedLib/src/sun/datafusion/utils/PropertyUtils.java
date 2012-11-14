@@ -50,6 +50,14 @@ public class PropertyUtils {
 				prop.setProperty("dbuser", "root");
 				prop.setProperty("dbpassword", "");
 				prop.setProperty("reader_timeout", "1000000");
+				prop.setProperty("nodeTable", "node");
+				prop.setProperty("dataMeansTable", "DataMeans");
+				prop.setProperty("dataFusionTable", "DataFusion");
+				prop.setProperty("dataSourceTable", "DataSource");
+				prop.setProperty("dataStoredTable", "DataStored");
+				prop.setProperty("taxonomyTable", "taxonomy_term_data");
+				prop.setProperty("taxonomyIndex", "taxonomy_index");
+				prop.setProperty("taxonomyHierarchy", "taxonomy_term_hierarchy");
 
 				//save properties to project root folder
 				prop.store(new FileOutputStream(configFile), null);

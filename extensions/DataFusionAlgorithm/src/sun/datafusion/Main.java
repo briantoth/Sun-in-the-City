@@ -66,7 +66,7 @@ public class Main {
 			indexLocation= tempIndexLocation;
 		}
 		
-		manager= new Manager(prop.getProperty("hostname"),prop.getProperty("db"),prop.getProperty("dbuser"),prop.getProperty("dbpassword"));
+		manager= new Manager(prop);
 				
 		// Startup a DataRetriever
 		final Thread dataRetriever= new Thread(new DataRetriever(prop, indexLocation, manager));

@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 /*******************************************************************************
  * Manages the interaction with data
@@ -33,6 +34,25 @@ public class Manager {
 
 		// Start connection
 		startConnection();
+	}
+	
+	/** constructor that doesn't suck
+	 * 
+	 */
+	public Manager(Properties prop){
+		hostname= prop.getProperty("hostname");
+		database= prop.getProperty("db");
+		username= prop.getProperty("dbuser");
+		password= prop.getProperty("dbpassword");
+		tableNames= new HashMap<String, String>();
+		tableNames.put("dataFusionTable", prop.getProperty("dataFusionTable"));
+		tableNames.put("dataMeansTable", prop.getProperty("dataMeansTable"));
+		tableNames.put("dataSourceTable", prop.getProperty("dataSourceTable"));
+		tableNames.put("dataStoredTable", prop.getProperty("dataStoredTable"));
+		tableNames.put("taxonomyTable", prop.getProperty("taxonomyTable"));
+		tableNames.put("taxonomyIndex", prop.getProperty("taxonomyIndex"));
+		tableNames.put("taxonomyHierarchy", prop.getProperty("taxonomyHierarchy"));
+		tableNames.put("nodeTable", prop.getProperty("nodeTable"));
 	}
 
 	/***************************************************************************
@@ -367,6 +387,53 @@ public class Manager {
 			return false;
 		}
 	}
+	
+	public DataFusion getDataFusion(int dataFusionID) {
+		// Make connection if not already, ensure success
+		if (!startConnection())
+			return null;
+
+		try {
+			// Create query
+			psGetDataFusion.setInt(1, dataFusionID);
+
+			// Perform query
+			ResultSet qr = psGetDataFusion.executeQuery();
+
+			// Get object
+			if (qr.next())
+				// Object found, return it
+				return new DataFusion(qr.getInt(1), qr.getInt(2), qr.getInt(3), qr.getInt(4), qr.getString(5),
+						qr.getString(6), qr.getString(7), qr.getBoolean(8), qr.getInt(9), new Date(qr.getDate(8).getTime()));
+			else
+				// No object found, return NULL
+				return null;
+
+		} catch (SQLException e) {
+			// Error ocurred, return NULL
+			System.err.println(e);
+			return null;
+		}
+	}
+	
+	public void cleanTables(){
+		// Make connection if not already, ensure success
+		if (!startConnection())
+			return;
+
+		PreparedStatement psClearTable;
+		try {
+			for(String table : tableNames.values()){
+				psClearTable = connection.prepareStatement("DELETE FROM " + database + "." + table);
+				psClearTable.executeUpdate();
+			}
+			
+		} catch (SQLException e) {
+			// Error ocurred, return NULL
+			System.err.println(e);
+			return;
+		}
+	}
 
 	/***************************************************************************
 	 * Closes the database connections
@@ -471,6 +538,11 @@ public class Manager {
 			// Get a data means object
 			psGetDataMeans = connection.prepareStatement("SELECT * " + "FROM "
 					+ database + ".DataMeans " + "WHERE id =?");
+			
+			// Get a data fusion object
+			psGetDataMeans = connection.prepareStatement("SELECT * " + "FROM "
+					+ database + ".DataFusion" + "WHERE Id =?");
+			
 
 		} catch (SQLException e) {
 			System.out.println("Failed to create prepared statements");
@@ -490,6 +562,7 @@ public class Manager {
 	private String database; // Name of the database
 	private String username; // Username to connect with
 	private String password; // Password to connect with
+	private Map<String,String> tableNames;
 
 	// MySQL prepared statements
 	private PreparedStatement psGetDataMeansToProcess;
@@ -498,6 +571,7 @@ public class Manager {
 	private PreparedStatement psGetDataStoredToIndex;
 	private PreparedStatement psGetNodesToProcess;
 	private PreparedStatement psCreateDataFusion;
+	private PreparedStatement psGetDataFusion;
 	private PreparedStatement psGetDataMeans;
 	private PreparedStatement psGetDataStored;
 	private PreparedStatement psSetDataStoredIndexed;
