@@ -231,7 +231,10 @@ public class Manager {
 			psCreateTaxonomy_index.setInt(1, n.getNodeID());
 			psCreateTaxonomy_term_hierarchy.setInt(1, n.getNodeID());
 			psCreateTaxonomy_term_hierarchy.setInt(2, 0);
-			return psCreateDataSource.executeUpdate() == 1;
+			return psCreateNode.executeUpdate() == 1 && 
+					psCreateTaxonomy_term_data.executeUpdate() == 1 && 
+					psCreateTaxonomy_index.executeUpdate() == 1 && 
+					psCreateTaxonomy_term_hierarchy.executeUpdate() == 1;
 		} catch (SQLException e) {
 			System.err.println(e);
 			return false;
@@ -503,6 +506,9 @@ public class Manager {
 
 		PreparedStatement psClearTable;
 		try {
+			psClearTable = connection.prepareStatement("DELETE FROM " + database + "." + 
+		tableNames.get("dataFusionTable"));
+			psClearTable.executeUpdate();
 			for(String table : tableNames.values()){
 				psClearTable = connection.prepareStatement("DELETE FROM " + database + "." + table);
 				psClearTable.executeUpdate();
@@ -608,7 +614,7 @@ public class Manager {
 			// Create a data means object in the table
 			psCreateDataMeans = connection
 					.prepareStatement("INSERT into DataMeans "
-							+ "(nodeID, DataSource_id, name, url, type, lastProcessed) "
+							+ "(id, DataSource_id, name, url, type, lastProcessed) "
 							+ "values (?, ?, ?, ?, ?, ?)");
 
 			// Create a data stored object
