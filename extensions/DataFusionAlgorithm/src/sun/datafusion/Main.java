@@ -20,7 +20,7 @@ import sun.datafusion.utils.PropertyUtils;
  */
 public class Main {
 	
-	private static final String indexStoreFile= "./LuceneIndex";
+	private static final String indexStoreDir= "./LuceneIndex";
 	
 	public volatile static boolean keepRunning = true;
 	private static Manager manager;
@@ -49,14 +49,10 @@ public class Main {
 		
 		final Directory indexLocation;
 		Directory tempIndexLocation=null;
-		File indexFile= new File(indexStoreFile);
+		File indexFile= new File(indexStoreDir);
 		
 		if(!indexFile.exists()){
-			try {
-				indexFile.createNewFile();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			indexFile.mkdir();
 		}
 		
 		try {

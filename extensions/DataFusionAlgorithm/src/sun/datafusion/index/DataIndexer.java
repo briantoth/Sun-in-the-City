@@ -1,5 +1,6 @@
 package sun.datafusion.index;
 
+import java.io.File;
 import java.io.IOException;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
@@ -65,5 +66,16 @@ public class DataIndexer implements Runnable {
 		doc.add(new Field("content", ds.getData(), Field.Store.NO,
 				Field.Index.ANALYZED));
 		indexWriter.addDocument(doc);
+	}
+	
+	public static void clearIndex(File indexLocation){
+		String[] myFiles;      
+        if(indexLocation.isDirectory()){  
+            myFiles = indexLocation.list();  
+            for (int i=0; i<myFiles.length; i++) {  
+                File myFile = new File(indexLocation, myFiles[i]);   
+                myFile.delete();  
+            }  
+         }  
 	}
 }

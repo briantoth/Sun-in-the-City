@@ -54,10 +54,14 @@ public class TestBuildIndex {
 		
 		//make sure to destroy old index
 		File indexFile= new File(testIndex);
+		DataIndexer.clearIndex(indexFile);
 		indexFile.mkdir();
 		Directory indexLocation= SimpleFSDirectory.open(indexFile);
 		DataIndexer di= new DataIndexer(ds, indexLocation, man);
 		di.run();
+		
+		if(indexFile.list().length == 0)
+			fail("did not create index");
 	}
 	
 	public void createDataMeansAndSource(Manager man){
