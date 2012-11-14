@@ -14,10 +14,6 @@ import java.util.Properties;
 public class Main {
 	
 	static long READER_TIMEOUT;
-	static String DBNAME;
-	static String USERNAME;
-	static String PASSWORD;
-	static String SERVER_IP;
 	/***************************************************************************
 	 * The main method to run the parser. Reads a properties file 
 	 * (named .properties) and looks up the following information:
@@ -34,11 +30,7 @@ public class Main {
 		sun.datafusion.utils.PropertyUtils.loadLoggingProperties();
 		//Default timeout is 1000 seconds, or about 17 minutes.
 		READER_TIMEOUT = Long.parseLong(properties.getProperty("reader_timeout", "1000000"));
-		DBNAME = properties.getProperty("db","sun_in_the_city");
-		USERNAME = properties.getProperty("user","root");
-		PASSWORD = properties.getProperty("pass","root");
-		SERVER_IP = properties.getProperty("hostname","localhost");
-		RSSParser parser = new RSSParser(DBNAME, USERNAME, PASSWORD, SERVER_IP);
+		RSSParser parser = new RSSParser(properties);
 		while(true){
 			parser.parse();
 			Thread.sleep(READER_TIMEOUT);

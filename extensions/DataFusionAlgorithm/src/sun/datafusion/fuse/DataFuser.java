@@ -25,7 +25,7 @@ import sun.datafusion.data.Node;
  * DataPrimary and DataSecondary sources. Upon finding a good match it stores
  * the result in the MySQL database for approval by the editors.
  */
-public class DataFuser extends Thread {
+public class DataFuser implements Runnable {
 	private final Node node;
 	private final Directory indexLocation;
 	private final Manager manager;

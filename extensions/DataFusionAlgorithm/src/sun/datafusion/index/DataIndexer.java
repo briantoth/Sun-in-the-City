@@ -19,7 +19,7 @@ import sun.datafusion.data.Manager;
  * will block until DataSource objects are available.
  * 
  */
-public class DataIndexer extends Thread {
+public class DataIndexer implements Runnable {
 	private final DataStored dataStored;
 	private final Directory indexLocation;
 	private IndexWriter indexWriter;

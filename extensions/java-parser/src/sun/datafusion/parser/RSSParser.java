@@ -3,6 +3,7 @@ package sun.datafusion.parser;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Properties;
 
 import org.apache.log4j.Logger;
 
@@ -21,10 +22,6 @@ import sun.datafusion.data.Manager;
 public class RSSParser {
 	
 	Logger logger = Logger.getLogger(RSSParser.class);
-	String DBNAME;
-	String USERNAME;
-	String PASSWORD;
-	String SERVER_IP;
 	Manager p;
 	
 	/***************************************************************************
@@ -35,12 +32,8 @@ public class RSSParser {
 	 * @param Password to log in with
 	 * @param The MySQL server ip (usually localhost)
 	 */
-	public RSSParser(String dbname, String username, String password, String server_ip){
-		DBNAME = dbname;
-		USERNAME = username;
-		PASSWORD = password;
-		SERVER_IP = server_ip;
-		p = new Manager(SERVER_IP, DBNAME, USERNAME, PASSWORD);
+	public RSSParser(Properties prop){
+		p = new Manager(prop);
 	}
 	
 	/***************************************************************************

@@ -1,4 +1,4 @@
 bin
 .classpath
 config.properties
-LuceneIndex
+*LuceneIndex
