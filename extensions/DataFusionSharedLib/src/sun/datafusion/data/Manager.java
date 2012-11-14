@@ -21,24 +21,6 @@ public class Manager {
 	/***************************************************************************
 	 * Constructor that sets up the MySQL information
 	 */
-	public Manager(String hostname, String database, String username,
-			String password) {
-		// Store connection details
-		this.hostname = hostname;
-		this.database = database;
-		this.username = username;
-		this.password = password;
-
-		// Initial connection setup
-		connection = null;
-
-		// Start connection
-		startConnection();
-	}
-	
-	/** constructor that doesn't suck
-	 * 
-	 */
 	public Manager(Properties prop){
 		hostname= prop.getProperty("hostname");
 		database= prop.getProperty("db");
@@ -53,6 +35,8 @@ public class Manager {
 		tableNames.put("taxonomyIndex", prop.getProperty("taxonomyIndex"));
 		tableNames.put("taxonomyHierarchy", prop.getProperty("taxonomyHierarchy"));
 		tableNames.put("nodeTable", prop.getProperty("nodeTable"));
+		
+		startConnection();
 	}
 
 	/***************************************************************************
