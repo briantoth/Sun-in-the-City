@@ -61,7 +61,7 @@ public class DataIndexer implements Runnable {
 	private void addDataStore(DataStored ds) throws IOException {
 		Document doc = new Document();
 		doc.add(new Field("id", ds.getId()+"", Field.Store.YES,
-				Field.Index.NOT_ANALYZED_NO_NORMS));
+				Field.Index.ANALYZED));
 		doc.add(new Field("content", ds.getData(), Field.Store.NO,
 				Field.Index.ANALYZED));
 		indexWriter.addDocument(doc);
