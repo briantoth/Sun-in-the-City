@@ -82,3 +82,5 @@ java.net.MalformedURLException: no protocol: test url
 2012-11-14 21:25:10,087 INFO  [main] parser.RSSParser  (RSSParser.java:69)     - RSS parsing completed.
 2012-11-14 21:25:40,758 INFO  [main] parser.RSSParser  (RSSParser.java:46)     - Started RSS parsing.
 2012-11-14 21:25:41,812 INFO  [main] parser.RSSParser  (RSSParser.java:69)     - RSS parsing completed.
+2012-11-14 21:28:50,224 INFO  [main] parser.RSSParser  (RSSParser.java:46)     - Started RSS parsing.
+2012-11-14 21:28:50,654 INFO  [main] parser.RSSParser  (RSSParser.java:69)     - RSS parsing completed.

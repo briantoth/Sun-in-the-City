@@ -5,13 +5,16 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 
 /*******************************************************************************
  * Manages the interaction with data
@@ -505,6 +508,47 @@ public class Manager {
 			return;
 		}
 	}
+	
+	public boolean assignTags(List<Node> nodes){
+		Set<String> tags= new HashSet<String>();
+		for(Node n : nodes){
+			for(String t : n.getTags()){
+				tags.add(t);
+			}
+		}
+		
+		String[] uploadedTags= (String[]) tags.toArray();
+		for(int i= 0; i < uploadedTags.length; i++){
+			try {
+				psCreateTaxonomy_term_data.setInt(1, i);
+				psCreateTaxonomy_term_data.setString(2, uploadedTags[i]);
+				psCreateTaxonomy_term_hierarchy.setInt(1, i);
+				psCreateTaxonomy_term_hierarchy.setInt(2, 0);
+				psCreateTaxonomy_term_data.executeUpdate();
+				psCreateTaxonomy_term_hierarchy.executeUpdate();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+
+		for(Node n : nodes){
+			for(String s : n.getTags()){
+				int indexOf= 0;
+				while(indexOf < uploadedTags.length && !uploadedTags[indexOf].equals(s)){
+					indexOf++;
+				}
+				try{
+					psCreateTaxonomy_index.setInt(1, n.getNodeID());
+					psCreateTaxonomy_index.setInt(2, indexOf);
+					psCreateTaxonomy_index.executeUpdate();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		
+		return true;
+	}
 
 	/***************************************************************************
 	 * Closes the database connections
@@ -641,8 +685,8 @@ public class Manager {
 			// Create a taxonomy_index object in the table
 			psCreateTaxonomy_index = connection
 					.prepareStatement("INSERT into taxonomy_index "
-							+ "(tid) "
-							+ "values (?)");
+							+ "(nid, tid) "
+							+ "values (?, ?)");
 						
 			// Create a taxonomy_term_hierarchy object in the table
 			psCreateTaxonomy_term_hierarchy = connection
