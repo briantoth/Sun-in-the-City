@@ -83,13 +83,30 @@ public class Test_DataFusion {
 		DataMeans dm = new DataMeans();
 		dm.setId(1);
 		dm.setDataSource_id(1);
-		dm.setName("test DataMeans");
-		dm.setType(0);
-		dm.setUrl("test url");
-		dm.setLastProcessed(new Date());
-		
+		dm.setName("NYTimes Internet");
+		dm.setType(1);
+		dm.setUrl("http://www.nytimes.com/services/xml/rss/nyt/internet.xml");
+		dm.setLastProcessed(new Date((new Date()).getTime() - (1000 * 60 * 60 *24)));
 		if(!man.createDataMeans(dm))
 			fail("Fails to create a DataMeans object! ");
+		
+		dm = new DataMeans();
+		dm.setId(2);
+		dm.setDataSource_id(1);
+		dm.setName("NYTimes Bits Blog");
+		dm.setType(1);
+		dm.setUrl("http://bits.blogs.nytimes.com/feed/");
+		dm.setLastProcessed(new Date((new Date()).getTime() - (1000 * 60 * 60 *24)));
+		man.createDataMeans(dm);
+		
+		dm = new DataMeans();
+		dm.setId(3);
+		dm.setDataSource_id(1);
+		dm.setName("The Verge");
+		dm.setType(1);
+		dm.setUrl("http://www.theverge.com/rss/index.xml");
+		dm.setLastProcessed(new Date((new Date()).getTime() - (1000 * 60 * 60 *24)));
+		man.createDataMeans(dm);
 		
 		Node n = new Node(1);
 		n.addTag("apple");
