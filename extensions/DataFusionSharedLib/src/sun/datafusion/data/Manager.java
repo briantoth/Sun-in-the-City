@@ -210,11 +210,12 @@ public class Manager {
 
 		try {
 			psCreateNode.setInt(1, n.getNodeID());
-			psCreateTaxonomy_term_data.setInt(1, n.getNodeID());
-			psCreateTaxonomy_term_data.setString(2, n.getTags());
-			psCreateTaxonomy_index.setInt(1, n.getNodeID());
-			psCreateTaxonomy_term_hierarchy.setInt(1, n.getNodeID());
-			psCreateTaxonomy_term_hierarchy.setInt(2, 0);
+			for(String tag: n.getTags())
+				psCreateTaxonomy_term_data.setInt(1, n.getNodeID());
+				psCreateTaxonomy_term_data.setString(2, tag);
+				psCreateTaxonomy_index.setInt(1, n.getNodeID());
+				psCreateTaxonomy_term_hierarchy.setInt(1, n.getNodeID());
+				psCreateTaxonomy_term_hierarchy.setInt(2, 0);
 			return psCreateNode.executeUpdate() == 1 && 
 					psCreateTaxonomy_term_data.executeUpdate() == 1 && 
 					psCreateTaxonomy_index.executeUpdate() == 1 && 

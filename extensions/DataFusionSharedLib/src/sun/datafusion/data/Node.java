@@ -1,5 +1,8 @@
 package sun.datafusion.data;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /*******************************************************************************
  * Represents an article (node)
  */
@@ -11,7 +14,7 @@ public class Node  {
 	 */
 	public Node(int nodeID){
 		this.nodeID = nodeID;
-		tags = "";
+		tags = new ArrayList<String>();
 	}
 	
 	//--------------------------------------------------------------------------
@@ -19,16 +22,16 @@ public class Node  {
 	public int getNodeID() {
 		return nodeID;
 	}
-	public String getTags() {
+	public List<String> getTags() {
 		return tags;
 	}
 	
 	public void addTag(String tag) {
-		tags += " " + tag;
+		tags.add(tag);
 	}
 	
 	//--------------------------------------------------------------------------
 
 	private int nodeID;
-	private String tags;
+	private List<String> tags;
 }
