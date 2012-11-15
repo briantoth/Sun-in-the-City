@@ -362,16 +362,20 @@ public class Manager {
 	 *            The selection date criteria to select nodes
 	 * @return A list of the results, or null if there was an error
 	 */
-	public List<Node> getNodesToProcess(Date writtenAfter) {
+	public List<Node> getNodesToProcess(int minutesInPast) {
 		// Make connection if not already, ensure success
 		if (!startConnection())
 			return null;
 
 		try {
 			// Create query
-			java.sql.Date sqlWrittenAfter = new java.sql.Date(
-					writtenAfter.getTime());
-			psGetNodesToProcess.setDate(1, sqlWrittenAfter);
+			// Get nodes that should be processed
+			psGetNodesToProcess = connection.prepareStatement("SELECT DISTINCT "
+					+ "node.nid, data.name " + "FROM " + database
+					+ ".node node, " + database + ".taxonomy_index ind, "
+					+ database + ".taxonomy_term_data data "
+					+ "WHERE unix_timestamp() >= node.created AND "
+					+ "node.nid = ind.nid AND ind.tid = data.tid");
 
 			// Execute query to get all ids
 			ResultSet queryResult = psGetNodesToProcess.executeQuery();
@@ -613,13 +617,6 @@ public class Manager {
 							+ "FROM " + database + ".DataStored ds "
 							+ "WHERE ds.indexed=false");
 
-			// Get nodes that should be processed
-			psGetNodesToProcess = connection.prepareStatement("SELECT DISTINCT"
-					+ "node.nid, data.name " + "FROM " + database
-					+ ".node node, " + database + ".taxonomy_index index, "
-					+ database + ".taxonomy_term_data data "
-					+ "WHERE node.created >= ? "
-					+ "AND node.nid = index.nid AND index.tid = data.tid");
 
 			// Indicate that a datastored object has been indexed
 			psSetDataStoredIndexed = connection.prepareStatement("UPDATE "
