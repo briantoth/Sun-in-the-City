@@ -76,10 +76,12 @@ public class DataFuser implements Runnable {
 				reader = IndexReader.open(indexLocation);
 			} catch (CorruptIndexException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				System.out.println(e);
+				return;
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				System.out.println(e);
+				return;
 			} // index - where the information is stored
 			IndexSearcher searcher = new IndexSearcher(reader);
 			TopScoreDocCollector collector = TopScoreDocCollector.create(hitsPerPage, true);

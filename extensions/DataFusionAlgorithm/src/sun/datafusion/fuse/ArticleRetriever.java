@@ -17,8 +17,7 @@ import java.util.Date;
  * waiting. It buffers this data to be used by the DataFuser.
  */
 public class ArticleRetriever implements Runnable{
-	private final static int minutes= 1;
-	private final static long timeToSleep = 1000*minutes;
+	private final static long timeToSleep = 60*1000*1;
 	private final static int numThreads= 5;
 	
 	private final ExecutorService threadPool= Executors.newFixedThreadPool(numThreads);
@@ -47,7 +46,7 @@ public class ArticleRetriever implements Runnable{
 				break;
 			}
 			
-			List<Node> unfusedArticles= manager.getNodesToProcess(minutes);
+			List<Node> unfusedArticles= manager.getNodesToProcess(timeToSleep);
 			
 			if(unfusedArticles != null){
 				for(Node n : unfusedArticles){

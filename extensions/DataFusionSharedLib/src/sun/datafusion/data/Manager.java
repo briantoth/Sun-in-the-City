@@ -362,7 +362,7 @@ public class Manager {
 	 *            The selection date criteria to select nodes
 	 * @return A list of the results, or null if there was an error
 	 */
-	public List<Node> getNodesToProcess(int minutesInPast) {
+	public List<Node> getNodesToProcess(long msInPast) {
 		// Make connection if not already, ensure success
 		if (!startConnection())
 			return null;
@@ -374,7 +374,7 @@ public class Manager {
 					+ "node.nid, data.name " + "FROM " + database
 					+ ".node node, " + database + ".taxonomy_index ind, "
 					+ database + ".taxonomy_term_data data "
-					+ "WHERE unix_timestamp() >= node.created AND "
+					+ "WHERE unix_timestamp() - " + msInPast + " <= node.created AND "
 					+ "node.nid = ind.nid AND ind.tid = data.tid");
 
 			// Execute query to get all ids

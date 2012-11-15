@@ -18,7 +18,7 @@ import sun.datafusion.data.Manager;
  * the DataIndexer is ready to index a data instance.
  */
 public class DataRetriever implements Runnable{
-	private final static long timeToSleep = 60*1000*1;
+	private final static long timeToSleep = 1000*1*60;
 	private final static int numThreads= 5;
 	
 	private final ExecutorService threadPool= Executors.newFixedThreadPool(numThreads);
