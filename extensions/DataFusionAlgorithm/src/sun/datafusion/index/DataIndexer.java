@@ -65,7 +65,9 @@ public class DataIndexer implements Runnable {
 				Field.Index.ANALYZED));
 		doc.add(new Field("content", ds.getData(), Field.Store.NO,
 				Field.Index.ANALYZED));
-		indexWriter.addDocument(doc);
+		synchronized (indexLocation) {
+			indexWriter.addDocument(doc);
+		}
 	}
 	
 	public static void clearIndex(File indexLocation){
