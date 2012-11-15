@@ -617,7 +617,6 @@ public class Manager {
 							+ "FROM " + database + ".DataStored ds "
 							+ "WHERE ds.indexed=false");
 
-
 			// Indicate that a datastored object has been indexed
 			psSetDataStoredIndexed = connection.prepareStatement("UPDATE "
 					+ database + ".DataStored ds " + "SET indexed=1 "
