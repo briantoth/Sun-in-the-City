@@ -59,7 +59,7 @@ public class DataFuser implements Runnable {
 	    // when no field is explicitly specified in the query.
 	    Query q = null;
 		try {
-			q = new org.apache.lucene.queryParser.QueryParser(Version.LUCENE_36, "content", analyzer).parse(node.getTags());
+			q = new org.apache.lucene.queryParser.QueryParser(Version.LUCENE_36, "content", analyzer).parse(node.getTagsInOneString());
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

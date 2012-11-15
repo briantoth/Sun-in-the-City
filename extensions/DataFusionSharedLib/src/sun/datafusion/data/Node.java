@@ -22,8 +22,19 @@ public class Node  {
 	public int getNodeID() {
 		return nodeID;
 	}
+	
 	public List<String> getTags() {
 		return tags;
+	}
+	
+	public String getTagsInOneString() {
+		
+		String oneString = new String();
+		
+		for(String tag: tags)
+			oneString += " " + tag;
+		
+		return oneString;
 	}
 	
 	public void addTag(String tag) {
