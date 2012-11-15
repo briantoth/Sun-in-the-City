@@ -615,12 +615,13 @@ public class Manager {
 							+ "WHERE ds.indexed=false");
 
 			// Get nodes that should be processed
-			psGetNodesToProcess = connection.prepareStatement("SELECT DISTINCT"
-					+ "node.nid, data.name " + "FROM " + database
-					+ ".node node, " + database + ".taxonomy_index index, "
-					+ database + ".taxonomy_term_data data "
-					+ "WHERE node.created >= ? "
-					+ "AND node.nid = index.nid AND index.tid = data.tid");
+			psGetNodesToProcess = connection.prepareStatement("SELECT DISTINCT "
+					+ "node " + "FROM " + database
+					+ ".node node ");
+//					+ database + ".taxonomy_index index, "
+//					+ database + ".taxonomy_term_data data ");
+//					+ "WHERE node.created <= ? "
+//					+ "AND node.nid = index.nid AND index.tid = data.tid"
 
 			// Indicate that a datastored object has been indexed
 			psSetDataStoredIndexed = connection.prepareStatement("UPDATE "

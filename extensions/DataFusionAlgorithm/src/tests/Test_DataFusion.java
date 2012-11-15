@@ -98,43 +98,43 @@ public class Test_DataFusion {
 		n.addTag("google");
 		nodes.add(n);
 		if(!man.createNode(n))
-			fail("Fails to create a DataMeans object! ");
+			fail("Fails to create a Node object! ");
 		man.assignTags(nodes);
 		
 		DataStored ds = new DataStored();
 		ds.setDataMeans_id(1);
-		ds.setData("Google Apple");
+		ds.setLinkedData("Google Apple");
 		ds.setTitle("test title 1");
 		if(!man.createDataStored(ds))
 			fail("Fails to create a DataStored object! ");
 		
 		ds = new DataStored();
 		ds.setDataMeans_id(1);
-		ds.setData("Apple Google Amazon");
+		ds.setLinkedData("Apple Google Amazon");
 		ds.setTitle("test title 2");
 		man.createDataStored(ds);
 		
 		ds = new DataStored();
 		ds.setDataMeans_id(1);
-		ds.setData("Apple Facebook");
+		ds.setLinkedData("Apple Facebook");
 		ds.setTitle("test title 3");
 		man.createDataStored(ds);
 		
 		ds = new DataStored();
 		ds.setDataMeans_id(1);
-		ds.setData("IBM HP");
+		ds.setLinkedData("IBM HP");
 		ds.setTitle("test title 4");
 		man.createDataStored(ds);
 		
 		ds = new DataStored();
 		ds.setDataMeans_id(1);
-		ds.setData("Apple Google Apple");
+		ds.setLinkedData("Apple Google Apple");
 		ds.setTitle("test title 5");
 		man.createDataStored(ds);
 		
 		ds = new DataStored();
 		ds.setDataMeans_id(1);
-		ds.setData("Apple Google Amazon Facebook Yahoo LinkedIn");
+		ds.setLinkedData("Apple Google Amazon Facebook Yahoo LinkedIn");
 		ds.setTitle("test title 6");
 		man.createDataStored(ds);
 
@@ -150,5 +150,12 @@ public class Test_DataFusion {
 		DataFuser df = new DataFuser(n, indexLocation, man);
 		df.run();
 		
+	}
+	
+	@Test
+	public void test_Manager(){
+		
+		Manager man = setupManager();
+		man.getNodesToProcess(new Date());
 	}
 }
