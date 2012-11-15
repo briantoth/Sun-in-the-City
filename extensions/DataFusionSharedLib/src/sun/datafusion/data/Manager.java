@@ -212,8 +212,6 @@ public class Manager {
 
 		try {
 			psCreateNode.setInt(1, n.getNodeID());
-			
-				
 			return psCreateNode.executeUpdate() == 1;
 			
 		} catch (SQLException e) {
@@ -510,12 +508,13 @@ public class Manager {
 			}
 		}
 		
-		String[] uploadedTags= (String[]) tags.toArray();
+		String[] uploadedTags= new String[tags.size()];
+		tags.toArray(uploadedTags);
 		for(int i= 0; i < uploadedTags.length; i++){
 			try {
 				psCreateTaxonomy_term_data.setInt(1, i);
 				psCreateTaxonomy_term_data.setString(2, uploadedTags[i]);
-				psCreateTaxonomy_term_hierarchy.setInt(1, i);
+				psCreateTaxonomy_term_hierarchy.setInt(1, i+1);
 				psCreateTaxonomy_term_hierarchy.setInt(2, 0);
 				psCreateTaxonomy_term_data.executeUpdate();
 				psCreateTaxonomy_term_hierarchy.executeUpdate();

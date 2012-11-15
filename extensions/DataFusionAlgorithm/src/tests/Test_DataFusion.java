@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Properties;
@@ -91,11 +92,14 @@ public class Test_DataFusion {
 		if(!man.createDataMeans(dm))
 			fail("Fails to create a DataMeans object! ");
 		
+		List<Node> nodes = new ArrayList<Node>();
 		Node n = new Node(1);
 		n.addTag("apple");
 		n.addTag("google");
+		nodes.add(n);
 		if(!man.createNode(n))
 			fail("Fails to create a DataMeans object! ");
+		man.assignTags(nodes);
 		
 		DataStored ds = new DataStored();
 		ds.setDataMeans_id(1);
