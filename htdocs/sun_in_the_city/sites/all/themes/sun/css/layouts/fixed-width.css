@@ -103,22 +103,25 @@
 /*
  * The layout when there is only one sidebar, the right one.
  */
-
+/*the main column on all pages except the front page*/
 .sidebar-second #content {
   /* Span 4 columns, starting in 1st column from left. */
   float: left;
-  width: 600px;
+  width: 620px;
   margin-left: 0px;
   margin-right: -784px;
 }
 
+/*The sidebar we're using*/
 .sidebar-second .region-sidebar-second {
   /* Span 1 column, starting in 5th column from left. */
   float: left;
-  width: 270px;
+  width: 300px;
   margin-left: 620px;
   margin-right: -980px;
   margin-top: 100px;
+  border-left: solid 1px #CCC;
+  padding-left: 20px;
 }
 
 /*
@@ -147,9 +150,4 @@
   width: 176px;
   margin-left: 784px;
   margin-right: -980px;
-}
-
-#block-node-recent {
-	border-left: solid 1px #888;
-	padding-left: 30px;
 }

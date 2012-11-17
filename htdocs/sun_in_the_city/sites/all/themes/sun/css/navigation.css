@@ -68,7 +68,8 @@ li a.active {
 #navigation ul.links li,
 #navigation ul.menu li { /* A simple method to get navigation links to appear in one line. */
   float: left; /* LTR */
-  padding: 0 20px 0 0; /* LTR */
+  padding: 0 0 0 20px; /* LTR */
+  margin-right: 0;
   list-style-type: none;
   list-style-image: none;
   font-weight: 600;

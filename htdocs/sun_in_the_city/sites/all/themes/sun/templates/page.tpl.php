@@ -179,9 +179,11 @@
     <?php endif; ?>
 
   </div><!-- /#main -->
+  </div><!-- /#page -->
+<div id = "outerfooter">
+<?php print render($page['footer']); ?>
 
-  <?php print render($page['footer']); ?>
 
-</div><!-- /#page -->
 
 <?php print render($page['bottom']); ?>
+</div><!-- /#outerfooter -->
