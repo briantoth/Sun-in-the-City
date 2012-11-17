@@ -37,8 +37,6 @@ public class Manager {
 		tableNames.put("taxonomyIndex", prop.getProperty("taxonomyIndex"));
 		tableNames.put("taxonomyHierarchy", prop.getProperty("taxonomyHierarchy"));
 		tableNames.put("nodeTable", prop.getProperty("nodeTable"));
-		
-		startConnection();
 	}
 
 	/***************************************************************************
