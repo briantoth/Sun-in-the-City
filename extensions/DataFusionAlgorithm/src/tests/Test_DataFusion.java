@@ -8,15 +8,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Properties;
-import java.util.UUID;
-
-import sun.datafusion.*;
-
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.SimpleFSDirectory;
 import org.junit.Test;
 
-import sun.datafusion.data.DataFusion;
 import sun.datafusion.data.DataMeans;
 import sun.datafusion.data.DataSource;
 import sun.datafusion.data.DataStored;
@@ -24,7 +19,6 @@ import sun.datafusion.data.Manager;
 import sun.datafusion.data.Node;
 import sun.datafusion.fuse.DataFuser;
 import sun.datafusion.index.DataIndexer;
-import sun.datafusion.index.DataRetriever;
 import sun.datafusion.utils.PropertyUtils;
 
 public class Test_DataFusion {
@@ -103,38 +97,38 @@ public class Test_DataFusion {
 		
 		DataStored ds = new DataStored();
 		ds.setDataMeans_id(1);
-		ds.setLinkedData("Google Apple");
+		ds.setData("Google Apple");
 		ds.setTitle("test title 1");
 		if(!man.createDataStored(ds))
 			fail("Fails to create a DataStored object! ");
 		
 		ds = new DataStored();
 		ds.setDataMeans_id(1);
-		ds.setLinkedData("Apple Google Amazon");
+		ds.setData("Apple Google Amazon");
 		ds.setTitle("test title 2");
 		man.createDataStored(ds);
 		
 		ds = new DataStored();
 		ds.setDataMeans_id(1);
-		ds.setLinkedData("Apple Facebook");
+		ds.setData("Apple Facebook");
 		ds.setTitle("test title 3");
 		man.createDataStored(ds);
 		
 		ds = new DataStored();
 		ds.setDataMeans_id(1);
-		ds.setLinkedData("IBM HP");
+		ds.setData("IBM HP");
 		ds.setTitle("test title 4");
 		man.createDataStored(ds);
 		
 		ds = new DataStored();
 		ds.setDataMeans_id(1);
-		ds.setLinkedData("Apple Google Apple");
+		ds.setData("Apple Google Apple");
 		ds.setTitle("test title 5");
 		man.createDataStored(ds);
 		
 		ds = new DataStored();
 		ds.setDataMeans_id(1);
-		ds.setLinkedData("Apple Google Amazon Facebook Yahoo LinkedIn");
+		ds.setData("Apple Google Amazon Facebook Yahoo LinkedIn");
 		ds.setTitle("test title 6");
 		man.createDataStored(ds);
 
@@ -150,11 +144,5 @@ public class Test_DataFusion {
 		DataFuser df = new DataFuser(n, indexLocation, man);
 		df.run();
 		
-	}
-	
-	@Test
-	public void test_Manager(){
-		
-		Manager man = setupManager();
 	}
 }
