@@ -1,0 +1,155 @@
+<?php
+
+/**
+Drupal Custom Module for Sun_In_The_City, Cornell Daily Tech Newspaper
+Author: Sean Salmon
+ */
+ 
+
+/**
+ * Implements hook_help().
+ */
+function datafusion_help($section = 'admin/help#datafusion', $arg = NULL) {
+  $output = '';
+  switch ($section) {
+    case 'admin/config/content/datafusion':
+      $output = t('Data Fusion allows editors to have articles from around the internet included in their articles. Module performs web scraping algorithm and user input data to populate additional sources of content.');
+       $output .= '<h3> ' . t('Warning: Deleting Data Sources also deletes ALL Data Fusion elements associated with this source.'.' </h3>');
+      
+      $output = '<p>' . $output . '</p>';
+      break;
+   	case 'admin/help#datafusion':
+      $output = t("<p>This module lets you add in aggregated data from relevant internet news sources to your articles.</p>
+      <p>To start using Data Fusion, there are two interfaces</p>
+	  
+	  <strong><h3>For Writers:</h3></strong>
+	  
+      <ul>
+        <li>After you have created an Article, you will notice a tab on the top labeled 'Data Fusion' which will allow you to begin working with Data Fusion. </li>
+        <li>You will immediately notice a list of aggregated news data at your disposal to choose from. If you would like an outside source to appear alongside your article, simply select the corresponding check box and press the 'Approve' button. </li>
+        <li>Conversely, if you would lke to remove an outside source, simply select the source and click 'Delete'.</li>
+ <li>You also have the option of adding in your own outside news data that you find relevant using the form displayed underneath. To proceed fill in the textfields, select a rating for the article (The higher ranked articles receive priority in the order in which articles are displayed) and select the source from which the data was obtained. </li>
+ 		<li> To edit any particular entry, select its respective checkbox and press the 'Edit' button. Once clicked the edit button will show the fields to be updated below the table. </li> 
+        <li>Your data fusion articles are now ready to be shown!</li>
+      </ul>
+	  
+	  
+   
+	  
+	   <strong><h3>For Editors:</h3></strong>
+	  
+      <ul>
+        <li>For the editor's interface within the admin/modules configuration page, you have the choice of configuring data fusion articles, data source and data means. </li>
+        <li>The Data Fusion table shows the complete list of data fusion articles connected to every article on the website.  </li>
+        <li>To Configure simply select an entry and click either 'Approve', 'Edit' or 'Delete'.  </li>
+ 		<li>Underneath Data Fusion area is a collapsable field representing all of the Data Sources on the website. Just as previously before, you can edit or delete sources using the same convention. </li>
+ 		<li> To add Data Sources, complete the textfields and press the add button displayed underneath. <strong>Make sure the url to the logo image is valid, otherwise there will be no image displayed!</strong> also, <strong> be sure to remember that deleting data sources deletes any connected means as well. </strong> </li> 
+        <li>Data Means are simply the secondary mean by which an article obtains its sources such as an RSS or Twitter Feed. Feel free to configure the means to your desire using the conventions restated multiple times within this help notice. </li>
+      </ul>
+	  
+      ");
+      break;
+  }
+
+  return $output;
+}
+
+/**
+ * Implements hook_menu().
+ */
+function datafusion_menu() {
+  $items = array();
+
+  // Admin Settings.
+  $items['admin/config/content/datafusion'] = array(
+    'title' => 'Data Fusion Settings',
+    'page callback' => 'foo_page',
+    'access callback' => 'user_access',
+    'access arguments' => array('administer site configuration'),
+    'description' => 'description here.',
+    'file' => 'includes/datafusion.admin.inc',
+    'type' => MENU_LOCAL_TASK,
+  );
+
+
+  $items['node/%node/datafusion'] = array(
+    'title' => 'Data Fusion',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('datafusion_configure_form', 1),
+    'access callback' => 'node_access',
+    'access arguments' => array('update', 1),
+    'file' => 'includes/datafusion.pages.inc',
+    'weight' => 3,
+    'type' => MENU_LOCAL_TASK,
+    'context' => MENU_CONTEXT_PAGE | MENU_CONTEXT_INLINE,
+  );
+  
+  return $items;
+}
+
+/**
+ * Implements hook_admin_paths().
+ */
+function datafusion_admin_paths(){
+	$paths['node/*/datafusion'] = TRUE;
+	return $paths;
+}
+ 
+
+/** 
+ * Implements hook_admin_paths_alter().
+ */
+function datafusion_admin_paths_alter(&$paths){
+	$paths['node/*/datafusion'] = TRUE;
+}
+
+/**
+ * Implements hook_node_view().
+ */
+function datafusion_node_view($node, $view_mode) {
+  global $user; //check user
+  
+// Do Database queries here!
+db_set_active('default'); 
+
+//get the node ID 
+ $argument_one = arg(0);
+ $node_id = arg(1); 
+ 
+ //$node fusion block
+ $fusion = array(); 
+ // Show only data fusion articles corresponding to that particular Article
+    $query = db_select('DataFusion', 'd');
+	$query ->fields('d', array('nodeID', 'title', 'summary', 'approved', 'DataSource_id', 'rating', 'url')); 
+	$query ->condition('nodeID', $node_id, '=');
+	$query ->condition('approved', 1, '=');
+	$query ->orderBy('rating', $direction = 'DESC'); // Make articles with higher ratings appear higher up in the list
+	$result	= $query-> execute();
+	
+	$loopCounter = 0; //start the loop
+	
+	while ($row = $result-> fetchAssoc()){
+	
+	//Get the Logo image	
+	$query1 = db_select('DataSource', 'd');
+	$query1 ->fields('d', array('id', 'logourl')); 
+	$query1 ->condition('id', t($row['DataSource_id']), '='); // Check to see the right data source id is being selected
+	$result1 = $query1-> execute();
+	
+	$row1 = $result1 -> fetchAssoc();
+		
+		$fusion[$loopCounter] = array(t($row1['logourl']), t($row['title']), t($row['summary']), t($row['url'])); 
+		$loopCounter ++; 
+	}
+	
+	$node->fusion = $fusion;
+	
+ /**
+    $node->fusion = array (
+	array('http://cornell.edu/img/cu_logo_unstyled.gif', 'Data Fusion Article Title', 'Summary.'), 
+	array('http://cornell.edu/img/cu_logo_unstyled.gif', ' Data Fusion Article 2 Title', 'Summary.'), 
+	array('http://cornell.edu/img/cu_logo_unstyled.gif', ' Data Fusion Article 2 Title', 'Summary.')
+	);
+	
+*/
+}
