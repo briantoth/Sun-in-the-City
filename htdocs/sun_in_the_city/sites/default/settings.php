@@ -200,21 +200,7 @@
  *   );
  * @endcode
  */
-$databases = array (
-  'default' => 
-  array (
-    'default' => 
-    array (
-      'database' => 'sun_in_the_city',
-      'username' => 'root',
-      'password' => 'lin',
-      'host' => 'localhost',
-      'port' => '',
-      'driver' => 'mysql',
-      'prefix' => '',
-    ),
-  ),
-);
+$databases = array();
 
 /**
  * Access control for update.php script.
@@ -246,7 +232,7 @@ $update_free_access = FALSE;
  *   $drupal_hash_salt = file_get_contents('/home/example/salt.txt');
  *
  */
-$drupal_hash_salt = 'hju28IMY7HqfFZe-Z3HQ_IfUR10R87BAXpb8oJHW6gk';
+$drupal_hash_salt = '';
 
 /**
  * Base URL (optional).

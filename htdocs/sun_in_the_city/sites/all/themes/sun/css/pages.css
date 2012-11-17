@@ -107,6 +107,26 @@ body {
 	color: #FFF;
 }
 
+/*featured article*/
+.block-nodesinblock .node-title {
+	width: 620px;
+}
+
+
+/*Blocks in top right corner*/
+#search-block-form {
+	float: right;
+	margin-right: 20px;
+	padding-top: 20px;
+	width: 300px;
+}
+
+#edit-search-block-form--2 {
+	width: 233px;
+}
+
+
+
 /*
  * Main (container for everything else)
  */
@@ -125,7 +145,7 @@ body {
 
 #content {
 	padding: 10px 0;
-	margin-top: 20px;
+	margin-top: 0px;
 }
 
 .region-highlighted {
@@ -153,6 +173,15 @@ h3.title { /* Comment title */
   margin: 0;
 }
 
+h2 a:link, h2 a:visited{
+	color: #000;
+}
+
+h2.node-title {
+	line-height: 120%;
+	padding-bottom: 12px;
+}
+
 tr.even { /* Some tables have rows marked even or odd. */
   background-color: #fff; /* Drupal core uses a #eee background */
 }
@@ -163,6 +192,7 @@ tr.odd {
 
 div.messages { /* Important messages (status, warning, and error) for the user. See also the declarations in messages.css. */
   margin: 1.5em 0; /* Drupal core uses "6px 0" margin */
+  width: 540px;
 }
 div.messages ul {
   margin-top: 0;
@@ -252,7 +282,73 @@ span.field-label { /* The inline field label used by the Fences module */
  * Footer
  */
 
+#outerfooter {
+	background-color: #CE2C13;
+	color: #CCC;
+	font-size: 80%;
+}
+
 #footer {
+	padding: 10px 0;
+	width: 980px;
+	margin: auto;
+	margin-top: -40px;
+	padding-top: 40px;
+}
+
+#footer a {
+	color: #FFF;
+}
+
+#footer ul {
+	margin: 0;
+}
+
+/*blocks in footer*/
+
+#block-user-login {
+	float: right;
+}
+
+#block-user-login ul {
+	padding-left: 0;
+	margin-top: 0;
+}
+
+#block-user-login li {
+	list-style: none;
+}
+
+#block-user-login .first {
+	float: left;
+	padding-right: 25px;
+}
+
+#block-menu-menu-footer-links {
+	float: right;
+}
+
+#block-menu-menu-footer-section-links, #block-menu-menu-footer-links, #block-user-login{
+	width: 300px;
+	margin-right: 20px;
+	padding: 0;
+}
+
+#block-menu-menu-footer-section-links {
+	margin-left: 20px;
+}
+
+#footer li {
+	list-style: none;
+}
+
+#footer ul {
+	padding-left: 0;
+}
+
+#block-block-1 {
+	clear: both;
+	text-align: center;
 }
 
 /*
@@ -280,20 +376,31 @@ p {
 }
 
 /*home page grid*/
-.col-1 {
+
+.col-1, .col-2 {
+	width: 300px;
 	padding-right: 20px;
 }
 
-.col-2 {
-	padding-right: 5px;
-	padding-left: 5px;
-}
 
-.col-3 {
+/*image in featured article*/
+.nodesinblock img {
+	float: right;
 	padding-left: 20px;
 }
 
-.nodesinblock img {
-	float: right;
-	padding-left: 10px;
+/*title in featured article*/
+.nodesinblock h2 {
+	font-size: 200%;
+	font-weight: 500;
+}
+
+/*comments*/
+.comment {
+	padding-bottom: 20px;
+}
+
+.field-name-comment-body p {
+	margin-top: 0;
+	margin-bottom: 0;
 }

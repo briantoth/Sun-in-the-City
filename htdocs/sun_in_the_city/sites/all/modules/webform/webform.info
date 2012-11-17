@@ -1,9 +1,0 @@
-name = Data Fusion
-description = Enables the usage of Data Fusion with Articles.
-core = 7.x
-package = Data Fusion
-version = "7.15"
-project = "Data Fusion"
-
-
-configure = admin/config/content/webform

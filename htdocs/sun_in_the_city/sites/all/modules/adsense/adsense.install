@@ -1,0 +1,35 @@
+<?php
+
+/**
+ * @file
+ * Install file of the adsense module
+ */
+
+/**
+ * Implements of hook_install().
+ */
+function adsense_install() {
+  drupal_set_message(st("AdSense settings are available under !link",
+    array( '!link' => l(st('Administration > Configuration > Web services > AdSense'),  'admin/config/services/adsense' ) )
+  ));
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function adsense_uninstall() {
+  variable_del('adsense_access_pages');
+  variable_del('adsense_basic_id');
+  variable_del('adsense_disable');
+  variable_del('adsense_id_module');
+  variable_del('adsense_placeholder');
+  variable_del('adsense_placeholder_text');
+  variable_del('adsense_section_targeting');
+  variable_del('adsense_test_mode');
+  variable_del('adsense_visibility');
+
+  $settings = db_query("SELECT name FROM {variable} WHERE name LIKE 'adsense\_ad\_channel\_%'");
+  foreach ($settings as $variable) {
+    variable_del($variable->name);
+  }
+}

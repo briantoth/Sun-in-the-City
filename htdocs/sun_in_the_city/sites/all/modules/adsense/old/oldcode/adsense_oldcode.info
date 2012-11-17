@@ -1,0 +1,21 @@
+; Copyright 2005-2008 Khalid Baheyeldin http://2bits.com
+; Copyright 2008      Joao Ventura      http://www.venturas.org
+
+name = Ads (old)
+description = Ad unit generator module using the old format code in which the colours are specified in the ad's JavaScript.
+dependencies[] = adsense
+package = Adsense
+core = 7.x
+
+configure = admin/config/services/adsense/oldcode
+
+files[] = adsense_oldcode.admin.inc
+files[] = adsense_oldcode.install
+files[] =  adsense_oldcode.module
+
+; Information added by drupal.org packaging script on 2012-03-31
+version = "7.x-1.0"
+core = "7.x"
+project = "adsense"
+datestamp = "1333237238"
+
