@@ -693,6 +693,32 @@ public class Manager {
 	}
 
 	// -------------------------------------------------------------------------
+	
+	public Connection getConnection() {
+		return connection;
+	}
+
+	public String getHostname() {
+		return hostname;
+	}
+
+	public String getDatabase() {
+		return database;
+	}
+
+	public String getUsername() {
+		return username;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public Map<String, String> getTableNames() {
+		return tableNames;
+	}
+	
+	// -------------------------------------------------------------------------
 
 	// MySQL database details
 	private Connection connection; // Connection to database
