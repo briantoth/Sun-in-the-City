@@ -9,7 +9,6 @@ import org.apache.lucene.store.Directory;
 import sun.datafusion.Main;
 import sun.datafusion.data.Manager;
 import sun.datafusion.data.Node;
-import java.util.Date;
 
 /*******************************************************************************
  * Obtains articles that need DataFusion operations to be performed. It checks
@@ -17,7 +16,7 @@ import java.util.Date;
  * waiting. It buffers this data to be used by the DataFuser.
  */
 public class ArticleRetriever implements Runnable{
-	private final static long timeToSleep = 60*1000*1;
+	private final static long timeToSleep = 1000*1;
 	private final static int numThreads= 5;
 	
 	private final ExecutorService threadPool= Executors.newFixedThreadPool(numThreads);

@@ -63,7 +63,7 @@ public class DataIndexer implements Runnable {
 		Document doc = new Document();
 		doc.add(new Field("id", ds.getId()+"", Field.Store.YES,
 				Field.Index.ANALYZED));
-		doc.add(new Field("fusionData", ds.getLinkedData(), Field.Store.NO,
+		doc.add(new Field("fusionData", ds.getData(), Field.Store.NO,
 				Field.Index.ANALYZED));
 		synchronized (indexLocation) {
 			indexWriter.addDocument(doc);

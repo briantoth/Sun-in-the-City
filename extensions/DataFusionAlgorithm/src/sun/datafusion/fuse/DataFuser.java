@@ -55,7 +55,7 @@ public class DataFuser implements Runnable {
 
 		// 1. query
 
-		// the "title" arg specifies the default field to use
+		// the "fusionData" arg specifies the default field to use
 		// when no field is explicitly specified in the query.
 		Query q = null;
 		try {
@@ -65,7 +65,7 @@ public class DataFuser implements Runnable {
 			e.printStackTrace();
 		}
 
-		// 2. search
+		// 2. search and return results
 		// Only return Top 10 best results
 		int hitsPerPage = 10;
 		IndexReader reader = null;
@@ -92,12 +92,14 @@ public class DataFuser implements Runnable {
 				e.printStackTrace();
 			} // the search step 
 			ScoreDoc[] hits = collector.topDocs().scoreDocs;
-
+			
+			// return results
 			for(int i=0;i<hits.length;++i) {
 				int docId = hits[i].doc;
 				Document d = null;
 				try {
 					d = searcher.doc(docId);
+					searcher.close();
 				} catch (CorruptIndexException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -105,7 +107,8 @@ public class DataFuser implements Runnable {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-
+				
+				// create a DataStored object and return it to the database
 				DataStored ds = manager.getDataStored(Integer.parseInt(d.get("id")));
 
 				DataFusion df = new DataFusion();

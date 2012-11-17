@@ -19,9 +19,10 @@ import sun.datafusion.data.Manager;
 import sun.datafusion.data.Node;
 import sun.datafusion.fuse.DataFuser;
 import sun.datafusion.index.DataIndexer;
+import sun.datafusion.parser.RSSParser;
 import sun.datafusion.utils.PropertyUtils;
 
-public class Test_DataFusion {
+public class Test_Fusion_Parser {
 	
 	private static final String testIndex= "./testLuceneIndex";
 	
@@ -56,7 +57,7 @@ public class Test_DataFusion {
 	}*/
 	
 	@Test
-	public void testDataFusion()throws IOException{
+	public void testDataFusion()throws IOException, InterruptedException{
 		
 		//make sure to destroy old index
 		File indexFile= new File(testIndex);
@@ -78,59 +79,51 @@ public class Test_DataFusion {
 		DataMeans dm = new DataMeans();
 		dm.setId(1);
 		dm.setDataSource_id(1);
-		dm.setName("test DataMeans");
-		dm.setType(0);
-		dm.setUrl("test url");
-		dm.setLastProcessed(new Date());
-		
+		dm.setName("NYTimes Internet");
+		dm.setType(1);
+		dm.setUrl("http://www.nytimes.com/services/xml/rss/nyt/internet.xml");
+		dm.setLastProcessed(new Date((new Date()).getTime() - (1000 * 60 * 60 *24)));
 		if(!man.createDataMeans(dm))
 			fail("Fails to create a DataMeans object! ");
 		
+		dm = new DataMeans();
+		dm.setId(2);
+		dm.setDataSource_id(1);
+		dm.setName("NYTimes Bits Blog");
+		dm.setType(1);
+		dm.setUrl("http://bits.blogs.nytimes.com/feed/");
+		dm.setLastProcessed(new Date((new Date()).getTime() - (1000 * 60 * 60 *24)));
+		man.createDataMeans(dm);
+		
+		dm = new DataMeans();
+		dm.setId(3);
+		dm.setDataSource_id(1);
+		dm.setName("The Verge");
+		dm.setType(1);
+		dm.setUrl("http://www.theverge.com/rss/index.xml");
+		dm.setLastProcessed(new Date((new Date()).getTime() - (1000 * 60 * 60 *24)));
+		man.createDataMeans(dm);
+		
 		List<Node> nodes = new ArrayList<Node>();
 		Node n = new Node(1);
-		n.addTag("apple");
-		n.addTag("google");
+		n.addTag("hackers");
+		man.createNode(n);
 		nodes.add(n);
-		if(!man.createNode(n))
-			fail("Fails to create a Node object! ");
+		
+		n = new Node(2);
+		n.addTag("facebook");
+		n.addTag("iPhone");
+		n.addTag("Nexus");
+		man.createNode(n);
+		nodes.add(n);
+		
 		man.assignTags(nodes);
 		
-		DataStored ds = new DataStored();
-		ds.setDataMeans_id(1);
-		ds.setData("Google Apple");
-		ds.setTitle("test title 1");
-		if(!man.createDataStored(ds))
-			fail("Fails to create a DataStored object! ");
-		
-		ds = new DataStored();
-		ds.setDataMeans_id(1);
-		ds.setData("Apple Google Amazon");
-		ds.setTitle("test title 2");
-		man.createDataStored(ds);
-		
-		ds = new DataStored();
-		ds.setDataMeans_id(1);
-		ds.setData("Apple Facebook");
-		ds.setTitle("test title 3");
-		man.createDataStored(ds);
-		
-		ds = new DataStored();
-		ds.setDataMeans_id(1);
-		ds.setData("IBM HP");
-		ds.setTitle("test title 4");
-		man.createDataStored(ds);
-		
-		ds = new DataStored();
-		ds.setDataMeans_id(1);
-		ds.setData("Apple Google Apple");
-		ds.setTitle("test title 5");
-		man.createDataStored(ds);
-		
-		ds = new DataStored();
-		ds.setDataMeans_id(1);
-		ds.setData("Apple Google Amazon Facebook Yahoo LinkedIn");
-		ds.setTitle("test title 6");
-		man.createDataStored(ds);
+		Properties properties = sun.datafusion.utils.PropertyUtils.loadProperties();
+		sun.datafusion.utils.PropertyUtils.loadLoggingProperties();
+		//Default timeout is 1000 seconds, or about 17 minutes.
+		RSSParser parser = new RSSParser(properties);
+		parser.parse();
 
 		DataIndexer.clearIndex(indexFile);
 		
@@ -141,7 +134,7 @@ public class Test_DataFusion {
 			di.run();
 		}
 		
-		DataFuser df = new DataFuser(n, indexLocation, man);
+		DataFuser df = new DataFuser(nodes.get(0), indexLocation, man);
 		df.run();
 		
 	}
