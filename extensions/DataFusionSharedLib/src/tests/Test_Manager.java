@@ -164,19 +164,13 @@ public class Test_Manager {
 		}
 	}
 
-	// Create the testing database
-	public boolean createTestingDatabase() {
-		// TODO
-		return true;
-	}
-
 	// Class to hold all the database objects
 	public class DatabaseSet {
 		// TODO
 	}
 
-	// Gets all the database objects for testing
-	public DatabaseSet getAllDatabaseObjects() {
+	// Create the testing database
+	public DatabaseSet createTestingDatabase() {
 		// TODO
 		return null;
 	}
@@ -185,7 +179,8 @@ public class Test_Manager {
 	@Test
 	public void testGetDataMeansToProcess() {
 		for (int i = 0; i < RANDOM_ITERATIONS; i++) {
-			assertTrue(createTestingDatabase());
+			DatabaseSet set = createTestingDatabase();
+			assertTrue(set != null);
 
 			// TODO
 		}
@@ -195,7 +190,8 @@ public class Test_Manager {
 	@Test
 	public void testSetDataMeansProcessed() {
 		for (int i = 0; i < RANDOM_ITERATIONS; i++) {
-			assertTrue(createTestingDatabase());
+			DatabaseSet set = createTestingDatabase();
+			assertTrue(set != null);
 
 			// TODO
 		}
@@ -205,7 +201,8 @@ public class Test_Manager {
 	@Test
 	public void testCreateDataStored() {
 		for (int i = 0; i < RANDOM_ITERATIONS; i++) {
-			assertTrue(createTestingDatabase());
+			DatabaseSet set = createTestingDatabase();
+			assertTrue(set != null);
 
 			// TODO
 		}
@@ -215,7 +212,8 @@ public class Test_Manager {
 	@Test
 	public void testGetDataMeans() {
 		for (int i = 0; i < RANDOM_ITERATIONS; i++) {
-			assertTrue(createTestingDatabase());
+			DatabaseSet set = createTestingDatabase();
+			assertTrue(set != null);
 
 			// TODO
 		}
@@ -225,7 +223,8 @@ public class Test_Manager {
 	@Test
 	public void testGetDataStored() {
 		for (int i = 0; i < RANDOM_ITERATIONS; i++) {
-			assertTrue(createTestingDatabase());
+			DatabaseSet set = createTestingDatabase();
+			assertTrue(set != null);
 
 			// TODO
 		}
@@ -235,7 +234,8 @@ public class Test_Manager {
 	@Test
 	public void testSetDataStoredIndexed() {
 		for (int i = 0; i < RANDOM_ITERATIONS; i++) {
-			assertTrue(createTestingDatabase());
+			DatabaseSet set = createTestingDatabase();
+			assertTrue(set != null);
 
 			// TODO
 		}
@@ -245,7 +245,8 @@ public class Test_Manager {
 	@Test
 	public void testGetDataStoredToIndex() {
 		for (int i = 0; i < RANDOM_ITERATIONS; i++) {
-			assertTrue(createTestingDatabase());
+			DatabaseSet set = createTestingDatabase();
+			assertTrue(set != null);
 
 			// TODO
 		}
@@ -255,7 +256,8 @@ public class Test_Manager {
 	@Test
 	public void testGetNodesToProcess() {
 		for (int i = 0; i < RANDOM_ITERATIONS; i++) {
-			assertTrue(createTestingDatabase());
+			DatabaseSet set = createTestingDatabase();
+			assertTrue(set != null);
 
 			// TODO
 		}
@@ -265,7 +267,8 @@ public class Test_Manager {
 	@Test
 	public void testCreateDataFusion() {
 		for (int i = 0; i < RANDOM_ITERATIONS; i++) {
-			assertTrue(createTestingDatabase());
+			DatabaseSet set = createTestingDatabase();
+			assertTrue(set != null);
 
 			// TODO
 		}
@@ -275,7 +278,8 @@ public class Test_Manager {
 	@Test
 	public void testAssignTags() {
 		for (int i = 0; i < RANDOM_ITERATIONS; i++) {
-			assertTrue(createTestingDatabase());
+			DatabaseSet set = createTestingDatabase();
+			assertTrue(set != null);
 
 			// TODO
 		}
@@ -285,7 +289,8 @@ public class Test_Manager {
 	@Test
 	public void testCleanTables() {
 		for (int i = 0; i < RANDOM_ITERATIONS; i++) {
-			assertTrue(createTestingDatabase());
+			DatabaseSet set = createTestingDatabase();
+			assertTrue(set != null);
 
 			// TODO
 		}
