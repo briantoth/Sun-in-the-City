@@ -1,0 +1,1 @@
+Please click the help link within the Module Configuration page before using this module. Inside contains information regarding creating data fusion articles and configuring data sources.

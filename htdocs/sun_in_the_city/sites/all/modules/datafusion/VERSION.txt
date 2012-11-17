@@ -1,0 +1,1 @@
+With Drupal Updates, simply change the version in the "datafusion.info" file to the latest version for compatibility. 
