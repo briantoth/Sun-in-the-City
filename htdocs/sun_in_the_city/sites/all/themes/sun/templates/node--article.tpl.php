@@ -115,20 +115,23 @@
   ?>
 
   <?php print render($content['links']); ?>
-
-  <?php print render($content['comments']); ?>
   
-    
-<h9><?php // Show Data Fusion Articles
-		
+  
+<h9><?php 
 if (isset($node->fusion)){
-        foreach ( $node->fusion as $v ) {
+        foreach ( $node->fusion as $v ) { // CSS code for showing Data Fusion Articles - customize within these brackets
           ?><div style="float:left;margin-bottom:30px;"><?php echo "<a href='{$v[3]}'><img src='{$v[0]}'/></a><br><a href='{$v[3]}'>{$v[1]} <hr></a>{$v[2]}<br>"; ?></div>
           <?php
         }
 }
       ?></h9>
-    <br> 
+       <br> 
+       
+  <?php print render($content['comments']); ?>
+  
+    
+
+   
    
 
 </article><!-- /.node -->
