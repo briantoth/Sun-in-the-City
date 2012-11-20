@@ -64,7 +64,7 @@ function datafusion_configure_form($form, &$form_state) {
 
 		$query = db_select('DataFusion');
 		$query ->fields('DataFusion', array('nodeID','id','title', 'url', 'rating', 'summary', 'DataSource_id', 'approved', 'deleted')); //SELECT the fields from Data Fusion Table
-		$query ->condition('deleted', 0, '=');
+		$query ->condition('deleted', 1, '=');
 		$query ->condition('nodeID', $node_id, '=');
 		$query -> orderBy('rating', $direction = 'DESC'); // Get articles in order of highest rated shown higher [feel free to change] 
 		$results = $query-> execute();
