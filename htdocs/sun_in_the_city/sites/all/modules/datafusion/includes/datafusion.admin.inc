@@ -1057,6 +1057,7 @@ function datafusion_delete($form, &$form_state) {
 	}
 if ($dfInfo != NULL){	
 	foreach (($form_state['values']['table']) as $rows) {
+		
 		//Mark as deleted
 		$num_deleted = db_update('DataFusion')
 				->fields(array('approved' => 0, 'deleted' => 1)) 

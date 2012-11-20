@@ -12,34 +12,7 @@
  */
 function datafusion_configure_form($form, &$form_state) {
 	db_set_active('default'); //Set to Sun_In_The_City Database
-
 	
-
-		// Obtain global boolean data 
-		$title = variable_get('title', '');
-		$url = variable_get('url','');
-		$summary = variable_get('summary', '');
-		$rating = variable_get('rating', '');
-		$dataSource= variable_get('dataSource', '');
-		$form = array();
-
-		// Database query to get the options for the DataSource Chooser
-		$sources = array();
-
-		$query = db_select('DataSource', 'd');
-		$query ->fields('d', array('id', 'name')); //SELECT the fields from Data Source Table
-		$result	= $query-> execute();
-
-		$loopCounter = 0; 
-		while ($row = $result-> fetchAssoc()){
-			$sources[$loopCounter] = t($row['name']);
-			$loopCounter ++; 
-		}
-		$options = $sources;
-
-		// Search Data Sources for right source
-		$dataSourceKey = array_search($dataSource, $options);
-		
 		//initialize Rows
 		$rows = array(); 
 
@@ -56,16 +29,14 @@ function datafusion_configure_form($form, &$form_state) {
 				t('Approved?'),
 				);
 
-
-
 		// Obtain nodeID through url parsing 
 		$argument_one = arg(0);
 		$node_id = arg(1); 
 
 		$query = db_select('DataFusion');
 		$query ->fields('DataFusion', array('nodeID','id','title', 'url', 'rating', 'summary', 'DataSource_id', 'approved', 'deleted')); //SELECT the fields from Data Fusion Table
-		$query ->condition('deleted', 1, '=');
 		$query ->condition('nodeID', $node_id, '=');
+		$query ->condition('deleted', 0, '=');
 		$query -> orderBy('rating', $direction = 'DESC'); // Get articles in order of highest rated shown higher [feel free to change] 
 		$results = $query-> execute();
 		
@@ -122,12 +93,27 @@ function datafusion_configure_form($form, &$form_state) {
 				'#submit' => array('datafusion_configure_form_delete'),
 				'#weight' => 2,
 				);
-				
+		//Edit button 
+		$form['edit'] = array(
+				'#type'=> 'submit',		
+				'#value'=> t('Edit'),
+				'#submit'=> array('datafusion_configure_form_edit'),
+				'#weight'=> 2,
+			);
 // Boolean determining which form to create based on whether the edit button has been pressed or not
 	$theTerm = variable_get('term','');
 
 	// True means the Edit button has been clicked.
-	if ($theTerm == true){					
+	if ($theTerm == true){		
+	
+		// Obtain global boolean data 
+		$title = variable_get('title', '');
+		$url = variable_get('url','');
+		$summary = variable_get('summary', '');
+		$rating = variable_get('rating', '');
+		$dataSource= variable_get('dataSource', '');
+		$form = array();
+					
 		//Textfield for inserting Data Fusion title
 		$form['title']= array(
 				'#type' => 'textfield',
@@ -170,13 +156,28 @@ function datafusion_configure_form($form, &$form_state) {
 				'#weight' => 6,
 				'#description' => 'A rating of 10 represents the best rating an article can receive',
 				); 
+// Database query to get the options for the DataSource Chooser
+		$sources = array();
 
+		$query = db_select('DataSource', 'd');
+		$query ->fields('d', array('id', 'name')); //SELECT the fields from Data Source Table
+		$result	= $query-> execute();
+
+		$loopCounter = 0; 
+		while ($row = $result-> fetchAssoc()){
+			$sources[$loopCounter] = t($row['name']);
+			$loopCounter ++; 
+		}
+		
+		// Search Data Sources for right source
+		$dataSourceKey = array_search($dataSource, $sources);
+		
 		// Pick chooser for Data Source ID
 		$form['dataSource'] = array(
 				'#title' => 'Choose Data Source',
 				'#type' => 'select',
 				'#default_value' => $dataSourceKey,
-				'#options' => $options,
+				'#options' => $sources,
 				'#weight' => 7,
 				);
 
@@ -196,117 +197,7 @@ function datafusion_configure_form($form, &$form_state) {
 
 	// If Button is not clicked
 	if ($theTerm == false) {
-		$form = array();
-
-		//Recieve options for the DataSource Chooser 'select' form element
-
-		$sources = array();
-
-		$query = db_select('DataSource', 'd');
-		$query ->fields('d', array('id', 'name')); //SELECT the fields from Data Source Table
-		$result	= $query-> execute();
-
-		$loopCounter = 0; 
-		while ($row = $result-> fetchAssoc()){
-			$sources[$loopCounter] = t($row['name']);
-			$loopCounter ++; 
-		}
-		$options = $sources;
-
-		//Row Setup
-		$rows = array(); 
-
-		// Options for the Ratings Selector
-		$rateOptions = array(0,1,2,3,4,5,6,7,8,9,10);
-
-		//Header setup
-		$header = array (
-				t('Title'),
-				t('Url'),
-				t('Summary'),
-				t('Source'),
-				t('Rating'),
-				t('Approved?'),
-				);
-
-
-		// Obtain specific nodeID by using url
-		$argument_one = arg(0);
-		$node_id = arg(1); 
-
-		// Datafusion table in database query for input into table
-		$query = db_select('DataFusion');
-		$query ->fields('DataFusion', array('nodeID','id','title', 'url', 'rating', 'summary', 'DataSource_id', 'approved')); 
-		$query ->condition('nodeID', $node_id, '=');
-		$query -> orderBy('rating', $direction = 'DESC'); //Show list in order of articles with the highest ratings to lowest [feel free to edit here]
-		$results = $query-> execute();
-
-		foreach ($results as $line) {
-			if ($line->approved == 1){
-				$approved = 'YES';	
-			}
-
-			if ($line->approved == 0){
-				$approved = 'NO';	
-			}
-
-			$queryA= db_select('DataSource', 'd');
-			$queryA -> fields('d', array('id', 'name'));
-			$queryA -> condition ('id' , $line->DataSource_id, '=');
-			$resultsA = $queryA -> execute(); 
-
-			$rowA = $resultsA -> fetchAssoc();
-			$sourceName = $rowA['name'];
-
-			//Populating Row Array with results from database query 
-			$rows[$line->id] = array(  
-					$line->title,
-					$line->url,
-					$line->summary,
-					$sourceName,
-					$line-> rating,
-					$approved,
-					//	l(t('Edit'), 'node/' . $node->nid . '/webform/'),
-					//add edit button to the table	array('colspan' => 1, 'data' => drupal_render($form['edit'])), 
-					);
-		}
-
-
-		//Table Setup
-		$form['table'] = array(
-				'#type' => 'tableselect',
-				'#title' => 'Approve',
-				'#header' => $header,
-				'#options' => $rows,
-				'#empty' => t('No Data Fusion articles found'),
-				'#js_select' => TRUE,
-				'#weight' => 0,
-				);
-
-
-		// Approve button 
-		$form['submit'] = array(
-				'#type' => 'submit',
-				'#value' => t('Approve'),
-				'#submit' => array('datafusion_configure_form_approve'),
-				'#weight' => 1,
-				);
-
-		// Delete button 
-		$form['delete'] = array(
-				'#type' => 'submit',
-				'#value' => t('Delete'),
-				'#submit' => array('datafusion_configure_form_delete'),
-				'#weight' => 2,
-				);
-		// Edit button 
-		$form['edit'] = array(
-				'#type' => 'submit',
-				'#value' => t('Edit'),
-				'#submit' => array('datafusion_configure_form_edit'),
-				'#weight' => 3,
-				);
-
+		
 		//Textfield for inserting Data Fusion title
 		$form['title']= array(
 				'#type' => 'textfield',
@@ -348,13 +239,27 @@ function datafusion_configure_form($form, &$form_state) {
 				'#description' => 'A rating of 10 represents the best rating an article can receive',
 				'#weight' => 7,
 				); 
+				
+// Database query to get the options for the DataSource Chooser
+		$sources = array();
+
+		$query = db_select('DataSource', 'd');
+		$query ->fields('d', array('id', 'name')); //SELECT the fields from Data Source Table
+		$result	= $query-> execute();
+
+		$loopCounter = 0; 
+		while ($row = $result-> fetchAssoc()){
+			$sources[$loopCounter] = t($row['name']);
+			$loopCounter ++; 
+		}
+		
 
 		// Pick chooser for Data Source ID
 		$form['dataSource'] = array(
 				'#title' => 'Choose Data Source',
 				'#type' => 'select',
 				'#default_value' => ' ',
-				'#options' => $options,
+				'#options' => $sources,
 				'#weight' => 8,
 				);
 
@@ -365,7 +270,8 @@ function datafusion_configure_form($form, &$form_state) {
 				'#submit' => array('datafusion_configure_form_add'),
 				'#weight' => 10,
 				);
-
+				
+	
 	}
 
 	return $form;
