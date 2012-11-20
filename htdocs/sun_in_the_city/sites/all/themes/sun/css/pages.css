@@ -119,17 +119,18 @@ body {
 	margin-right: 20px;
 	padding-top: 20px;
 	width: 300px;
+	
 }
 
 #edit-search-block-form--2 {
-	width: 230px;
+	width: 72%;
 }
 
 #edit-submit {
-	width: 50px;
-	margin: 0;
-	font-size: 75%;
+	width: 22%;
 	height: 22px;
+	font-size: 75%;
+	float: right;
 }
 
 
