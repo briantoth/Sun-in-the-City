@@ -419,6 +419,27 @@ public class Manager {
 			return null;
 		}
 	}
+	
+	/***************************************************************************
+	 * Gets nodes (articles) to process that are written after the given date
+	 * 
+	 * @param nid
+	 *            The request Node ID
+	 * @return A list of the results, or null if there was an error
+	 */
+	public Node getNode(int nid) {
+		
+		List<Node> nodes;
+		
+		nodes = getNodesToProcess(2353379155L);
+		
+		for(Node node: nodes){
+			
+			if(node.getNodeID()==nid) return node;
+		}
+		
+		return null;
+	}
 
 	/***************************************************************************
 	 * Creates a DataFusion object if the (nodeID, DataStored_id) pair does not
