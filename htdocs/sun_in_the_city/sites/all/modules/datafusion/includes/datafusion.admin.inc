@@ -42,7 +42,9 @@ function datafusion_form($form, $form_state, $i) {
 		// Table Setup
 		
 		$query = db_select('DataFusion');
-		$query ->fields('DataFusion', array('id', 'nodeID','title', 'url', 'summary', 'rating', 'approved', 'timestamp')); //SELECT the fields from table
+		$query ->fields('DataFusion', array('id', 'nodeID','title', 'url', 'summary', 'rating', 'approved', 'timestamp', 'deleted')); //SELECT the fields from table
+		$query-> condition('deleted', 0, '=');
+		$query-> condition('approved', 0, '=');
 		$query-> orderBy('timestamp', $direction = 'DESC'); // Show DataFusion Articles in order by most recently added [feel free to edit]
 	
 		// Uncomment this line to restrict the view of Datafusion Articles shown. Results older than a month old won't be shown.
@@ -1055,9 +1057,10 @@ function datafusion_delete($form, &$form_state) {
 	}
 if ($dfInfo != NULL){	
 	foreach (($form_state['values']['table']) as $rows) {
+		
 		//Mark as deleted
 		$num_deleted = db_update('DataFusion')
-				->fields(array('approved' => 0, 'deleted' => TRUE)) 
+				->fields(array('approved' => 0, 'deleted' => 1)) 
 				->condition('id', $rows)
 				->execute();  
 	}
@@ -1083,7 +1086,7 @@ if ($dfInfo != NULL){
 	foreach (($form_state['values']['table']) as $rows) {
 		//Mark as approved
 		$num_deleted = db_update('DataFusion')
-				->fields(array('approved' => TRUE, 'deleted' => 0)) 
+				->fields(array('approved' => 1, 'deleted' => 0)) 
 				->condition('id', $rows)
 				->execute();  
 	}
