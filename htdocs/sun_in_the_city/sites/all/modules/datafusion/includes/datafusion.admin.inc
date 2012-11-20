@@ -241,9 +241,6 @@ function datafusion_form($form, $form_state, $i) {
 				);
 
 	}
-
-	
-		
 	//False means the Edit button has NOT been clicked.
 	if ($theTerm == false){
 		//Adding Data Fusion collapsable area
@@ -404,8 +401,7 @@ function datasource_form($form, $form_state, $i) {
 	$rows = array(); 
 
 	//header setup
-	$header = array
-			(
+	$header = array(
 					t('Name of Source'),
 					t('Url'),
 					t('Logo Url'),
@@ -470,7 +466,7 @@ function datasource_form($form, $form_state, $i) {
 
 		//Controls the attributes of the Data Sources textbox field
 		$form['sources']['url'] = array(
-				'#title' => 'Insert URL to article',
+				'#title' => 'Insert URL to Website',
 				'#description' => 'e.g "http://www.nytimes.com"',
 				'#default_value' => $url,
 				'#type' => 'textfield',
@@ -783,7 +779,6 @@ function datameans_update($form, &$form_state){
 				->execute();  
 
 				drupal_set_message(t('Data Means has been updated'));
-
 				variable_set('data_means_boolean', false); //set flag boolean back to false, finished editing	
 	}
 
@@ -821,7 +816,7 @@ function datameans_edit($form, &$form_state){
 			$theDataMeansElement = $row['id'];
 
 
-			//send info to cloud
+			//Global Variables
 			$name = ' ';
 			variable_set('name', $row['name']);
 			$url = '';
@@ -888,15 +883,16 @@ function datameans_add($form, &$form_state){
 		$row = $result-> fetchAssoc();
 
 		$dbID = $row['id'];
-		$lastP = $date1 = date("Y-m-d H:i:s", time()); // Get Current Time
-
+	    $currentDate = date("Y-m-d H:i:s", time()-(3600*24)); // Get Current Time one day before
+	
+		
 		$query = db_insert('DataMeans') 
 				->fields(array(
 						'DataSource_id' => $dbID,
 						'url' =>  $means_url,
 						'name' => $means_name,
 						'type' => 0, //Type is a mystery
-						'lastProcessed' => $lastP, 
+						'lastProcessed' => $currentDate, 
 						))
 						->execute();  
 
