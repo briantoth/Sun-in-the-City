@@ -119,8 +119,15 @@
   
 <h9><?php 
 if (isset($node->fusion)){
+		echo("<h2>Around the Web</h2>");
         foreach ( $node->fusion as $v ) { // CSS code for showing Data Fusion Articles - customize within these brackets
-          ?><div style="float:left;margin-bottom:30px;"><?php echo "<a href='{$v[3]}'><img src='{$v[0]}'/></a><br><a href='{$v[3]}'>{$v[1]} <hr></a>{$v[2]}<br>"; ?></div>
+          ?><div class = "fusionarticle"><?php echo "
+          <div class = \"fusiontext\">
+          	<h3><a href='{$v[3]}'>{$v[1]}</a></h3>
+          	<p>{$v[2]}</p>
+          </div>
+          <p class = 'fusionlogop'><a href='{$v[3]}'><img src='{$v[0]}' alt = 'logo' class = 'fusionlogoimg' /></a></p>
+          "; ?></div>
           <?php
         }
 }

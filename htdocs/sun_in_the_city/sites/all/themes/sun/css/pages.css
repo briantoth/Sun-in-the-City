@@ -408,8 +408,35 @@ p {
 .comment {
 	padding-bottom: 20px;
 }
+.comments {
+	clear: both;
+}
 
 .field-name-comment-body p {
 	margin-top: 0;
 	margin-bottom: 0;
+}
+
+/*data fusion*/
+.fusionlogop {
+	width: 75px;
+	height: 75px;
+}
+
+.fusionlogoimg {
+	width: 75px;
+	height: auto;
+}
+
+.fusiontext {
+	width: 525px;
+	float: right;
+}
+
+.fusionarticle h3 {
+	margin: 0;
+}
+
+.fusion {
+	margin-bottom: 20px;
 }
