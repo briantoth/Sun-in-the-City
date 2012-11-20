@@ -13,11 +13,7 @@
 function datafusion_configure_form($form, &$form_state) {
 	db_set_active('default'); //Set to Sun_In_The_City Database
 
-	// Boolean determining which form to create based on whether the edit button has been pressed or not
-	$theTerm = variable_get('term','');
-
-	// True means the Edit button has been clicked.
-	if ($theTerm == true){
+	
 
 		// Obtain global boolean data 
 		$title = variable_get('title', '');
@@ -67,7 +63,8 @@ function datafusion_configure_form($form, &$form_state) {
 		$node_id = arg(1); 
 
 		$query = db_select('DataFusion');
-		$query ->fields('DataFusion', array('nodeID','id','title', 'url', 'rating', 'summary', 'DataSource_id', 'approved')); //SELECT the fields from Data Fusion Table
+		$query ->fields('DataFusion', array('nodeID','id','title', 'url', 'rating', 'summary', 'DataSource_id', 'approved', 'deleted')); //SELECT the fields from Data Fusion Table
+		$query ->condition('deleted', 1, '=');
 		$query ->condition('nodeID', $node_id, '=');
 		$query -> orderBy('rating', $direction = 'DESC'); // Get articles in order of highest rated shown higher [feel free to change] 
 		$results = $query-> execute();
@@ -124,7 +121,13 @@ function datafusion_configure_form($form, &$form_state) {
 				'#value' => t('Delete'),
 				'#submit' => array('datafusion_configure_form_delete'),
 				'#weight' => 2,
-				);	
+				);
+				
+// Boolean determining which form to create based on whether the edit button has been pressed or not
+	$theTerm = variable_get('term','');
+
+	// True means the Edit button has been clicked.
+	if ($theTerm == true){					
 		//Textfield for inserting Data Fusion title
 		$form['title']= array(
 				'#type' => 'textfield',
@@ -539,7 +542,7 @@ if ($dfInfo != NULL){
 
 		//Mark as approved in database
 		$data_fusion_approve_query = db_update('DataFusion')
-				->fields(array('approved' => TRUE, 'deleted' => 0)) 
+				->fields(array('approved' => 1, 'deleted' => 0)) 
 				->condition('id', $rows)
 				->execute();  
 
@@ -558,12 +561,12 @@ function datafusion_configure_form_delete($form, &$form_state) {
 	if ($dfInfo == NULL){
 		drupal_set_message(t('Please select an element to delete'), $type = 'error');
 	}
-
+// Elements selected
 if ($dfInfo != NULL) {	
 	foreach (($form_state['values']['table']) as $rows) {
 		//Mark as deleted in database
 		$data_fusion_update_query = db_update('DataFusion')
-				->fields(array('approved' => 0, 'deleted' => TRUE)) 
+				->fields(array('approved' => 0, 'deleted' => 1)) 
 				->condition('id', $rows)
 				->execute();  
 		}
