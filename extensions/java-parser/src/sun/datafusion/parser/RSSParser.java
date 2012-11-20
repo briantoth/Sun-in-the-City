@@ -39,7 +39,7 @@ public class RSSParser {
 	/***************************************************************************
 	 * Execute one 'pass' over the DataMeans MySQL table, parsing all new
 	 * RSS posts and adding them to the DataStored MySQL table.
-	 * If a DataMeans cannot be parsed, it will be skipped.
+	 * If a DataMeans cannot be parsed, it will be skipped and an error logged.
 	 */
 	public void parse(){
 		DataMeans next = null;
