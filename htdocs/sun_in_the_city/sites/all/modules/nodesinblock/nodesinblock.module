@@ -39,18 +39,6 @@ function nodesinblock_theme() {
  */
 function nodesinblock_menu() {
   $items = array();
-  $items['node/%node/nodesinblock'] = array(
-    'title' => 'Nodes in block',
-    'description' => 'Nodes in block queue. ',
-    'title callback' => 'nodesinblock_tabtitle',
-    'title arguments' => array(1),
-    'page callback' => 'nodesinblock_nodequeue',
-    'page arguments' => array(1),
-    'access callback' => 'nodesinblock_nodequeue_access',
-    'access arguments' => array(1),
-    'type' => MENU_LOCAL_TASK,
-    'weight' => 2,
-  );
   $items['admin/structure/nodesinblock'] = array(
     'title' => 'Nodes in block',
     'description' => 'Setup nodes in block. ',
