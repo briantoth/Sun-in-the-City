@@ -119,7 +119,7 @@ public class DataFuser implements Runnable {
 				df.setSummary(ds.getData());
 				df.setTimestamp(ds.getTimestamp());
 				df.setTitle(ds.getTitle());
-				df.setUrl(ds.getUrl());	    	
+				df.setUrl(ds.getLinkedUrl());	    	
 
 				manager.createDataFusion(df);
 			}	    

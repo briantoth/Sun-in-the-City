@@ -119,10 +119,18 @@ body {
 	margin-right: 20px;
 	padding-top: 20px;
 	width: 300px;
+	
 }
 
 #edit-search-block-form--2 {
-	width: 230px;
+	width: 72%;
+}
+
+#edit-submit {
+	width: 22%;
+	height: 22px;
+	font-size: 75%;
+	float: right;
 }
 
 
@@ -400,8 +408,35 @@ p {
 .comment {
 	padding-bottom: 20px;
 }
+.comments {
+	clear: both;
+}
 
 .field-name-comment-body p {
 	margin-top: 0;
 	margin-bottom: 0;
+}
+
+/*data fusion*/
+.fusionlogop {
+	width: 75px;
+	height: 75px;
+}
+
+.fusionlogoimg {
+	width: 75px;
+	height: auto;
+}
+
+.fusiontext {
+	width: 525px;
+	float: right;
+}
+
+.fusionarticle h3 {
+	margin: 0;
+}
+
+.fusion {
+	margin-bottom: 20px;
 }
