@@ -48,7 +48,7 @@ public class Main {
 		
 		Properties prop = sun.datafusion.utils.PropertyUtils.loadProperties();
 		sun.datafusion.utils.PropertyUtils.loadLoggingProperties();
-		CLEAN_TIMEOUT = Long.parseLong(prop.getProperty("clean_timeout", "604800000")); //default is a week
+		CLEAN_TIMEOUT = Long.parseLong(prop.getProperty("clean_timeout", "604800000")); //default is a week (604800000 ms)
 		
 		final Directory indexLocation;
 		Directory tempIndexLocation=null;
@@ -105,7 +105,7 @@ public class Main {
 			try {
 				Thread.sleep(CLEAN_TIMEOUT);
 				dc.clearLuceneIndex(); 
-				manager.clearDataStored();
+				manager.clearDataStored(CLEAN_TIMEOUT);
 			} catch (InterruptedException e) {
 			}
 		}

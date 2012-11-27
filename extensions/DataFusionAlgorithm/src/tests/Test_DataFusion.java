@@ -18,6 +18,7 @@ import sun.datafusion.data.DataStored;
 import sun.datafusion.data.Manager;
 import sun.datafusion.data.Node;
 import sun.datafusion.fuse.DataFuser;
+import sun.datafusion.index.DataCleaner;
 import sun.datafusion.index.DataIndexer;
 import sun.datafusion.utils.PropertyUtils;
 
@@ -144,5 +145,8 @@ public class Test_DataFusion {
 		DataFuser df = new DataFuser(n, indexLocation, man);
 		df.run();
 		
+		// Initiate a DataCleaner
+		DataCleaner dc = new DataCleaner(testIndex);
+		dc.clearLuceneIndex();
 	}
 }

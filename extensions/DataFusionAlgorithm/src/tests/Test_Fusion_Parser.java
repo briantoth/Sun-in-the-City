@@ -106,7 +106,7 @@ public class Test_Fusion_Parser {
 		
 		List<Node> nodes = new ArrayList<Node>();
 		Node n = new Node(1);
-		n.addTag("hackers");
+		n.addTag("Lynch");
 		man.createNode(n);
 		nodes.add(n);
 		
@@ -137,5 +137,6 @@ public class Test_Fusion_Parser {
 		DataFuser df = new DataFuser(nodes.get(0), indexLocation, man);
 		df.run();
 		
+		man.clearDataStored((long)5000);
 	}
 }
