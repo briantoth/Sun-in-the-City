@@ -23,10 +23,21 @@ public class Node  {
 		return nodeID;
 	}
 	
+	/**
+	 * Returns a list of the tags
+	 * 
+	 * @return A list of the tags as strings
+	 */
 	public List<String> getTags() {
 		return tags;
 	}
 	
+	/**
+	 * Concatenates all of the tags into a space-delimited
+	 * string
+	 * 
+	 * @return
+	 */
 	public String getTagsInOneString() {
 		
 		String oneString = new String();

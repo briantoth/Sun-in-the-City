@@ -20,8 +20,9 @@ import java.util.Set;
  */
 public class Manager {
 
-	/***************************************************************************
-	 * Constructor that sets up the MySQL information
+	/**
+	 * Create a manager to handle SQL interactions
+	 * @param prop A map populated with the user-defined configurations
 	 */
 	public Manager(Properties prop){
 		hostname= prop.getProperty("hostname");
@@ -465,14 +466,19 @@ public class Manager {
 			psCreateDataFusion.setString(5, df.getUrl());
 			psCreateDataFusion.setString(6, df.getSummary());
 			psCreateDataFusion.setInt(7, df.getRating());
-			psCreateDataFusion.setDate(8, new java.sql.Date(df.getTimestamp()
-					.getTime()));
+			psCreateDataFusion.setDate(8, new java.sql.Date(df.getTimestamp() .getTime()));
 			return psCreateDataFusion.executeUpdate() == 1;
 		} catch (SQLException e) {
 			return false;
 		}
 	}
 	
+	/**
+	 * Gets a data fusion object by ID.  This requires you to know the ID of the object in the table
+	 * 
+	 * @param dataFusionID The ID in the SQL table of the datafusion object to be fetched
+	 * @return
+	 */
 	public DataFusion getDataFusion(int dataFusionID) {
 		// Make connection if not already, ensure success
 		if (!startConnection())
@@ -501,6 +507,10 @@ public class Manager {
 		}
 	}
 	
+	/**
+	 * Deletes all records from tables that are related to articles, tags,
+	 * data fusion, data indexing, etc.  Used to enable unit testing
+	 */
 	public void cleanTables(){
 		// Make connection if not already, ensure success
 		if (!startConnection())
@@ -523,6 +533,15 @@ public class Manager {
 		}
 	}
 	
+	/**
+	 * For a group of articles, adds the tags to the database and
+	 * assigns those tags to those articles.  Avoids duplicating tags
+	 * for any of the inputed articles, but does not take into account
+	 * any tags already in the database
+	 * 
+	 * @param nodes The articles to assign tags to
+	 * @return Indicates success or failure
+	 */
 	public boolean assignTags(List<Node> nodes){
 		Set<String> tags= new HashSet<String>();
 		for(Node n : nodes){
@@ -589,7 +608,8 @@ public class Manager {
 	// -------------------------------------------------------------------------
 
 	/***************************************************************************
-	 * Closes the database connections
+	 * Opens the database connections
+	 * @return Indicates failure or success
 	 */
 	public boolean startConnection() {
 		// Check to make sure database connection not already initialized
@@ -719,26 +739,56 @@ public class Manager {
 
 	// -------------------------------------------------------------------------
 	
+	/**
+	 * Returns the current database connection
+	 * 
+	 * @return The current database connection
+	 */
 	public Connection getConnection() {
 		return connection;
 	}
 
+	/**
+	 * Returns the database's hostname
+	 * 
+	 * @return The hostname of the current database
+	 */
 	public String getHostname() {
 		return hostname;
 	}
 
+	/**
+	 * Returns the current database's name
+	 * 
+	 * @return The name of the current database as a string
+	 */
 	public String getDatabase() {
 		return database;
 	}
 
+	/**
+	 * Returns the username used to log in to the database
+	 * 
+	 * @return The current username as a string
+	 */
 	public String getUsername() {
 		return username;
 	}
 
+	/**
+	 * Returns the password used to log in to the database
+	 * 
+	 * @return The current password as a string
+	 */
 	public String getPassword() {
 		return password;
 	}
 
+	/**
+	 * Returns the mapping from internal table names to actual table names
+	 * 
+	 * @return The mapping from standard table names to actual table names
+	 */
 	public Map<String, String> getTableNames() {
 		return tableNames;
 	}

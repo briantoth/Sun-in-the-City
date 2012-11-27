@@ -16,6 +16,15 @@ public class DataSource{
 		logourl = "";
 	}
 	
+	/**
+	 * A constructor that sets non-default values. Used when creating an
+	 * in-memory object to correspond to an entry in the database
+	 * 
+	 * @param id The ID
+	 * @param url Link to the source's website
+	 * @param name Name of the source
+	 * @param logourl Link to an image for this source
+	 */
 	public DataSource(int id, String url, String name, String logourl){
 		this.id = id;
 		this.url = url;
