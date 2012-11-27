@@ -19,7 +19,7 @@ import sun.datafusion.data.Manager;
 import sun.datafusion.index.DataIndexer;
 import sun.datafusion.utils.PropertyUtils;
 
-public class TestBuildIndex {
+public class Test_Build_Index {
 	
 	private static final String testIndex= "./testLuceneIndex";
 
