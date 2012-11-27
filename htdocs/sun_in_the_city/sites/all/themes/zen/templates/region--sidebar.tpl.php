@@ -28,6 +28,60 @@
 ?>
 <?php if ($content): ?>
   <section class="<?php print $classes; ?>">
+<?php 
+// Establishing connection to database
+ db_set_active('default'); 
+
+// Obtain the node ID for the particular page being viewed by using the url
+ $argument_one = arg(0);
+ $node_id = arg(1); 
+ 
+ // Initialization of array for node fusion block
+ $fusion = array(); 
+ 
+ // Show only data fusion articles corresponding to that particular Article
+    $query = db_select('DataFusion', 'd');
+	$query ->fields('d', array('nodeID', 'title', 'summary', 'approved', 'DataSource_id', 'rating', 'url')); 
+	$query ->condition('nodeID', $node_id, '=');
+	$query ->condition('approved', 1, '=');
+	$query ->orderBy('rating', $direction = 'DESC'); // Descending direction allows for making articles with higher ratings appear higher up in the list of articles
+	$result	= $query-> execute();
+	
+	$loopCounter = 0; //start the loop
+	
+	while ($row = $result-> fetchAssoc()){
+	//Get the Logo image	
+	$query1 = db_select('DataSource', 'd');
+	$query1 ->fields('d', array('id', 'logourl')); 
+	$query1 ->condition('id', t($row['DataSource_id']), '='); // Check to see the right data source id is being selected
+	$result1 = $query1-> execute();
+	
+	$row1 = $result1 -> fetchAssoc(); // Go through the results  row by row
+		$fusion[$loopCounter] = array(t($row1['logourl']), t($row['title']), t($row['summary']), t($row['url'])); // Information to be added to the block
+		$loopCounter ++; 
+	}
+	
+	//Check to see if there are any Data Fusion articles
+	if (($fusion))
+	echo "<h1>Around the Web</h1>";
+	
+        foreach ( $fusion as $v ) {
+          ?><div class = "fusionarticle"><?php echo "
+          <div class = \"fusiontext\">
+          	<h3><a href='{$v[3]}'>{$v[1]}</a></h3>
+          	<p>{$v[2]}</p>
+          </div>
+          <p class = 'fusionlogop'><a href='{$v[3]}'><img src='{$v[0]}' alt = 'logo' class = 'fusionlogoimg' /></a></p>
+          "; ?></div>
+          <?php
+        }
+
+      ?>
+
+
+
+
+
     <?php print $content; ?>
   </section><!-- region__sidebar -->
 <?php endif; ?>

@@ -75,6 +75,13 @@ li a.active {
   font-weight: 600;
 }
 
+#navigation li.first {
+	margin-left: -20px;
+	padding-left: 0;
+	
+}
+
+
 .region-navigation {
 }
 
@@ -82,20 +89,32 @@ li a.active {
  * Main menu and Secondary menu links
  */
 
-#main-menu {
-	margin: 0;
-	padding: 5px 0px 25px;
-	/*border-top: 3px solid #000;*/
+.region-navigation {
+	/*margin: 0;
+	padding: 5px 0px 25px;*/
+	padding: 5px 0 25px;
 	border-bottom: double 4px #888;
 	width: 940px;
 }
 
-#main-menu ul {
-	float: right;
-}
-
 #secondary-menu {
   float: right; /* LTR */
+}
+
+#main-menu {
+	padding-top: 10px;
+}
+
+/*search*/
+#search-block-form {
+	float: right;
+	margin-right: 20px;
+	padding-top: 20px;
+	width: 300px;
+	position: relative;
+	bottom: 28px;
+	left: 20px;
+	
 }
 
 /*

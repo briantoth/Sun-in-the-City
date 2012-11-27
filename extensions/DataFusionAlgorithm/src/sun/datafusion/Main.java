@@ -9,6 +9,7 @@ import org.apache.lucene.store.SimpleFSDirectory;
 
 import sun.datafusion.data.Manager;
 import sun.datafusion.fuse.ArticleRetriever;
+import sun.datafusion.index.DataCleaner;
 import sun.datafusion.index.DataRetriever;
 import sun.datafusion.utils.PropertyUtils;
 
@@ -16,6 +17,8 @@ import sun.datafusion.utils.PropertyUtils;
  * Class that holds the program configurations as well as the main function
  */
 public class Main {
+	
+	static long CLEAN_TIMEOUT;
 	
 	private static final String indexStoreDir= "./LuceneIndex";
 	
@@ -42,7 +45,10 @@ public class Main {
 	 *            The command line arguments passed to the program. Ignored
 	 */ 
 	public static void main(String[] args) {
-		Properties prop = PropertyUtils.loadProperties();
+		
+		Properties prop = sun.datafusion.utils.PropertyUtils.loadProperties();
+		sun.datafusion.utils.PropertyUtils.loadLoggingProperties();
+		CLEAN_TIMEOUT = Long.parseLong(prop.getProperty("clean_timeout", "604800000")); //default is a week
 		
 		final Directory indexLocation;
 		Directory tempIndexLocation=null;
@@ -68,6 +74,9 @@ public class Main {
 		// Startup an ArticleRetriever
 		final Thread articleRetriever= new Thread(new ArticleRetriever(indexLocation, manager));
 		articleRetriever.start();
+		
+		// Initiate a DataCleaner
+		DataCleaner dc = new DataCleaner(indexStoreDir);
 
 		// Setup the shutdown hook (graceful kill)
 		
@@ -94,10 +103,13 @@ public class Main {
 		
 		while(true){
 			try {
-				Thread.sleep(100);
+				Thread.sleep(CLEAN_TIMEOUT);
+				dc.clearLuceneIndex(); 
+				manager.clearDataStored();
 			} catch (InterruptedException e) {
 			}
 		}
+		
 	}
 	
 

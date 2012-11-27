@@ -13,13 +13,10 @@
 function datafusion_configure_form($form, &$form_state) {
 	db_set_active('default'); //Set to Sun_In_The_City Database
 	
-		//initialize Rows
+		// Initialize Rows
 		$rows = array(); 
 
-		// Options for the Ratings 'select' form element
-		$rateOptions = array(0,1,2,3,4,5,6,7,8,9,10);
-
-		//Header setup
+		// Header Setup
 		$header = array (
 				t('Title'),
 				t('Url'),
@@ -30,7 +27,6 @@ function datafusion_configure_form($form, &$form_state) {
 				);
 
 		// Obtain nodeID through url parsing 
-		$argument_one = arg(0);
 		$node_id = arg(1); 
 
 		$query = db_select('DataFusion');
@@ -44,7 +40,6 @@ function datafusion_configure_form($form, &$form_state) {
 			if ($line->approved == 1){
 				$approved = 'YES';	
 			}
-
 			if ($line->approved == 0){
 				$approved = 'NO';	
 			}
@@ -146,7 +141,9 @@ function datafusion_configure_form($form, &$form_state) {
 				'#weight' => 5,	
 				);  
 
-
+	// Options for the Ratings 'select' form element
+		$rateOptions = array(0,1,2,3,4,5,6,7,8,9,10);
+		
 		// Pick Chooser for ratings
 		$form['ratings'] = array(
 				'#title' => 'Article Rating',

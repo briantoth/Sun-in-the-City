@@ -50,6 +50,7 @@ public class PropertyUtils {
 				prop.setProperty("dbuser", "root");
 				prop.setProperty("dbpassword", "");
 				prop.setProperty("reader_timeout", "1000000");
+				prop.setProperty("clean_timeout", "604800000"); // a week
 				prop.setProperty("nodeTable", "node");
 				prop.setProperty("dataMeansTable", "DataMeans");
 				prop.setProperty("dataFusionTable", "DataFusion");

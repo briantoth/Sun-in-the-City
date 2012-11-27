@@ -112,16 +112,7 @@ body {
 	width: 620px;
 }
 
-
-/*Blocks in top right corner*/
-#search-block-form {
-	float: right;
-	margin-right: 20px;
-	padding-top: 20px;
-	width: 300px;
-	
-}
-
+/*search*/
 #edit-search-block-form--2 {
 	width: 72%;
 }
@@ -153,7 +144,7 @@ body {
 
 #content {
 	padding: 10px 0;
-	margin-top: 0px;
+	margin-top: 40px;
 }
 
 .region-highlighted {
@@ -187,7 +178,6 @@ h2 a:link, h2 a:visited{
 
 .article-title {
 	line-height: 120%;
-	padding-bottom: 12px;
 }
 
 tr.even { /* Some tables have rows marked even or odd. */
@@ -292,6 +282,7 @@ span.field-label { /* The inline field label used by the Fences module */
 
 #outerfooter {
 	background-color: #CE2C13;
+	background-image: url(../images/gradient-bottom.png);
 	color: #CCC;
 	font-size: 80%;
 }
@@ -336,13 +327,13 @@ span.field-label { /* The inline field label used by the Fences module */
 	float: right;
 }
 
-#block-menu-menu-footer-section-links, #block-menu-menu-footer-links, #block-user-login{
+#block-system-main-menu, #block-menu-menu-footer-links, #block-user-login{
 	width: 300px;
 	margin-right: 20px;
 	padding: 0;
 }
 
-#block-menu-menu-footer-section-links {
+#block-system-main-menu {
 	margin-left: 20px;
 }
 
@@ -370,31 +361,26 @@ span.field-label { /* The inline field label used by the Fences module */
  * other
 */
 
-.region-header .block-search /* Float search block to right when placed in header region */ {
-/*
-	position: relative;
-	bottom: 100px;
-	left: 500px;
-	width: 250px;
-*/
-}
-
 p {
 	margin: 10px 0;
 }
 
 /*home page grid*/
-
 .col-1, .col-2 {
 	width: 300px;
 	padding-right: 20px;
 }
 
+/*image in article on home page*/
+.node-teaser img {
+	margin-top: 20px;
+}
 
 /*image in featured article*/
 .nodesinblock img {
 	float: right;
 	padding-left: 20px;
+	margin-top: 0;
 }
 
 /*title in featured article*/
@@ -402,6 +388,11 @@ p {
 	font-size: 200%;
 	font-weight: 500;
 	padding-bottom: 0;
+}
+
+/*article text in featured article*/
+#block-nodesinblock-0 .field-type-text-with-summary {
+	width: 460px;
 }
 
 /*comments*/
@@ -419,17 +410,17 @@ p {
 
 /*data fusion*/
 .fusionlogop {
-	width: 75px;
-	height: 75px;
+	width: 70px;
+	height: 70px;
 }
 
 .fusionlogoimg {
-	width: 75px;
+	width: 70px;
 	height: auto;
 }
 
 .fusiontext {
-	width: 525px;
+	width: 210px;
 	float: right;
 }
 

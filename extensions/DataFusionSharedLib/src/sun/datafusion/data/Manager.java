@@ -564,6 +564,11 @@ public class Manager {
 		
 		return true;
 	}
+	
+	public void clearDataStored() {
+		
+		// TODO
+	}
 
 	/***************************************************************************
 	 * Closes the database connections
@@ -700,6 +705,7 @@ public class Manager {
 					.prepareStatement("INSERT into taxonomy_term_hierarchy "
 							+ "(tid, parent) "
 							+ "values (?, ?)");
+			
 
 		} catch (SQLException e) {
 			System.out.println("Failed to create prepared statements");
@@ -764,4 +770,5 @@ public class Manager {
 	private PreparedStatement psCreateTaxonomy_term_data; 
 	private PreparedStatement psCreateTaxonomy_index;
 	private PreparedStatement psCreateTaxonomy_term_hierarchy ;
+	private PreparedStatement psCleanDataStored;
 }

@@ -64,12 +64,6 @@ a.button { /* Buttons used by contrib modules like Media */
   margin: 0;
 }
 
-/*
- * Search (search-block-form.tpl.php)
- */
-
-#block-search-form { /* Wrapper for the search form */
-}
 
 /*
  * Drupal's default login form block

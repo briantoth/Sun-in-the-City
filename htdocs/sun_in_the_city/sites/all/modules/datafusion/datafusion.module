@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Configuration file for Data Fusion Module. 
+ * Implementation file for Data Fusion Module. 
  * Module handles output of news webscraping algorithm which finds outside sources relevant to user created content.
  * Implements and overrides various default drupal hook functions for display customization.
  * In order to add in authentication and authorization restrictions for editing, implement hook_perm() and use 'global $user;' to check user
@@ -15,6 +15,8 @@
  */
 function datafusion_help($section = 'admin/help#datafusion', $arg = NULL) {
   $output = '';
+  
+  // Only one help section for now
   switch ($section) {
     case 'admin/config/content/datafusion':
       $output = t('Data Fusion allows editors to have articles from around the internet included in their articles. Module performs web scraping algorithm and user input data to populate additional sources of content.');
@@ -58,7 +60,7 @@ function datafusion_help($section = 'admin/help#datafusion', $arg = NULL) {
 function datafusion_menu() {
   $items = array();
 
-  // Admin Settings.
+  // Admin Configuration Settings.
   $items['admin/config/content/datafusion'] = array(
     'title' => 'Data Fusion Settings',
     'page callback' => 'admin_config_page',
@@ -67,6 +69,7 @@ function datafusion_menu() {
     'file' => 'includes/datafusion.admin.inc',
     'type' => MENU_LOCAL_TASK,
   );
+  
 	
   // Initialize View in Admin > Configuration Menu
   $items['admin/config/datafusion'] = array(
@@ -78,6 +81,7 @@ function datafusion_menu() {
 	'file' => 'system.admin.inc',
 	'file path' => drupal_get_path('datafusion', 'system'),
   );
+  
   // Actual View in Admin>Configuration>DataFusion
   $items['admin/config/datafusion/configuration'] = array(
 	'title' => 'Data Fusion Settings',
@@ -119,42 +123,48 @@ function datafusion_admin_paths_alter(&$paths){
 	$paths['node/*/datafusion'] = TRUE; // Allow Datafusion tab to be shown is drupal overlay 
 }
 
+
+//Uncomment this function to create restrictions on certain parts of the Data Fusion Module and manage authorization for privacy concerns.
 /**
- * Implements hook_node_view().
+ * Implements hook_perm().
  */
-function datafusion_node_view($node, $view_mode) {
-
-// Establishing connection to database
- db_set_active('default'); 
-
-// Obtain the node ID for the particular page being viewed by using the url
- $argument_one = arg(0);
- $node_id = arg(1); 
- 
- // Initialization of array for node fusion block
- $fusion = array(); 
- 
- // Show only data fusion articles corresponding to that particular Article
-    $query = db_select('DataFusion', 'd');
-	$query ->fields('d', array('nodeID', 'title', 'summary', 'approved', 'DataSource_id', 'rating', 'url')); 
-	$query ->condition('nodeID', $node_id, '=');
-	$query ->condition('approved', 1, '=');
-	$query ->orderBy('rating', $direction = 'DESC'); // Descending direction allows for making articles with higher ratings appear higher up in the list of articles
-	$result	= $query-> execute();
-	
-	$loopCounter = 0; //start the loop
-	
-	while ($row = $result-> fetchAssoc()){
-	//Get the Logo image	
-	$query1 = db_select('DataSource', 'd');
-	$query1 ->fields('d', array('id', 'logourl')); 
-	$query1 ->condition('id', t($row['DataSource_id']), '='); // Check to see the right data source id is being selected
-	$result1 = $query1-> execute();
-	
-	$row1 = $result1 -> fetchAssoc(); // Go through the results  row by row
-		$fusion[$loopCounter] = array(t($row1['logourl']), t($row['title']), t($row['summary']), t($row['url'])); // Information to be added to the block
-		$loopCounter ++; 
-	}
-	$node->fusion = $fusion; // Add the custom view block to each node on the website allowing each one the potential to view Data Fused articles
-	
+/**
+function datafusion_permission() {
+  return array(
+    'access all Data Fusion articles' => array(
+      'title' => t('Access all Data Fusion Articles'),
+      'description' => t('Grants access to the "Data Fusion" tab on all articles. Generally an administrative permission.'),
+    ),
+    'access own Data Fusion articles' => array(
+      'title' => t('Access own Data Fusion Articles'),
+      'description' => t('Grants access to the "Data Fusion" tab to the author of article they have created.'),
+    ),
+    'edit all Data Fusion articles' => array(
+      'title' => t('Edit all webform submissions'),
+      'description' => t('Allows editing of any Data Fusion article to author of article they have created. Generally an administrative permission.'),
+    ),
+    'delete all Data Fusion articles' => array(
+      'title' => t('Delete all webform submissions'),
+      'description' => t('Allows deleting of any Data Fusion by any user. Generally an administrative permission.'),
+    ),
+    'access Data Sources' => array(
+      'title' => t('Access to Admin Data Source Configuration'),
+    ),
+    'edit Data Sources' => array(
+      'title' => t('Edit Admin Data Source Configuration'),
+    ), 
+    'delete Data Sources' => array(
+      'title' => t('Delete Admin Data Source Configuration'),
+    ),
+	'access Data Meanss' => array(
+      'title' => t('Access to Admin Data Means Configuration'),
+    ),
+    'edit Data Means' => array(
+      'title' => t('Edit Admin Data Means Configuration'),
+    ), 
+    'delete Data Means' => array(
+      'title' => t('Delete Admin Data Means Configuration'),
+    ),
+  );
 }
+*/
