@@ -437,6 +437,39 @@ p {
 	margin: 0;
 }
 
-.fusion {
+#fusion {
 	margin-bottom: 20px;
+	border-left: 1px solid #888;
+	overflow: hidden;
+	padding-left: 10px;
+	margin-top: -10px;
+}
+
+.region-sidebar-second h2 {
+	text-align: center;
+	margin-top: 10px;
+	padding-top: 0;
+}
+
+/*modify the formatting of article teasers on tag pages*/
+.page-taxonomy img {
+	display: none;
+}
+
+#logo img, .feed-icon img {
+	display: block;
+}
+
+.feed-icon img {
+	padding-top: 5px;
+}
+
+.page-taxonomy .node-article {
+	border-bottom: 1px solid #888;
+	padding-bottom: 20px;
+}
+
+.page-taxonomy #page-title {
+	border-bottom: 2px solid #888;
+	text-transform: uppercase;
 }
