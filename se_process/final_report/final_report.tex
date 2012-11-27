@@ -269,7 +269,14 @@ The website was built on Drupal’s CMS, which has already been tested extensive
 
 \subsubsection{Database}
 
-TODO Phill
+The database was redesigned to the new schema shown below. In the diagram you can see the DataSource table which represents a source of information like The New York Times. Any source can have multiple DataMeans, which represent the generator of source content like The New York Times RSS Feed. These DataMeans objects then generate content which is represented in DataStored. The Data Fusion algorithm then takes various DataStored objects and creates DataFusion objects representing the logical link between external content and content written by The Cornell Daily Sun. The content by The Cornell Daily Sun is represented by a node, which is the article representation in Drupal.
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=\columnwidth]{images/database_schema}
+\caption{Database Schema}
+\end{center}
+\end{figure}
 
 \subsubsection{Drupal Modules}
 
@@ -277,7 +284,7 @@ In order to properly test the functionality of the module, several manual testin
 
 \subsubsection{Shared Library}
 
-TODO Phill
+The shared library was written in Java to abstract at a logical level the representation of data. That is, each entry in the MySQL table is modeled as a Java object. The other algorithms interact with the MySQL database through a Manager class that represents the logical operations that would be desired, like get all DataStored objects that need to be indexed. In this way, the logical operations are completely decoupled so that improvements to queries, data storage, and other components can be implemented without affecting the operation of other components.
 
 \subsubsection{RSS Parser}
 

@@ -5,6 +5,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -24,19 +25,20 @@ public class Manager {
 	 * Create a manager to handle SQL interactions
 	 * @param prop A map populated with the user-defined configurations
 	 */
-	public Manager(Properties prop){
-		hostname= prop.getProperty("hostname");
-		database= prop.getProperty("db");
-		username= prop.getProperty("dbuser");
-		password= prop.getProperty("dbpassword");
-		tableNames= new HashMap<String, String>();
+	public Manager(Properties prop) {
+		hostname = prop.getProperty("hostname");
+		database = prop.getProperty("db");
+		username = prop.getProperty("dbuser");
+		password = prop.getProperty("dbpassword");
+		tableNames = new HashMap<String, String>();
 		tableNames.put("dataFusionTable", prop.getProperty("dataFusionTable"));
 		tableNames.put("dataMeansTable", prop.getProperty("dataMeansTable"));
 		tableNames.put("dataSourceTable", prop.getProperty("dataSourceTable"));
 		tableNames.put("dataStoredTable", prop.getProperty("dataStoredTable"));
 		tableNames.put("taxonomyTable", prop.getProperty("taxonomyTable"));
 		tableNames.put("taxonomyIndex", prop.getProperty("taxonomyIndex"));
-		tableNames.put("taxonomyHierarchy", prop.getProperty("taxonomyHierarchy"));
+		tableNames.put("taxonomyHierarchy",
+				prop.getProperty("taxonomyHierarchy"));
 		tableNames.put("nodeTable", prop.getProperty("nodeTable"));
 	}
 
@@ -142,7 +144,7 @@ public class Manager {
 			return false;
 		}
 	}
-	
+
 	/***************************************************************************
 	 * Creates a DataMeans object in the database and returns if it was
 	 * successful
@@ -162,8 +164,8 @@ public class Manager {
 			psCreateDataMeans.setString(3, dm.getName());
 			psCreateDataMeans.setString(4, dm.getUrl());
 			psCreateDataMeans.setInt(5, dm.getType());
-			psCreateDataMeans.setTimestamp(6, new java.sql.Timestamp(dm.
-					getLastProcessed().getTime()));
+			psCreateDataMeans.setTimestamp(6, new java.sql.Timestamp(dm
+					.getLastProcessed().getTime()));
 			return psCreateDataMeans.executeUpdate() == 1;
 		} catch (SQLException e) {
 			System.err.println(e);
@@ -195,10 +197,9 @@ public class Manager {
 			return false;
 		}
 	}
-	
+
 	/***************************************************************************
-	 * Creates a Node object in the database and returns if it was
-	 * successful
+	 * Creates a Node object in the database and returns if it was successful
 	 * 
 	 * @param n
 	 *            The Node object to create
@@ -212,13 +213,13 @@ public class Manager {
 		try {
 			psCreateNode.setInt(1, n.getNodeID());
 			return psCreateNode.executeUpdate() == 1;
-			
+
 		} catch (SQLException e) {
 			System.err.println(e);
 			return false;
 		}
 	}
-	
+
 	/***************************************************************************
 	 * Gets the DataMeans object represented by the given id
 	 * 
@@ -369,12 +370,15 @@ public class Manager {
 		try {
 			// Create query
 			// Get nodes that should be processed
-			psGetNodesToProcess = connection.prepareStatement("SELECT DISTINCT "
-					+ "node.nid, data.name " + "FROM " + database
-					+ ".node node, " + database + ".taxonomy_index ind, "
-					+ database + ".taxonomy_term_data data "
-					+ "WHERE unix_timestamp() - " + msInPast + " <= node.created AND "
-					+ "node.nid = ind.nid AND ind.tid = data.tid");
+			psGetNodesToProcess = connection
+					.prepareStatement("SELECT DISTINCT "
+							+ "node.nid, data.name " + "FROM " + database
+							+ ".node node, " + database
+							+ ".taxonomy_index ind, " + database
+							+ ".taxonomy_term_data data "
+							+ "WHERE unix_timestamp() - " + msInPast
+							+ " <= node.created AND "
+							+ "node.nid = ind.nid AND ind.tid = data.tid");
 
 			// Execute query to get all ids
 			ResultSet queryResult = psGetNodesToProcess.executeQuery();
@@ -420,7 +424,7 @@ public class Manager {
 			return null;
 		}
 	}
-	
+
 	/***************************************************************************
 	 * Gets nodes (articles) to process that are written after the given date
 	 * 
@@ -429,16 +433,17 @@ public class Manager {
 	 * @return A list of the results, or null if there was an error
 	 */
 	public Node getNode(int nid) {
-		
+
 		List<Node> nodes;
-		
+
 		nodes = getNodesToProcess(2353379155L);
-		
-		for(Node node: nodes){
-			
-			if(node.getNodeID()==nid) return node;
+
+		for (Node node : nodes) {
+
+			if (node.getNodeID() == nid)
+				return node;
 		}
-		
+
 		return null;
 	}
 
@@ -494,8 +499,10 @@ public class Manager {
 			// Get object
 			if (qr.next())
 				// Object found, return it
-				return new DataFusion(qr.getInt(1), qr.getInt(2), qr.getInt(3), qr.getInt(4), qr.getString(5),
-						qr.getString(6), qr.getString(7), qr.getBoolean(8), qr.getInt(9), new Date(qr.getDate(8).getTime()));
+				return new DataFusion(qr.getInt(1), qr.getInt(2), qr.getInt(3),
+						qr.getInt(4), qr.getString(5), qr.getString(6),
+						qr.getString(7), qr.getBoolean(8), qr.getInt(9),
+						new Date(qr.getDate(8).getTime()));
 			else
 				// No object found, return NULL
 				return null;
@@ -511,21 +518,22 @@ public class Manager {
 	 * Deletes all records from tables that are related to articles, tags,
 	 * data fusion, data indexing, etc.  Used to enable unit testing
 	 */
-	public void cleanTables(){
+	public void cleanTables() {
 		// Make connection if not already, ensure success
 		if (!startConnection())
 			return;
 
 		PreparedStatement psClearTable;
 		try {
-			psClearTable = connection.prepareStatement("DELETE FROM " + database + "." + 
-		tableNames.get("dataFusionTable"));
+			psClearTable = connection.prepareStatement("DELETE FROM "
+					+ database + "." + tableNames.get("dataFusionTable"));
 			psClearTable.executeUpdate();
-			for(String table : tableNames.values()){
-				psClearTable = connection.prepareStatement("DELETE FROM " + database + "." + table);
+			for (String table : tableNames.values()) {
+				psClearTable = connection.prepareStatement("DELETE FROM "
+						+ database + "." + table);
 				psClearTable.executeUpdate();
 			}
-			
+
 		} catch (SQLException e) {
 			// Error ocurred, return NULL
 			System.err.println(e);
@@ -549,14 +557,14 @@ public class Manager {
 				tags.add(t);
 			}
 		}
-		
-		String[] uploadedTags= new String[tags.size()];
+
+		String[] uploadedTags = new String[tags.size()];
 		tags.toArray(uploadedTags);
-		for(int i= 0; i < uploadedTags.length; i++){
+		for (int i = 0; i < uploadedTags.length; i++) {
 			try {
 				psCreateTaxonomy_term_data.setInt(1, i);
 				psCreateTaxonomy_term_data.setString(2, uploadedTags[i]);
-				psCreateTaxonomy_term_hierarchy.setInt(1, i+1);
+				psCreateTaxonomy_term_hierarchy.setInt(1, i + 1);
 				psCreateTaxonomy_term_hierarchy.setInt(2, 0);
 				psCreateTaxonomy_term_data.executeUpdate();
 				psCreateTaxonomy_term_hierarchy.executeUpdate();
@@ -565,13 +573,14 @@ public class Manager {
 			}
 		}
 
-		for(Node n : nodes){
-			for(String s : n.getTags()){
-				int indexOf= 0;
-				while(indexOf < uploadedTags.length && !uploadedTags[indexOf].equals(s)){
+		for (Node n : nodes) {
+			for (String s : n.getTags()) {
+				int indexOf = 0;
+				while (indexOf < uploadedTags.length
+						&& !uploadedTags[indexOf].equals(s)) {
 					indexOf++;
 				}
-				try{
+				try {
 					psCreateTaxonomy_index.setInt(1, n.getNodeID());
 					psCreateTaxonomy_index.setInt(2, indexOf);
 					psCreateTaxonomy_index.executeUpdate();
@@ -580,13 +589,31 @@ public class Manager {
 				}
 			}
 		}
-		
+
 		return true;
 	}
-	
-	public void clearDataStored() {
-		
-		// TODO
+
+	public void clearDataStored(long timeBefore) {
+
+		// Make connection if not already, ensure success
+		if (!startConnection())
+			return;
+
+		try {
+			// Create query
+			psCleanDataStored.setTimestamp(1, new java.sql.Timestamp(
+					new java.util.Date().getTime()-timeBefore));
+
+			// Execute query
+			psCleanDataStored.executeUpdate();
+			
+		} catch (SQLException e) {
+
+			// Error occurred
+			System.err.println("SQL Error occured while cleaning DataStored");
+			return;
+		}
+
 	}
 
 	/***************************************************************************
@@ -671,7 +698,7 @@ public class Manager {
 					.prepareStatement("INSERT into DataFusion "
 							+ "(nodeID, DataSource_id, DataStored_id, title, url, summary, rating, timestamp) "
 							+ "values (?, ?, ?, ?, ?, ?, ?, ?)");
-			
+
 			// Create a data means object in the table
 			psCreateDataMeans = connection
 					.prepareStatement("INSERT into DataMeans "
@@ -691,41 +718,43 @@ public class Manager {
 			// Get a data means object
 			psGetDataMeans = connection.prepareStatement("SELECT * " + "FROM "
 					+ database + ".DataMeans " + "WHERE id =?");
-			
+
 			// Get a data fusion object
 			psGetDataFusion = connection.prepareStatement("SELECT * " + "FROM "
 					+ database + ".DataFusion" + "WHERE Id =?");
-			
+
 			// Create a data source object in the table
 			psCreateDataSource = connection
 					.prepareStatement("INSERT into DataSource "
 							+ "(id, url, name, logourl) "
 							+ "values (?, ?, ?, ?)");
-			
+
 			// Create a node object in the table
-			psCreateNode = connection
-					.prepareStatement("INSERT into node "
-							+ "(nid) "
-							+ "values (?)");
-			
+			psCreateNode = connection.prepareStatement("INSERT into node "
+					+ "(nid) " + "values (?)");
+
 			// Create a taxonomy_term_data object in the table
 			psCreateTaxonomy_term_data = connection
 					.prepareStatement("INSERT into taxonomy_term_data "
-							+ "(tid, name) "
-							+ "values (?, ?)");
-			
+							+ "(tid, name) " + "values (?, ?)");
+
 			// Create a taxonomy_index object in the table
 			psCreateTaxonomy_index = connection
 					.prepareStatement("INSERT into taxonomy_index "
-							+ "(nid, tid) "
-							+ "values (?, ?)");
-						
+							+ "(nid, tid) " + "values (?, ?)");
+
 			// Create a taxonomy_term_hierarchy object in the table
 			psCreateTaxonomy_term_hierarchy = connection
 					.prepareStatement("INSERT into taxonomy_term_hierarchy "
-							+ "(tid, parent) "
-							+ "values (?, ?)");
-			
+							+ "(tid, parent) " + "values (?, ?)");
+
+			// Clean the database of data stored objects that are written before
+			// a certain date and are not linked to data fusion
+			psCleanDataStored = connection
+					.prepareStatement("DELETE FROM "
+							+ database + ".DataStored " + 
+							"WHERE timestamp < ? AND id NOT IN (SELECT DISTINCT df.DataStored_id FROM "
+							+ database + ".DataFusion df)");
 
 		} catch (SQLException e) {
 			System.out.println("Failed to create prepared statements");
@@ -737,7 +766,6 @@ public class Manager {
 		return true;
 	}
 
-	// -------------------------------------------------------------------------
 	
 	/**
 	 * Returns the current database connection
@@ -792,7 +820,7 @@ public class Manager {
 	public Map<String, String> getTableNames() {
 		return tableNames;
 	}
-	
+
 	// -------------------------------------------------------------------------
 
 	// MySQL database details
@@ -801,7 +829,7 @@ public class Manager {
 	private String database; // Name of the database
 	private String username; // Username to connect with
 	private String password; // Password to connect with
-	private Map<String,String> tableNames;
+	private Map<String, String> tableNames;
 
 	// MySQL prepared statements
 	private PreparedStatement psGetDataMeansToProcess;
@@ -817,8 +845,8 @@ public class Manager {
 	private PreparedStatement psSetDataStoredIndexed;
 	private PreparedStatement psCreateDataSource;
 	private PreparedStatement psCreateNode;
-	private PreparedStatement psCreateTaxonomy_term_data; 
+	private PreparedStatement psCreateTaxonomy_term_data;
 	private PreparedStatement psCreateTaxonomy_index;
-	private PreparedStatement psCreateTaxonomy_term_hierarchy ;
+	private PreparedStatement psCreateTaxonomy_term_hierarchy;
 	private PreparedStatement psCleanDataStored;
 }

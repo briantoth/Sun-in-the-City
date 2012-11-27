@@ -276,6 +276,11 @@ span.field-label { /* The inline field label used by the Fences module */
 .region-sidebar-second {
 }
 
+/*google ad*/
+#block-adsense-managed-1{
+	clear: both;
+}
+
 /*
  * Footer
  */
@@ -374,6 +379,8 @@ p {
 /*image in article on home page*/
 .node-teaser img {
 	margin-top: 20px;
+	width: 300px;
+	height: auto;
 }
 
 /*image in featured article*/
@@ -381,6 +388,8 @@ p {
 	float: right;
 	padding-left: 20px;
 	margin-top: 0;
+	width: 460px;
+	height: auto;
 }
 
 /*title in featured article*/
