@@ -54,7 +54,6 @@ function datafusion_form($form, $form_state, $i) {
 		foreach ($results as $line) {
 
 			//Get the Article's Title
-
 			$aid = $line->nodeID; // get the article's ID
 			$query = db_select('node', 'n');
 			$query ->fields('n', array('title')); //SELECT the title field from the node list
@@ -352,36 +351,6 @@ function datafusion_form($form, $form_state, $i) {
 
 	return $form;
 }
-
-/**
- * Restrict view of Data Fusion articles from beyond a certain point. 
- * Takes in Number of Days as a parameter and will not show DataFusion Articles with timestamps past said number of days.
- 
-function restrict_past($days){
-		// $currentDate = date("Y-m-d H:i:s", time()); // Get Current Time
-		$currentDate = "2012-11-19 00:00:00";
-		$arrayOfTime = explode("-", $currentDate);
-		
-		// say days = 30
-		// say days = 14
-		// say days = 7
-		
-		// if the day is greater than the input from parameter 
-		if ($days > $arrayOfTime[2]){
-			
-		}
-		/**
-		if ($arrayOfTime[1] == "01"){ //Representing January
-			$lastMonth = "12"; //Make last month December
-		    $arrayOfTime[0]--; // And one year back
-		}
-		if ($arrayOfTime[1] != "01"){
-			$lastMonth = $arrayOfTime[1] -1;
-		}
-		$lastMonthTimestamp = implode("-", array($arrayOfTime[0], $lastMonth, $arrayOfTime[2]));
-		drupal_set_message($lastMonthTimestamp);
-}
-*/
 /**
  * Form for configuring Data Sources
  */ 
@@ -447,13 +416,13 @@ function datasource_form($form, $form_state, $i) {
 
 	$data_source_boolean = variable_get('data_source_boolean', '');
 
-	// edit button clicked  
+	// Edit button clicked  
 	if ($data_source_boolean == true){
 		$name = variable_get('name','');  
 		$url = variable_get('url', '');
 		$logourl = variable_get('logourl','');  
 
-		//Controls Data Source Name textbox field
+	//Controls Data Source Name textbox field
 		$form['sources']['name'] = array(
 				'#title' => 'Insert Name of Source ',
 				'#description' => 'e.g "The New York Times"',
@@ -563,7 +532,7 @@ function datameans_form($form, $form_state, $i) {
 	$results = $query-> execute();
 
 
-
+	//Data Source table query for the Data Means header setup
 	foreach ($results as $line) {
 
 		$queryA = db_select('DataSource', 'd');
@@ -575,7 +544,7 @@ function datameans_form($form, $form_state, $i) {
 		$row = $result-> fetchAssoc();
 		$theArticle = $row['name'];
 
-		$rows[$line->id] = array(  // <-- No array keys specified here 
+		$rows[$line->id] = array(  
 				$line->name,
 				$line->url,
 				$theArticle,
@@ -600,14 +569,15 @@ function datameans_form($form, $form_state, $i) {
 			'#js_select' => FALSE,
 			'#weight' => 0
 			);
-
+	//Edit Button
 	$form['means']['edit'] = array (
 			'#type' => 'submit',
 			'#value' => t('Edit'),
 			'#submit' => array('datameans_edit'),
 			'#weight' => 1
 			); 
-
+			
+	//Delete Button
 	$form['means']['delete'] = array (
 			'#type' => 'submit',
 			'#value' => t('Delete'),
@@ -644,11 +614,12 @@ function datameans_form($form, $form_state, $i) {
 				);
 
 		$sources = array();
-		$dataSourceKey = -1; // initialize
+		$dataSourceKey = -1; // initialize variable to -1
 		$query = db_select('DataSource', 'd');
-		$query ->fields('d', array('id', 'name')); //SELECT the fields from Data Source Table
+		$query ->fields('d', array('id', 'name')); //SELECT the fields 'id' and 'name' from Data Source Table
 		$result	= $query-> execute();
-
+		
+		//Search for the correct data source to use for editing datameans
 		$loopCounter = 0; 
 		while ($row = $result-> fetchAssoc()){
 			if ($DataSource_id == $row['id']){
@@ -657,12 +628,8 @@ function datameans_form($form, $form_state, $i) {
 			$sources[$loopCounter] = t($row['name']);
 			$loopCounter ++; 
 		}
-
 		$options = $sources;
 
-
-		// Search Data Sources for right source
-		// $dataSourceKey = array_search($DataSource_id, $options);
 
 		// Pick Chooser
 		$form['means']['meansources'] = array(
@@ -683,6 +650,7 @@ function datameans_form($form, $form_state, $i) {
 
 	}
 
+// Check the Global variable, false means that the edit button was NOT clicked
 	if ($data_means_boolean == false){
 		
 		//Controls Data Means Name textbox field
@@ -706,18 +674,16 @@ function datameans_form($form, $form_state, $i) {
 				'#weight' => 4
 				);
 
+		//Get the options for the Data Source chooser
 		$sources = array();
-
 		$query = db_select('DataSource', 'd');
 		$query ->fields('d', array('id', 'name')); //SELECT the fields from Data Source Table
 		$result	= $query-> execute();
-
 		$loopCounter = 0; 
 		while ($row = $result-> fetchAssoc()){
 			$sources[$loopCounter] = t($row['name']);
 			$loopCounter ++; 
 		}
-
 		$options = $sources;
 
 
@@ -738,8 +704,6 @@ function datameans_form($form, $form_state, $i) {
 				'#submit' => array('datameans_add'),
 				);
 	}
-
-
 	return $form;
 }
 
@@ -759,10 +723,10 @@ function datameans_update($form, &$form_state){
 	}
 
 	else{
-		//get the particular datafusion element
+		//Get the particular datafusion element being edited 
 		$theDataMeansElement = variable_get('theDataMeansElement', '');
 
-		//query datasources
+		//Query datasources table for the correct Data source Id associated with the data fusion element
 		$query = db_select('DataSource', 'd');
 		$query -> fields('d', array('id', 'name'));
 		$query -> condition('name', $source_source, '=');
@@ -800,7 +764,7 @@ function datameans_edit($form, &$form_state){
 	if ($dataInfo == NULL){
 		drupal_set_message(t('Please select a row to edit'), $type = 'error');
 	}
-
+	// If only one element is checked off then perform as usual
 	if (count($dataInfo) == 1){
 
 		foreach ($dataInfo as $row) {
@@ -816,7 +780,7 @@ function datameans_edit($form, &$form_state){
 			$theDataMeansElement = $row['id'];
 
 
-			//Global Variables
+			// Creating the global variables for the edit button
 			$name = ' ';
 			variable_set('name', $row['name']);
 			$url = '';
@@ -824,7 +788,7 @@ function datameans_edit($form, &$form_state){
 			$DataSource_id = 0;
 			variable_set('DataSource_id', $row['DataSource_id']);
 
-			//keep track of which data source element was selected to be edited
+			// Keep track of which data source element was selected to be edited
 			variable_set('theDataMeansElement', $theDataMeansElement);
 
 			// Setting form boolean back to default
@@ -833,6 +797,7 @@ function datameans_edit($form, &$form_state){
 		}
 	} 	
 }
+
 /**
  *  Handler for deleting Data means entry
  */
@@ -855,12 +820,13 @@ if ($dfInfo != NULL){
 	}
 	drupal_set_message (t('Data Means Deleted!'));
 
-}
+	}
 }
 /**
  *  Add Data means to database
  */
 function datameans_add($form, &$form_state){
+	
 	//Get input from fields
 	$means_name = $form_state['values']['name'];
 	$means_url = $form_state['values']['url'];
@@ -920,11 +886,11 @@ function datasource_update($form, &$form_state){
 
 	else{
 		
-		//get the particular datafusion element
+		// Get the particular datafusion element
 		$theDataSourceElement = variable_get('theDataSourceElement', '');
 
 
-		//Query Database for information	
+		// Query Database for information	
 		$query = db_update('DataSource')
 				->fields(array('name' => $source_name,'url' => $source_url, 'logourl' => $source_logourl))
 				->condition('id', $theDataSourceElement)
@@ -944,7 +910,7 @@ function datasource_edit($form, &$form_state){
 	$dataInfo = array();
 	$dataInfo = array_filter($form_state['values']['table']);	
 
-	//Only 1 element can be selected at a time.
+	// Only 1 element can be selected at a time.
 	if(count($dataInfo) > 1){
 		drupal_set_message(t('Must only select one row to be edited at a time.'), $type = 'error');
 	}
@@ -952,12 +918,12 @@ function datasource_edit($form, &$form_state){
 	if ($dataInfo == NULL){
 		drupal_set_message(t('Please select a row to edit'), $type = 'error');
 	}
-
+	// If only one element is checked off proceed as normal
 	if (count($dataInfo) == 1){
 
 		foreach ($dataInfo as $row) {
 
-			//Get the data
+			//Get the data from the tables
 			$query = db_select('DataSource', 'd');
 			$query ->fields('d', array('id', 'name', 'url', 'logourl')); //SELECT the fields from Data Fusion Table
 			$query ->condition('id', $row);
@@ -980,7 +946,7 @@ function datasource_edit($form, &$form_state){
 			//keep track of which data source element was selected to be edited
 			variable_set('theDataSourceElement', $theDataSourceElement);
 
-			// Setting form boolean back to default
+			// Setting boolean representing edit button has been clicked to true 
 			$data_source_boolean = true;
 			variable_set('data_source_boolean', true); 
 		}
@@ -996,7 +962,7 @@ function datasource_delete($form, &$form_state){
 		drupal_set_message(t('Please select an element to delete'), $type = 'error');
 	}
 	
-if($dfInfo != NULL){	
+if ($dfInfo != NULL){	
 	foreach (($form_state['values']['table']) as $rows) {
 		$num_deleted = db_delete('DataSource')
 				->condition('id', $rows)
@@ -1008,7 +974,7 @@ if($dfInfo != NULL){
 						->execute();  
 	}
 	drupal_set_message (t('Data Source and connected Data Fusion Articles Deleted!'));
-}
+	}
 }
 
 /**
@@ -1054,7 +1020,7 @@ function datafusion_delete($form, &$form_state) {
 if ($dfInfo != NULL){	
 	foreach (($form_state['values']['table']) as $rows) {
 		
-		//Mark as deleted
+		// Mark as deleted
 		$num_deleted = db_update('DataFusion')
 				->fields(array('approved' => 0, 'deleted' => 1)) 
 				->condition('id', $rows)
@@ -1104,7 +1070,7 @@ function datafusion_add($form, &$form_state) {
 	$data_nodes = $form_state['values']['nodes'];
 	$source_node = $form['addfusion']['nodes']['#options'][$data_nodes]; // Gets the string value of the article select
 
-	//Get the Data Source ID
+	// Get the Data Source ID
 	$query = db_select('DataSource', 'd');
 	$query ->fields('d', array('id', 'name')); //SELECT the fields from Data Source Table
 	$query ->condition('name', $source_chooser, '=');
@@ -1113,7 +1079,7 @@ function datafusion_add($form, &$form_state) {
 
 	$dbID = $row['id'];
 	
-	//get the article
+	// Get the article
 	
 	$queryA = db_select('node', 'n');
 	$queryA -> fields('n', array('nid', 'title'));
