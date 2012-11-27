@@ -25,8 +25,8 @@ public class ArticleRetriever implements Runnable{
 	
 	/***************************************************************************
 	 * Initializes the ArticleRetriever and starts the processing thread
-	 * @param manager 
-	 * @param indexLocation 
+	 * @param manager The SQL connection manager
+	 * @param indexLocation The path for the Lucene directory
 	 */
 	public ArticleRetriever(Directory indexLocation, Manager manager) {
 		this.indexLocation= indexLocation;

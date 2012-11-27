@@ -194,7 +194,17 @@ The website to be developed provides a way for broadcasting current news about t
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{User Interface Design}
 
-TODO VERA
+After examining a set of 16 top tech news blogs and identifying common themes, design strategies, and resulting implications, we developed a design vocabulary that described each website in the “space” we studied as a series of tradeoffs that were expressed in a website’s design.
+                
+Our first tradeoff was “Designing for editorial control vs. popularity” which is most visible in the difference between aggregate news blogs (sorted by popularity) and editorially controlled websites (such as the new york times.) The advantage of leaning toward popularity is that it is easier to maintain the site, but exercising editorial control may be more in line with the branding and corporate image.
+                
+The second tradeoff we identified was the tradeoff of content; while this was not a primary focus for us, we noticed that different sources appealed to different audiences: some websites were directed at people with significant pre-existing technical knowledge while others were aimed toward mainstream readers (with few assumptions about their existing knowledge). We decided that our content should appeal to “hardcore nerds,” but also to the general “tech curious” public.
+                
+Our final trade-off was between dynamic vs. static data organization; some of the websites that we reviewed had several, nested menus that reflect various aspects of technical news. We felt as though these tended to get cumbersome as technical fields changed, and decided that the best way to handle this trade-off would be to allow some categories to be permanent, while others are temporary and change with trending topics. We will have permanent links on the homepage that filter articles by categories including news and entrepreneurship, but other links that can easily be modified by editors with trending tags.
+            
+Using the trade-offs that we described, our interface emphasizes editorial control over popularity, focuses on a broad audience with an emphasis on Tech campus student interests, and includes both static and dynamic elements in the navigation.
+            
+Our client outlined a relationship between our website and their main Cornell Daily Sun brand; our website incorporates aspects of the original brand such as the general website layout, color scheme, and page layout structure. We deviated from the main brand in aspects that are specific to the Cornell Daily Tech. Obvious examples of the stylistic deviation include a different logo (because we have a different name), and a different article presentation: larger images, but linear, “blog style” presentation to accommodate slower content addition. 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{System Design}
@@ -232,7 +242,14 @@ Implementation of the interface involved a combination of modifying CSS, install
 
 \subsubsection{Database Design}
 
-TODO PHILL
+The database was redesigned to the new schema shown below. In the diagram you can see the DataSource table which represents a source of information like The New York Times. Any source can have multiple DataMeans, which represent the generator of source content like The New York Times RSS Feed. These DataMeans objects then generate content which is represented in DataStored. The Data Fusion algorithm then takes various DataStored objects and creates DataFusion objects representing the logical link between external content and content written by The Cornell Daily Sun. The content by The Cornell Daily Sun is represented by a node, which is the article representation in Drupal.
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=\columnwidth]{images/database_schema}
+\caption{Database Schema}
+\end{center}
+\end{figure}
 
 \subsubsection{Drupal Modules}
 
@@ -267,17 +284,6 @@ TODO Brian \& Lin
 
 The website was built on Drupal’s CMS, which has already been tested extensively. Manual testing was performed by viewing/adding/deleting articles, menu links, comments, and other content that users would access.
 
-\subsubsection{Database}
-
-The database was redesigned to the new schema shown below. In the diagram you can see the DataSource table which represents a source of information like The New York Times. Any source can have multiple DataMeans, which represent the generator of source content like The New York Times RSS Feed. These DataMeans objects then generate content which is represented in DataStored. The Data Fusion algorithm then takes various DataStored objects and creates DataFusion objects representing the logical link between external content and content written by The Cornell Daily Sun. The content by The Cornell Daily Sun is represented by a node, which is the article representation in Drupal.
-
-\begin{figure}[htbp]
-\begin{center}
-\includegraphics[width=\columnwidth]{images/database_schema}
-\caption{Database Schema}
-\end{center}
-\end{figure}
-
 \subsubsection{Drupal Modules}
 
 In order to properly test the functionality of the module, several manual testing procedures were performed. Apart from code that manages front end operations, testing of the back end consisted of multiple queries of the database. These tests were enacted through physical input into the text fields for adding and editing articles, data sources, and data means as well as selecting choices from the option wheel. Expected results from queries (updating, adding and deleting), were found to be true in the database. 
@@ -308,12 +314,12 @@ TODO Brian \& Lin
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{User Validation}
 
-TODO Vera
+To validate our interface’s usability, we employed a series of user test methodologies. Ideally, we would have done a full user test with tests who are a representative sample of all our “actors” outlined earlier in the document, but due to time constraints, we experimented with discount methods for some of the actors. Our primary concern was meeting the needs of the content writers, and to validate that our software is user-friendly, we did a simple user-test with a current Cornell Daily Sun blog writer. We were fortunate to have a test who primarily works on generating “blog” content. We asked our test user to edit an existing article, view and approve data-fusion options, and add a new source to the data fusion list. Client Validation was fully successful for the first two tasks, but we had to prompt our user to find the interface to add websites to the data fusion table. From this, we learned that our training module should focus on good technical specifications for this task. Our discount methods for the other actors were cognitive walk throughs in which we critically assessed tasks that editors and readers would do in using our interface. For editors, this involved changing articles and data fusion, and closely resembled tasks that we did in our user test. For the viewers, we walked through task such as reading the homepage, navigating to a subsection, and searching for an article. It is not clear that these cognitive walkthroughs yielded novel results for our interface development, but we used the critical awareness to refine our design and compare our interface to analogous websites in the same domain (New York Times, Bits, and Cornell Daily Sun) to validate stylistically againsts the design paradigms in those websites. We thought it would be reasonable to cross-validate our interface against these others since users have internalized these design paradigms and would reasonably expect our website to act in accordance to them. In conclusion, we validated our interface in a user test which suggested that our interface was clear (exempting a global data fusion task) and we employed discount usability methods to validate our website against existing design models.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Client Validation}
 
-TODO Vera
+Our primary form of validation was meeting with the client and making sure that they were satisfied with our product. Our client validation consisted of a lengthy and meticulous meeting, in which we presented all aspects of the website and asked the client whether it satisfied his requirements. During this meeting, we primarily made design changes. Namely, we implemented a different grid on the home page, changed the number of rows in the navigation (two row, one for permanent, one for trending) and moved the search box. At the conclusion of the client validation meeting, our client signed off on our project and stated that he was satisfied with the product. 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Documentation}
