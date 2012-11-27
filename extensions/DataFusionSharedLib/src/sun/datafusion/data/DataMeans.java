@@ -20,6 +20,17 @@ public class DataMeans{
 		lastProcessed = null;
 	}
 	
+	/**
+	 * Constructor that takes non-default values.  Used when creating
+	 *  an in-memory object to correspond to an entry in the database
+	 * 
+	 * @param id The ID
+	 * @param DataSource_id ID of the data source that owns this means
+	 * @param name Name of the data means (twitter, rss, etc.)
+	 * @param url Direct link to this means
+	 * @param type An indicator number to keep track of the type of data means
+	 * @param lastProcessed
+	 */
 	public DataMeans(int id, int DataSource_id, String name, String url, int type, Date lastProcessed){
 		this.id = id;
 		this.DataSource_id = DataSource_id;

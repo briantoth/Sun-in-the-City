@@ -23,6 +23,20 @@ public class DataStored {
 		indexed = false;
 	}
 
+	/**
+	 * Constructor that takes parameters.  Used when creating an
+	 * in-memory object to correspond to an entry in the database
+	 * 
+	 * @param id ID number
+	 * @param DataMeans_id ID of corresponding dataMeans
+	 * @param title Title of the data
+	 * @param url Raw link to the source
+	 * @param data Short description of the source 
+	 * @param linkUrl Link to a "normal" (human-friendly) version of the source
+	 * @param linkedData HTML dump of the source
+	 * @param timestamp When this source was created
+	 * @param indexed Indicates whether this source has yet been indexed by Lucene
+	 */
 	public DataStored(int id, int DataMeans_id, String title, String url,
 			String data, String linkUrl, String linkedData, Date timestamp,
 			boolean indexed) {

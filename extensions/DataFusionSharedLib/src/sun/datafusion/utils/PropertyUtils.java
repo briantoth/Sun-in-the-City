@@ -9,11 +9,19 @@ import java.util.Properties;
 
 import org.apache.log4j.PropertyConfigurator;
 
+/**
+ * Some useful configuration and logging methods available across the various packages
+ * @author Brian
+ *
+ */
 public class PropertyUtils {
 	private static final String configFile= "../config.properties";
 	private static final String loggingConfigFile = "../logging.properties";
 	private static Properties prop= null;
 	
+	/**
+	 * @return A map containing all of the user-configured properties
+	 */
 	public static Properties loadProperties(){
 		
 		if(prop != null)
@@ -71,6 +79,9 @@ public class PropertyUtils {
 		return prop;
 	}
 	
+	/**
+	 * Loads the logging file from the configured location
+	 */
 	public static void loadLoggingProperties(){
 		PropertyConfigurator.configure(loggingConfigFile);
 	}

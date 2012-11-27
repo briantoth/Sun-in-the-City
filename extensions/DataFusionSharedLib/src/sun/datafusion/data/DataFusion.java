@@ -10,6 +10,21 @@ import java.util.Date;
 public class DataFusion{
 	
 	
+	/**
+	 * A constructor that sets non-default values. Used when creating an
+	 * in-memory object to correspond to an entry in the database
+	 * 
+	 * @param id The ID
+	 * @param nodeID The ID of the article that this data fusion is for
+	 * @param dataSource_ID 
+	 * @param dataStored_ID
+	 * @param title
+	 * @param url
+	 * @param summary
+	 * @param approved
+	 * @param rating
+	 * @param timeStamp
+	 */
 	public DataFusion(int id, int nodeID, int dataSource_ID, int dataStored_ID, String title, String url,
 			String summary, boolean approved, int rating, Date timeStamp){
 		this.id= id;
