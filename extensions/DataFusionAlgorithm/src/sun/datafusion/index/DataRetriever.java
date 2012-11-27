@@ -11,11 +11,9 @@ import sun.datafusion.Main;
 import sun.datafusion.data.DataStored;
 import sun.datafusion.data.Manager;
 
-/*******************************************************************************
- * The DataRetriever executes MySQL queries to obtain DataStored
- * instances that have not yet been indexed by Apache Lucene. This
- * class uses a Thread to buffer the instances so that they are ready the second
- * the DataIndexer is ready to index a data instance.
+/**
+ * Periodically gets unindexed data sources a spawns a dataFuser to deal with each of them
+ *
  */
 public class DataRetriever implements Runnable{
 	private final static long timeToSleep = 1000*1*60;
@@ -25,11 +23,12 @@ public class DataRetriever implements Runnable{
 	private final Directory indexLocation;
 	private final Manager manager;
 	
-	/***************************************************************************
-	 * Constructor that initializes the parameters, the MySQL connection
+	/**
+	 * Constructor that initializes the parameters, 
 	 * details, and starts the buffer thread
-	 * @param indexLocation 
-	 * @param manager 
+	 * @param prop
+	 * @param indexLocation
+	 * @param manager
 	 */
 	public DataRetriever(Properties prop, Directory indexLocation, Manager manager) {
 		
@@ -41,6 +40,7 @@ public class DataRetriever implements Runnable{
 	 * Execution thread used to query the MySQL database and buffer the data
 	 * instances
 	 */
+	@Override
 	public void run() {
 		while(Main.keepRunning){
 			//wait for a bit

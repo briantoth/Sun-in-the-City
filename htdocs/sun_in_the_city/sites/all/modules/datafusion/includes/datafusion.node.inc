@@ -11,7 +11,7 @@
  * Page Callback for node/%node/datafusion
  */
 function datafusion_configure_form($form, &$form_state) {
-	db_set_active('default'); //Set to Sun_In_The_City Database
+	db_set_active('default'); // Set to Sun_In_The_City Database
 	
 		// Initialize Rows
 		$rows = array(); 
@@ -30,7 +30,7 @@ function datafusion_configure_form($form, &$form_state) {
 		$node_id = arg(1); 
 
 		$query = db_select('DataFusion');
-		$query ->fields('DataFusion', array('nodeID','id','title', 'url', 'rating', 'summary', 'DataSource_id', 'approved', 'deleted')); //SELECT the fields from Data Fusion Table
+		$query ->fields('DataFusion', array('nodeID','id','title', 'url', 'rating', 'summary', 'DataSource_id', 'approved', 'deleted')); // SELECT the fields from Data Fusion Table
 		$query ->condition('nodeID', $node_id, '=');
 		$query ->condition('deleted', 0, '=');
 		$query -> orderBy('rating', $direction = 'DESC'); // Get articles in order of highest rated shown higher [feel free to change] 
@@ -60,7 +60,7 @@ function datafusion_configure_form($form, &$form_state) {
 					$line-> rating,
 					$approved,
 					//	l(t('Edit'), 'node/' . $node->nid . '/datafusion/'),
-					//add edit button to the table array('colspan' => 3, 'data' => drupal_render($form['edit'])), 
+					// Add edit button to the table array('colspan' => 3, 'data' => drupal_render($form['edit'])), 
 					);
 		}
 		//Table Setup
@@ -95,7 +95,11 @@ function datafusion_configure_form($form, &$form_state) {
 				'#submit'=> array('datafusion_configure_form_edit'),
 				'#weight'=> 2,
 			);
-// Boolean determining which form to create based on whether the edit button has been pressed or not
+			
+		// Options for the Ratings 'select' form element
+		$rateOptions = array(0,1,2,3,4,5,6,7,8,9,10);
+			
+	//Boolean determining which form to create based on whether the edit button has been pressed or not
 	$theTerm = variable_get('term','');
 
 	// True means the Edit button has been clicked.
@@ -141,8 +145,6 @@ function datafusion_configure_form($form, &$form_state) {
 				'#weight' => 5,	
 				);  
 
-	// Options for the Ratings 'select' form element
-		$rateOptions = array(0,1,2,3,4,5,6,7,8,9,10);
 		
 		// Pick Chooser for ratings
 		$form['ratings'] = array(
@@ -153,7 +155,8 @@ function datafusion_configure_form($form, &$form_state) {
 				'#weight' => 6,
 				'#description' => 'A rating of 10 represents the best rating an article can receive',
 				); 
-// Database query to get the options for the DataSource Chooser
+				
+		// Database query to get the options for the DataSource Chooser
 		$sources = array();
 
 		$query = db_select('DataSource', 'd');
@@ -227,6 +230,7 @@ function datafusion_configure_form($form, &$form_state) {
 				'#rows' => 6,
 				'#weight' => 6,
 				);  
+				
 		// Pick Chooser for ratings
 		$form['ratings'] = array(
 				'#title' => 'Article Rating',
@@ -237,7 +241,7 @@ function datafusion_configure_form($form, &$form_state) {
 				'#weight' => 7,
 				); 
 				
-// Database query to get the options for the DataSource Chooser
+		// Database query to get the options for the DataSource Chooser
 		$sources = array();
 
 		$query = db_select('DataSource', 'd');
@@ -250,7 +254,6 @@ function datafusion_configure_form($form, &$form_state) {
 			$loopCounter ++; 
 		}
 		
-
 		// Pick chooser for Data Source ID
 		$form['dataSource'] = array(
 				'#title' => 'Choose Data Source',
@@ -267,8 +270,6 @@ function datafusion_configure_form($form, &$form_state) {
 				'#submit' => array('datafusion_configure_form_add'),
 				'#weight' => 10,
 				);
-				
-	
 	}
 
 	return $form;
@@ -277,7 +278,7 @@ function datafusion_configure_form($form, &$form_state) {
  * Method for handling actions upon update button being clicked
  */
 function datafusion_configure_form_update($form, &$form_state) {
-
+	//Get values from the fields
 	$source_title = $form_state['values']['title'];
 	$source_url = $form_state['values']['url'];
 	$source_summary = $form_state['values']['summary'];
@@ -291,7 +292,7 @@ function datafusion_configure_form_update($form, &$form_state) {
 		drupal_set_message(t('Unable to update data fusion article. Please review entries into input fields.'), $type = 'error');
 	}
 	else{
-		//get the particular datafusion element
+		// Get the particular datafusion element
 		$theDataFusionElement = variable_get('theDataFusionElement', '');
 
 		// Change information in the database
