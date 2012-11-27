@@ -57,7 +57,7 @@ and James McGuinness (jrm369)}
 
 \begin{figure}[h!]
 \begin{center}
-\includegraphics[width=\columnwidth]{images/homepage}
+\includegraphics[height=6in]{images/screen_home}
 \end{center}
 \caption{The Homepage of The Cornell Daily Tech}
 \end{figure}
@@ -275,7 +275,13 @@ There are two main classes in the RSS Parser- RSSParser and RSSGrabber. The prio
 
 \subsubsection{Data Fusion}
 
-TODO Brian \& Lin
+The Data Fusion Algorithm is written in Java. It has two main packages, sun.datafusion.index and sun.datafusion.fuse. The external library used for the data fusion (both indexing and searching) is Apache Lucene.
+
+sun.datafusion.index put the external articles from DataStored into the index for searching. It has three classes. Class DataIndexer is the main class that operate the index. Class DataRetriever gets unindexed articles from the DataStored table of the MySQL database by calling Manager’s method then call DataIndexer to add them into the index. Class DataCleaner is for cleaning the index with a predefined frequency.
+
+sun.datafusion.fuse does the actual fusing process. It has two classes. Class DataFuser is the main class that does the searching on the index prepared by sun.datafusion.index and return the results into the DataFusion table. Class ArticleRetriever gets unfused articles from the MySQL table then call DataFuser to do the data fusion.
+
+The Class Main in the Package sun.datafusion starts the dataRetriever and articleRetriever as separate threads, and it does the cleaning for the DataStored and DataFusion tables.  
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Testing}
@@ -375,7 +381,11 @@ The RSS Parsing program writes INFO statements when it starts and finishes a par
 
 \subsubsection{Data Fusion}
 
-TODO Brian \& Lin
+The data fusion is started by running the Main class. The Main class runs DataRetriever and ArticleRetriever as separate threads. It then does cleaning for the Lucene Index and DataStored by calling the methods DataCleaner.clearLuceneIndex and Manager.clearDataStored separately. The cleaning is done with a frequency defined as clean\_timeout in the file, config.properties.
+
+DataRetriever gets all the unindexed articles from the DataStored table, and for each of them, it calls DataIndexer to add it into the Lucene Index.
+
+ArticleRetriver gets all the unfused articles from the node table, and for each of them, it calls DataFuser to search for the matched articles in the Lucene Index and return the results into the DataFusion table. 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{User Training}
