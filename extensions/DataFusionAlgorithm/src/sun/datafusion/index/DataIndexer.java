@@ -59,6 +59,12 @@ public class DataIndexer implements Runnable {
 		}
 	}
 	
+	/**
+	 * Puts a fusable data source into the Lucene index
+	 * 
+	 * @param ds Datastored to add to the index
+	 * @throws IOException
+	 */
 	private void addDataStore(DataStored ds) throws IOException {
 		Document doc = new Document();
 		doc.add(new Field("id", ds.getId()+"", Field.Store.YES,
@@ -70,6 +76,11 @@ public class DataIndexer implements Runnable {
 		}
 	}
 	
+	/**
+	 * Removes existing index entries permenantly
+	 * 
+	 * @param indexLocation The location of the Lucene index in the filesystem
+	 */
 	public static void clearIndex(File indexLocation){
 		String[] myFiles;      
         if(indexLocation.isDirectory()){  
