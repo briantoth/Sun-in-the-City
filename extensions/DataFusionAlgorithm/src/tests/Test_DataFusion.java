@@ -32,30 +32,6 @@ public class Test_DataFusion {
 		return new Manager(prop);
 	}
 	
-	/*@Test
-	void testDataRetrieverConstructure(){
-		
-		Properties prop = null;
-		Directory indexLocation = null; 
-		Manager man = setupManager(); 
-		
-		DataRetriever dr= new DataRetriever(prop, indexLocation, man);
-		
-		
-	}*/
-	
-	/*@Test
-	public void testDataRetrieverRun(){
-		
-		Properties prop = PropertyUtils.loadProperties();
-		Directory indexLocation = null; 
-		Manager man = setupManager(); 
-		
-		DataRetriever dr= new DataRetriever(prop, indexLocation, man);
-		
-		dr.run();
-	}*/
-	
 	@Test
 	public void testDataFusion()throws IOException{
 		
