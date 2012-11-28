@@ -207,7 +207,7 @@ $databases = array (
     array (
       'database' => 'sun_in_the_city',
       'username' => 'root',
-      'password' => 'lin',
+      'password' => 'root',
       'host' => 'localhost',
       'port' => '',
       'driver' => 'mysql',
@@ -246,7 +246,7 @@ $update_free_access = FALSE;
  *   $drupal_hash_salt = file_get_contents('/home/example/salt.txt');
  *
  */
-$drupal_hash_salt = 'B4nMA4PcT6vYAgtAHGMXSL-I5DMDA5DaYuYESBKwxew';
+$drupal_hash_salt = 'HeFR2DuF5JQnafbbIKP9C0vOh9MDRGiIdgjG50wnmbQ';
 
 /**
  * Base URL (optional).
