@@ -26,14 +26,14 @@ public class DataIndexer implements Runnable {
 	private IndexWriter indexWriter;
 	private final Manager manager;
 
-	/***************************************************************************
+	/**
 	 * Creates a DataIndexer with the given retriever and starts the processing
 	 * thread.
 	 * 
-	 * @param retriever
-	 *            The retriever to get DataSources from to process
+	 * @param ds The datastored to be indexed
+	 * @param indexLocation Location of the Lucene index
+	 * @param manager SQL database manager
 	 */
-
 	public DataIndexer(DataStored ds, Directory indexLocation, Manager manager) {
 		this.dataStored= ds;
 		this.indexLocation = indexLocation;

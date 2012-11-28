@@ -36,7 +36,7 @@ public class Node  {
 	 * Concatenates all of the tags into a space-delimited
 	 * string
 	 * 
-	 * @return
+	 * @return Returns the tags as a single string
 	 */
 	public String getTagsInOneString() {
 		
