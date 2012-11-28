@@ -32,6 +32,13 @@ public class Test_DataFusion {
 		return new Manager(prop);
 	}
 	
+	/**
+	 * Index articles in the DataStored table. 
+	 * Create an article in the format of node.  
+	 * Search matching articles from the index. 
+	 * Return results into the DataFusion table. 
+	 * @throws IOException
+	 */
 	@Test
 	public void testDataFusion()throws IOException{
 		
