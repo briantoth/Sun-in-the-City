@@ -261,7 +261,7 @@ Datafusion.module is the header file for the module itself, containing several o
 
 Datafusion.node.inc is one of the implementation files included in the project.  This file is a view handler for the page rendered after selecting the “Data Fusion” node tab. Within the confines of this file is both a connection to the MySQL database established and subsequent PHP queries of the database enacted. This file allows the user to add/edit/approve/reject auto-generated Data Fusion results from the database to be viewed alongside their article.
 
-Datafusion.admin.inc is the other implementation file included in the project that handles the view for the page rendered under the Admin>Configuration menu. This is the view that gives the editor full reign over the Data Fusion articles, Data Sources and Data Means existing on the website while allowing them to add and edit in their own articles/sources/means as well.
+Datafusion.admin.inc is the other implementation file included in the project that handles the view for the page rendered under the Admin \textgreater Configuration menu. This is the view that gives the editor full reign over the Data Fusion articles, Data Sources and Data Means existing on the website while allowing them to add and edit in their own articles/sources/means as well.
 
 \subsubsection{Shared Library}
 
@@ -312,7 +312,13 @@ Self-done manual tests showed that the RSSParser process worked without issue, a
 
 \subsubsection{Data Fusion}
 
-TODO Brian \& Lin
+We have three different levels of testing for the Data Fusion Algorithm:
+
+Test\_Build\_Index is the most basic test before testing the upper level functions. It tests creating Data Means and Data Source records in the corresponding tables. It also tests creating the index files with an article in the format of DataStored.
+
+Test\_DataFusion is the second level test built on the functions tested by Test\_Build\_Index. Here an article in the format of node is created, then articles in the DataStored table is indexed and searched. Finally, the searched results are returned into the DataFusion table.
+
+Test\_Fusion\_Parser is the third level test build on the testing of the Data Fusion. Real Data Means are put in first. By running parser from the RSS Parser package, real articles are parsed then indexed. Finally, the search is done for an example article with predefined tags, and the results are returned to the DataFusion table. 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Validation}
@@ -357,7 +363,7 @@ Relevant CSS files:
 
 \begin{itemize}
 \item pages.css - contains most of the custom formatting/styling
-\item layouts->fixed-width.css - sets the width of the 2 columns (for all pages except the front page)
+\item layouts-\textgreater fixed-width.css - sets the width of the 2 columns (for all pages except the front page)
 \item normalize.css – base styling
 \item forms.css – forms
 \item navigation.css – includes the menus with tags towards the top of the website
@@ -365,7 +371,19 @@ Relevant CSS files:
 
 \subsubsection{Drupal Modules}
 
-TODO Sean
+Datafusion.info
+
+Datafusion.info allows for customization of the package description. As the Drupal versions progress, simple modify the line, “Version = 7.15” to your current version. The line “configure = admin/config/content/datafusion” control enables the admin configuration of the Data Fusion articles, Data Sources and Data Means for the editors.  The rest of the lines are simply project descriptions and have no need to be edited.
+
+Datafusion.module
+
+In Datafusion.module the first method implements hook\_help(), which manages the help menu for the module listing page in the Admin \textgreater Config section. The second function Datafusion\_menu() contains an array named items which has all of the pages to be rendered on the website associated with the module. The first element being added to the array, ‘admin/config/content/datafusion’ is the path to the main UI for the editors which gives them access to all Data Sources, Data Means and unapproved Data Fusion articles on the website. ‘page callback’ refers to the method (‘admin\_config\_page’) called that contains the objects to be rendered on the page. ‘file’ is the datafusion.admin.inc which is the file containing the function to render the page. The next element added to the array of items, 'admin/config/datafusion' is the positioning for the next element added. The weight simply refers to the location the link will be placed inside of the menu. 'admin/config/datafusion/configuration' is the link generated to hyperlink to the Editor Admin Configuration page for the website. The last element added to the array is 'node/\%node/datafusion', which generates a tab above every article on the website next to the ‘View’ and ‘Edit’ tabs called ‘Data Fusion’. Giving the tab a weight of ‘3’ allows the tab to be shown as the last element appended to the list of tabs. Functions datafusion\_admin\_paths() and datafusion\_admin\_paths\_alter() control the look of the Data Fusion node tab and allows it to be shown in the default Drupal overlay. The last function is datafusion\_permissions(), initially commented out, but allows the editor to manage authorization and restrict access to certain areas of the module for specific users. To enable these permissions, simply uncomment the method and Edit the permissions as seen fit.
+
+Datafusion.node.inc
+Datafusion.node.inc is the file containing the page callback function for rendering the view of the node tab ‘Data Fusion’. Initially there is a setting up of the rows and headers for the Data Fusion table to be displayed and information is queried from the database table into the rows. Only Data  Fusion articles that are not deleted by either the user or editor will be shown underneath the node tab ordered by ratings in descending order. The elements added to the form array are objects to displayed such as the table, approve, edit, delete, and the choosers for data source and article rating. The rest of functions are called to perform the various queries of the database once the ‘approve’, ‘edit’, ‘delete’, ‘add’ and ‘update’ buttons are clicked. There are two versions of the Data Form that are rendered based on whether the edit button was clicked or not. Once the edit button is clicked, datafusion\_configure\_form\_edit() changes the ‘clicked variable (named ‘\$theterm’) to true. It then queries the database for the information of the checked element from the table, saves it in newly created global variables and inserts the information as default values for the new form generated post the edit button being clicked.
+
+Datafusion.admin.inc
+Datafusion.admin.inc is the file containing the page callback function for rendering the view of the editor’s configuration UI. admin\_config\_page() is the function that is called to render the various forms to be displayed on the website. There are three forms (Data Fusion, Data Sources and Data Means) created on the same page for the editor to configure at his disclosure. The first form created is the Data Fusion form, with Data Sources and Data Means following respectively.
 
 \subsubsection{RSS Parser}
 
@@ -390,12 +408,14 @@ ArticleRetriver gets all the unfused articles from the node table, and for each 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{User Training}
 
+\subsubsection{Articles}
+
 \begin{itemize}
 \itemindent 0pt
 \item Add an article
 	\begin{itemize}
 	\itemindent 10pt
-	\item Admin->content->Add content
+	\item Admin-\textgreater content-\textgreater Add content
 	\item Click “Article”
 	\item Enter the title, body, tags, and image
 	\item Ensure that the image width is at least 620 pixels
@@ -407,17 +427,17 @@ ArticleRetriver gets all the unfused articles from the node table, and for each 
 	\item Add new featured article
 		\begin{itemize}
 		\itemindent 20pt
-		\item Administration->content
+		\item Administration-\textgreater content
 		\item Click edit next to the name of the new featured article
 		\item Towards the bottom, click “Nodes in block”
 		\item In the select region dropdown, click Nodes in block 1 (Pos)
-		\item Under visibility, enter “<front>”
+		\item Under visibility, enter “\textless front \textgreater”
 		\item Save
 		\end{itemize}
 	\item Remove old featured article
 		\begin{itemize}
 		\itemindent 20pt
-		\item Administration->content
+		\item Administration-\textgreater content
 		\item Click edit next to the name of the old featured article
 		\item Towards the bottom, click “Nodes in block”
 		\item In the select region dropdown, click None
@@ -427,7 +447,7 @@ ArticleRetriver gets all the unfused articles from the node table, and for each 
 \item Add permanent tag link to menu
 	\begin{itemize}
 	\itemindent 10pt
-	\item Administration->Structure->Menus
+	\item Administration-\textgreater Structure-\textgreater Menus
 	\item Click Add Link next to Main Menu
 	\item In “Menu link title” enter the name of the tag
 	\item In path, enter “tags/[nameoftag]”. For example, “tags/software”
@@ -436,7 +456,7 @@ ArticleRetriver gets all the unfused articles from the node table, and for each 
 \item Add trending tag link to menu
 	\begin{itemize}
 	\itemindent 10pt
-	\item Administration->Structure->Menus
+	\item Administration-\textgreater Structure-\textgreater Menus
 	\item Click add link next to Trending Tags
 	\item In “Menu link title” enter the name of the tag
 	\item In path, enter “tags/[nameoftag]”. For example, “tags/3DS”
@@ -445,13 +465,121 @@ ArticleRetriver gets all the unfused articles from the node table, and for each 
 \item Add a link to the “Information” list in the footer
 	\begin{itemize}
 	\itemindent 10pt
-	\item Administration->Structure->Menus
+	\item Administration-\textgreater Structure-\textgreater Menus
 	\item Click add link next to Footer information links
 	\item In “Menu link title” enter the name of the page
 	\item In path, enter a relative url (ex. “content/about”) or an absolute url (ex. “https://www.facebook.com/cornellsun”)
 	\item Save
 	\end{itemize}
 \end{itemize}
+
+\subsubsection{Data Fusion for Writers}
+
+\begin{itemize}
+\item Display Auto-Generated Data Fusion Articles Alongside Created Article
+	\begin{itemize}
+	\itemindent 10pt
+	\item Click the ‘Data Fusion’ tab found at the top of your article.
+	\item Select the checkbox for the particular article you want to include OR select all by clicking the checkbox located in the table’s header.
+	\item Click the button titled ‘Approve’ located underneath the table.
+	\item Note the value underneath the ‘Approved?’ column in the table change from NO to YES. Data Fusion 	\item Article(s) is now ready to be viewed.
+	\end{itemize}
+\item Remove Data Fusion Article from being Viewed Alongside Created Article
+	\begin{itemize}
+	\itemindent 10pt
+    	\item Follow Steps 1 \& 2 from above.
+    	\item Click the button titled ‘Delete’ located underneath the table.
+	\item Note the value underneath the ‘Approved?’ column change from YES to NO and Selected Data Fusion will not be viewed alongside your created article.
+	\end{itemize}
+\item Edit Data Fusion Article attached to Created Article
+	\begin{itemize}
+	\itemindent 10pt
+    	\item Click the ‘Data Fusion’ tab found at the top of your article.
+    	\item Select ONLY 1 ARTICLE to be edited at a time.
+	\item Click the button titled ’Edit’ located underneath the table.
+	\item Note the page is refreshed and the information from your selected article is displayed in the text fields and drop down menus.
+	\item Perform changes to be made to the Article and Click the ‘Update’ button underneath the fields.
+	\end{itemize}
+\item Add Own Data Fusion Article to Created Article
+	\begin{itemize}
+	\itemindent 10pt
+	\item Insert Title of the Article.
+	\item Insert URL of the Article (e.g. “http://www.nytimes.com/article15”).
+	\item Insert Summary (255 Character Word Limit) of the Article.
+	\item Select a Rating for the Data Fusion Article (from 0-10, 10 represents the best an article can be, Data Fusion Articles are displayed from top to bottom in order of rating).
+	\item Select a Source for your Article, (e.g. The New York Times or CNET).   
+	\item Click the ‘Add’ button located underneath the Data Sources drop down menu.
+	\end{itemize}
+\end{itemize}
+
+\subsubsection{Data Fusion for Editors}
+
+\begin{itemize}
+\item How to Start Configuring Data Fusion Articles on the Website:
+	\begin{itemize}
+	\itemindent 10pt
+	\item Navigate to the ‘Configuration’ menu located next to ‘Modules’ in the main menu bar at the top of the screen
+	\item On the left notice underneath the section ‘Data Fusion’ a link titled ‘Data Fusion Settings’
+	\item Once having clicked ‘Data Fusion Settings’ a new menu is rendered for configuring Data Fusion Articles, Data Sources and Data Means. Displayed in the table are Data Fusion Articles which are NOT approved and NOT deleted by the writers.
+	\item Select Multiple Articles to approve or delete or select ONE article to be edited at a time.
+	\end{itemize}
+\item Add a Custom Data Fusion Article to the Website
+	\begin{itemize}
+	\itemindent 10pt
+	\item Insert Title of the Article.
+	\item Insert URL of the Article (e.g. “http://www.nytimes.com/article15”).
+	\item Insert Summary (255 Character Word Limit) of the Article.
+	\item  Select a Rating for the Data Fusion Article (from 0-10, 10 represents the best an article can be, Data Fusion Articles are displayed from top to bottom in order of rating).
+	\item Select a Source for your Article, (e.g. The New York Times or CNET).   
+	\item Select an Article on the website for the Data Fusion Article to be attached to.
+	\item Click the ‘Add’ button located underneath the Article selection drop down menu.
+	\end{itemize}
+\item Add a Data Source to the Website
+	\begin{itemize}
+	\itemindent 10pt
+	\item Insert Name of the Data Source.
+	\item Insert URL of the Website (e.g. “http://www.gizmodo.com”).
+	\item Insert URL of the Website’s Logo. IMPORTANT- be sure to include the FULL PATH to the image (e.g http://i1.nyt.com/images/misc/nytlogo379x64.gif) otherwise the image will NOT be shown.
+	\item Click the ‘Add’ button located underneath
+	\end{itemize}
+\item Edit a Data Source on the Website
+	\begin{itemize}
+	\itemindent 10pt
+	\item Select ONLY 1 SOURCE to be edited at a time.
+	\item Click the button titled ’Edit’ located underneath the table.
+	\item Note the page is refreshed and the information from your selected Data Source is displayed in the text fields and drop down menus.
+	\item Perform changes to be made to the Data Source and Click the ‘Update’ button underneath the fields.
+	\end{itemize}
+\item Delete a Data Source from the Website
+	\begin{itemize}
+	\itemindent 10pt
+	\item Select the checkbox for the particular Data Source you want to delete OR select all by clicking the checkbox located in the table’s header.
+	\item Click the ‘Delete’ button to remove the Source. IMPORTANT- All Associated Data Fusion Articles and Data Means will be DELETED as well!  
+	\end{itemize}
+\item Add a Data Means to the Website
+	\begin{itemize}
+	\itemindent 10pt
+	\item Insert Name of the Data Means.
+	\item Insert URL of the Website (e.g. “http://www.gizmodo.com”).
+	\item Select Data Source to attach to
+	\item Click the ‘Add’ button located underneath
+	\end{itemize}
+\item Edit a Data Means on the Website
+	\begin{itemize}
+	\itemindent 10pt
+	\item Select ONLY 1 MEANS to be edited at a time.
+	\item Click the button titled ’Edit’ located underneath the table.
+	\item Note the page is refreshed and the information from your selected Data Means is displayed in the text fields and drop down menus.
+	\item Perform changes to be made to the Data Means and Click the ‘Update’ button underneath the fields.
+	\end{itemize}
+\item Delete a Data Means from the Website
+	\begin{itemize}
+	\itemindent 10pt
+	\item Select the checkbox for the particular Data Means you want to delete OR select all by clicking the checkbox located in the table’s header.
+	\item Click the ‘Delete’ button to remove the means.
+	\end{itemize}
+\end{itemize}
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Useful Links}

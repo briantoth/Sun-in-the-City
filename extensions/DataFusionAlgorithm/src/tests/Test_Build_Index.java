@@ -29,6 +29,11 @@ public class Test_Build_Index {
 		return new Manager(prop);
 	}
 	
+	/**
+	 * Test creating the index files with an article 
+	 * in the format of DataStored
+	 * @throws IOException
+	 */
 	@Test
 	public void testIndexCreation() throws IOException {
 		Manager man= setupManager();
@@ -64,6 +69,11 @@ public class Test_Build_Index {
 			fail("did not create index");
 	}
 	
+	/**
+	 * Test creating Data Means and Data Source records 
+	 * in the corresponding tables
+	 * @param man
+	 */
 	public void createDataMeansAndSource(Manager man){
 		DataSource dsrc = new DataSource();
 		dsrc.setId(1);

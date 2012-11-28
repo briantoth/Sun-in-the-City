@@ -33,6 +33,15 @@ public class Test_Fusion_Parser {
 	}
 	
 	
+	/**
+	 * Put in real Data Means. 
+	 * Run parser from the RSS Parser package. 
+	 * Index the parsed articles. 
+	 * Search matched articles for an example article from the index. 
+	 * Return the results to the DataFusion table.
+	 * @throws IOException
+	 * @throws InterruptedException
+	 */
 	@Test
 	public void testDataFusion()throws IOException, InterruptedException{
 		
