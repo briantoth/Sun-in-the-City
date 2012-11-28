@@ -437,6 +437,10 @@ p {
 	margin: 0;
 }
 
+.fusionarticle {
+	clear: both;
+}
+
 #fusion {
 	margin-bottom: 20px;
 	border-left: 1px solid #888;
