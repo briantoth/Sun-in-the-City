@@ -265,7 +265,7 @@ Datafusion.admin.inc is the other implementation file included in the project th
 
 \subsubsection{Shared Library}
 
-TODO PHILL
+The shared library is broken into 3 parts. The first part is a series of classes that model the custom database tables so that the Java code can interact with java objects and not MySQL tables directly. The second part is the Properties loading class that reads in a file and sets all the settings of the system. The final part is the manager class that represents the logical abstraction to interface with permanent storage. This manager class handles all MySQL queries for the Java code. 
 
 \subsubsection{RSS Parser}
 
@@ -339,7 +339,7 @@ Our primary form of validation was meeting with the client and making sure that 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{JavaDoc}
 
-TODO Brian
+The team has documented all of the custom Java code with JavaDoc formatting. Subsequently, the team has generated a full JavaDoc and added it to the documentation and handover material.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Code Walkthrough}
