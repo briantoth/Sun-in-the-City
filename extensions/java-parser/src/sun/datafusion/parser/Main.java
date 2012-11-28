@@ -22,7 +22,7 @@ public class Main {
 	 * user: The username to log into the MySQL server with.
 	 * pass: The password to log into the MySQL server with.
 	 * hostname: The IP of the server, generally localhost.
-	 * @param The base command line arguments, unused.
+	 * @param args The base command line arguments, unused.
 	 * @throws Exception
 	 */
 	public static void main(String[] args) throws Exception {

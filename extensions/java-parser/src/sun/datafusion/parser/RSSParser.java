@@ -27,10 +27,7 @@ public class RSSParser {
 	/***************************************************************************
 	 * Creates an RSSParser object, and connects to the MySQL database with
 	 * the given parameters immediately.
-	 * @param The database name
-	 * @param Username to log in with
-	 * @param Password to log in with
-	 * @param The MySQL server ip (usually localhost)
+	 * @param prop The properties
 	 */
 	public RSSParser(Properties prop){
 		p = new Manager(prop);

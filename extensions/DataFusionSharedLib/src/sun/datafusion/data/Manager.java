@@ -359,8 +359,7 @@ public class Manager {
 	/***************************************************************************
 	 * Gets nodes (articles) to process that are written after the given date
 	 * 
-	 * @param writtenAfter
-	 *            The selection date criteria to select nodes
+	 * @param msInPast How long in the past to check for articles to fuse on
 	 * @return A list of the results, or null if there was an error
 	 */
 	public List<Node> getNodesToProcess(long msInPast) {
@@ -481,9 +480,8 @@ public class Manager {
 	 * Gets a data fusion object by ID. This requires you to know the ID of the
 	 * object in the table
 	 * 
-	 * @param dataFusionID
-	 *            The ID in the SQL table of the datafusion object to be fetched
-	 * @return
+	 * @param dataFusionID  The ID in the SQL table of the datafusion object to be fetched
+	 * @return Returns the requested datafusion object
 	 */
 	public DataFusion getDataFusion(int dataFusionID) {
 		// Make connection if not already, ensure success

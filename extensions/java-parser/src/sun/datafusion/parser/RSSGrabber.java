@@ -45,7 +45,7 @@ public class RSSGrabber {
 	 * necessary information as well as creating the needed HTTP connection
 	 * to the RSS link given.
 	 * 
-	 * @param The DataMeans object to retrieve new RSS posts from
+	 * @param data The DataMeans object to retrieve new RSS posts from
 	 * @throws Exception
 	 */
 	public RSSGrabber(DataMeans data) throws Exception{
