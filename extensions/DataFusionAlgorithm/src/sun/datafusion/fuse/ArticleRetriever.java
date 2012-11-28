@@ -16,7 +16,8 @@ import sun.datafusion.data.Node;
  * waiting. It buffers this data to be used by the DataFuser.
  */
 public class ArticleRetriever implements Runnable{
-	private final static long timeToSleep = 1000*60*1;
+	private final static long timeToSleep = 1000*60*30;
+	private final static long articleAgeToIndex = 1000 * 60 * 60 * 24 * 7;
 	private final static int numThreads= 5;
 	
 	private final ExecutorService threadPool= Executors.newFixedThreadPool(numThreads);
@@ -38,20 +39,21 @@ public class ArticleRetriever implements Runnable{
 	 */
 	public void run() {
 		while(Main.keepRunning){
-			//wait for a bit
-			try {
-				Thread.sleep(timeToSleep);
-			} catch (InterruptedException e) {
-				break;
-			}
 			
-			List<Node> unfusedArticles= manager.getNodesToProcess(timeToSleep);
+			List<Node> unfusedArticles= manager.getNodesToProcess(articleAgeToIndex);
 			
 			if(unfusedArticles != null){
 				for(Node n : unfusedArticles){
 					Runnable dataFuser= new DataFuser(n, indexLocation, manager);
 					threadPool.execute(dataFuser);
 				}
+			}
+			
+			//wait for a bit
+			try {
+				Thread.sleep(timeToSleep);
+			} catch (InterruptedException e) {
+				break;
 			}
 		}
 		
