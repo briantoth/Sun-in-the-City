@@ -22,7 +22,9 @@ public class Manager {
 
 	/**
 	 * Create a manager to handle SQL interactions
-	 * @param prop A map populated with the user-defined configurations
+	 * 
+	 * @param prop
+	 *            A map populated with the user-defined configurations
 	 */
 	public Manager(Properties prop) {
 		hostname = prop.getProperty("hostname");
@@ -367,17 +369,8 @@ public class Manager {
 			return null;
 
 		try {
-			// Create query
-			// Get nodes that should be processed
-			psGetNodesToProcess = connection
-					.prepareStatement("SELECT DISTINCT "
-							+ "node.nid, data.name " + "FROM " + database
-							+ ".node node, " + database
-							+ ".taxonomy_index ind, " + database
-							+ ".taxonomy_term_data data "
-							+ "WHERE unix_timestamp() - " + msInPast
-							+ " <= node.created AND "
-							+ "node.nid = ind.nid AND ind.tid = data.tid");
+			// Set time for query
+			psGetNodesToProcess.setLong(1, msInPast);
 
 			// Execute query to get all ids
 			ResultSet queryResult = psGetNodesToProcess.executeQuery();
@@ -463,6 +456,12 @@ public class Manager {
 		}
 
 		try {
+			psGetDataFusionPreviousCount.setInt(1, df.getNodeID());
+			psGetDataFusionPreviousCount.setInt(2, df.getDataStored_id());
+			ResultSet existingDF = psGetDataFusionPreviousCount.executeQuery();
+			if(existingDF == null || !existingDF.next() || existingDF.getInt(1) != 0)
+				return false;
+			
 			psCreateDataFusion.setInt(1, df.getNodeID());
 			psCreateDataFusion.setInt(2, df.getDataSource_id());
 			psCreateDataFusion.setInt(3, df.getDataStored_id());
@@ -470,17 +469,20 @@ public class Manager {
 			psCreateDataFusion.setString(5, df.getUrl());
 			psCreateDataFusion.setString(6, df.getSummary());
 			psCreateDataFusion.setInt(7, df.getRating());
-			psCreateDataFusion.setDate(8, new java.sql.Date(df.getTimestamp() .getTime()));
+			psCreateDataFusion.setDate(8, new java.sql.Date(df.getTimestamp()
+					.getTime()));
 			return psCreateDataFusion.executeUpdate() == 1;
 		} catch (SQLException e) {
 			return false;
 		}
 	}
-	
+
 	/**
-	 * Gets a data fusion object by ID.  This requires you to know the ID of the object in the table
+	 * Gets a data fusion object by ID. This requires you to know the ID of the
+	 * object in the table
 	 * 
-	 * @param dataFusionID The ID in the SQL table of the datafusion object to be fetched
+	 * @param dataFusionID
+	 *            The ID in the SQL table of the datafusion object to be fetched
 	 * @return
 	 */
 	public DataFusion getDataFusion(int dataFusionID) {
@@ -512,10 +514,10 @@ public class Manager {
 			return null;
 		}
 	}
-	
+
 	/**
-	 * Deletes all records from tables that are related to articles, tags,
-	 * data fusion, data indexing, etc.  Used to enable unit testing
+	 * Deletes all records from tables that are related to articles, tags, data
+	 * fusion, data indexing, etc. Used to enable unit testing
 	 */
 	public void cleanTables() {
 		// Make connection if not already, ensure success
@@ -539,20 +541,20 @@ public class Manager {
 			return;
 		}
 	}
-	
+
 	/**
-	 * For a group of articles, adds the tags to the database and
-	 * assigns those tags to those articles.  Avoids duplicating tags
-	 * for any of the inputed articles, but does not take into account
-	 * any tags already in the database
+	 * For a group of articles, adds the tags to the database and assigns those
+	 * tags to those articles. Avoids duplicating tags for any of the inputed
+	 * articles, but does not take into account any tags already in the database
 	 * 
-	 * @param nodes The articles to assign tags to
+	 * @param nodes
+	 *            The articles to assign tags to
 	 * @return Indicates success or failure
 	 */
-	public boolean assignTags(List<Node> nodes){
-		Set<String> tags= new HashSet<String>();
-		for(Node n : nodes){
-			for(String t : n.getTags()){
+	public boolean assignTags(List<Node> nodes) {
+		Set<String> tags = new HashSet<String>();
+		for (Node n : nodes) {
+			for (String t : n.getTags()) {
 				tags.add(t);
 			}
 		}
@@ -601,11 +603,11 @@ public class Manager {
 		try {
 			// Create query
 			psCleanDataStored.setTimestamp(1, new java.sql.Timestamp(
-					new java.util.Date().getTime()-timeBefore));
+					new java.util.Date().getTime() - timeBefore));
 
 			// Execute query
 			psCleanDataStored.executeUpdate();
-			
+
 		} catch (SQLException e) {
 
 			// Error occurred
@@ -635,6 +637,7 @@ public class Manager {
 
 	/***************************************************************************
 	 * Opens the database connections
+	 * 
 	 * @return Indicates failure or success
 	 */
 	public boolean startConnection() {
@@ -691,6 +694,10 @@ public class Manager {
 			psSetDataStoredIndexed = connection.prepareStatement("UPDATE "
 					+ database + ".DataStored ds " + "SET indexed=1 "
 					+ "WHERE id=?");
+			
+			// Checks if there is a previous Data Fusion object
+			psGetDataFusionPreviousCount = connection.prepareStatement("SELECT COUNT(*) " 
+					+ "FROM DataFusion df WHERE df.nodeID=? AND df.DataStored_id=?");
 
 			// Create a data fusion object in the table
 			psCreateDataFusion = connection
@@ -751,9 +758,22 @@ public class Manager {
 			// a certain date and are not linked to data fusion
 			psCleanDataStored = connection
 					.prepareStatement("DELETE FROM "
-							+ database + ".DataStored " + 
-							"WHERE timestamp < ? AND id NOT IN (SELECT DISTINCT df.DataStored_id FROM "
+							+ database
+							+ ".DataStored "
+							+ "WHERE timestamp < ? AND id NOT IN (SELECT DISTINCT df.DataStored_id FROM "
 							+ database + ".DataFusion df)");
+
+			// Create query
+			// Get nodes that should be processed
+			psGetNodesToProcess = connection
+					.prepareStatement("SELECT "
+							+ "node.nid, data.name " + "FROM " + database
+							+ ".node node, " + database
+							+ ".taxonomy_index ind, " + database
+							+ ".taxonomy_term_data data "
+							+ "WHERE unix_timestamp() - ? " 
+							+ " <= node.created AND "
+							+ "node.nid = ind.nid AND ind.tid = data.tid");
 
 		} catch (SQLException e) {
 			System.out.println("Failed to create prepared statements");
@@ -765,7 +785,6 @@ public class Manager {
 		return true;
 	}
 
-	
 	/**
 	 * Returns the current database connection
 	 * 
@@ -836,6 +855,7 @@ public class Manager {
 	private PreparedStatement psCreateDataStored;
 	private PreparedStatement psGetDataStoredToIndex;
 	private PreparedStatement psGetNodesToProcess;
+	private PreparedStatement psGetDataFusionPreviousCount;
 	private PreparedStatement psCreateDataFusion;
 	private PreparedStatement psGetDataFusion;
 	private PreparedStatement psCreateDataMeans;
@@ -848,4 +868,5 @@ public class Manager {
 	private PreparedStatement psCreateTaxonomy_index;
 	private PreparedStatement psCreateTaxonomy_term_hierarchy;
 	private PreparedStatement psCleanDataStored;
+	
 }
